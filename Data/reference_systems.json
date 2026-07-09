@@ -1,0 +1,92 @@
+{
+  "UN": {
+    "mp_id": "mp-1865",
+    "crystal_system": "cubic",
+    "spacegroup_num": 225,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 48,
+    "nsites": 2,
+    "energy_above_hull": 0.0,
+    "note": "rocksalt Fm-3m; verified mp-id (CompoundsToPredict.csv). Symmetry confirmed from live MP 2026-06-25."
+  },
+  "UC": {
+    "mp_id": "mp-2489",
+    "crystal_system": "cubic",
+    "spacegroup_num": 225,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 48,
+    "nsites": 2,
+    "energy_above_hull": 0.0,
+    "note": "rocksalt Fm-3m; verified mp-id (CompoundsToPredict.csv). n_symmetry_ops corrected to 48 (live MP 2026-06-25; notebook 3 showed 96 which was an artifact)."
+  },
+  "CeO2": {
+    "mp_id": "mp-20194",
+    "crystal_system": "cubic",
+    "spacegroup_num": 225,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 48,
+    "nsites": 3,
+    "energy_above_hull": 0.0,
+    "note": "fluorite Fm-3m; verified mp-id (CeO2Nd2O3Vals.csv). Symmetry confirmed from live MP 2026-06-25."
+  },
+  "UO2": {
+    "mp_id": "mp-1597",
+    "crystal_system": "cubic",
+    "spacegroup_num": 225,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 48,
+    "nsites": 3,
+    "energy_above_hull": 0.0,
+    "note": "fluorite Fm-3m; lowest e_above_hull UO2 in MP. Confirmed from live MP 2026-06-25. mp-308 (hexagonal, sg=189) is an experimental polymorph but higher energy — do not use as default."
+  },
+  "PuO2": {
+    "mp_id": "mp-1959",
+    "crystal_system": "cubic",
+    "spacegroup_num": 225,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 48,
+    "nsites": 3,
+    "energy_above_hull": 0.0,
+    "note": "fluorite Fm-3m; lowest e_above_hull PuO2 in MP. Confirmed from live MP 2026-06-25."
+  },
+  "ThO2": {
+    "mp_id": "mp-643",
+    "crystal_system": "cubic",
+    "spacegroup_num": 225,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 48,
+    "nsites": 3,
+    "energy_above_hull": 0.0,
+    "note": "fluorite Fm-3m; lowest e_above_hull ThO2 in MP. Confirmed from live MP 2026-06-25. mp-1102569 (Pnma, experimental) has higher e_hull=0.1497."
+  },
+  "ZrO2": {
+    "mp_id": "mp-2858",
+    "crystal_system": "monoclinic",
+    "spacegroup_num": 14,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 4,
+    "nsites": 12,
+    "energy_above_hull": 0.0,
+    "note": "baddeleyite P2_1/c; lowest e_above_hull ZrO2 in MP. Confirmed from live MP 2026-06-25. For UO2-ZrO2 solid solutions, the host is UO2 (fluorite); ZrO2 reference only needed if Zr-dominant."
+  },
+  "Nd2O3": {
+    "mp_id": "mp-1045",
+    "crystal_system": "cubic",
+    "spacegroup_num": 206,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 24,
+    "nsites": 40,
+    "energy_above_hull": 0.0,
+    "note": "bixbyite Ia-3; lowest e_above_hull Nd2O3 in MP. Confirmed from live MP 2026-06-25. mp-2763 (trigonal P-3m1) is slightly higher energy."
+  },
+  "NdO2": {
+    "mp_id": "mp-31049",
+    "crystal_system": "monoclinic",
+    "spacegroup_num": 12,
+    "is_centrosymmetric": true,
+    "n_symmetry_ops": 4,
+    "nsites": 6,
+    "energy_above_hull": 0.0,
+    "note": "NON-HOST: Nd4+ is not a stable oxidation state; NdO2 is not a viable fluorite host. For Ce1-xNdxO2 solid solutions, use CeO2 (mp-20194) as reference. Confirmed from live MP 2026-06-25."
+  }
+}

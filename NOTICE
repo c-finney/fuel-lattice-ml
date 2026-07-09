@@ -1,0 +1,7 @@
+This work was supported in part by the U.S. Department of Energy, Office of Science, Office of Workforce Development for Teachers and Scientists (WDTS) under the Science Undergraduate Laboratory Internships Program (SULI) hosted at Oak Ridge National Laboratory (ORNL) and administered by the Oak Ridge Institute for Science and Education (ORISE). Any opinions, findings, conclusions or recommendations expressed in this publication are those of the author(s) and do not necessarily reflect the views of the Department of Energy, Office of Science, or Office of WDTS.
+
+---
+
+This software makes use of data from the Materials Project (https://materialsproject.org),
+licensed under CC BY 4.0. The trained models in Models/ are derived works of that data
+and carry the same attribution requirement. See README.md for citation details.

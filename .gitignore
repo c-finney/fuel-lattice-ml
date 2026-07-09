@@ -1,0 +1,29 @@
+# ---- Secrets -------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ---- Dataset/ is generated output only: track folder, ignore contents ----
+Dataset/*
+!Dataset/.gitkeep
+
+# ---- Model binaries ------------------------------------------------------
+Models/binaries/*
+!Models/binaries/.gitkeep
+
+# ---- Belt-and-braces: never let a multi-GB pickle in ---------------------
+*.joblib
+!Models/feature_labels/*.joblib
+
+# ---- Python / Jupyter ----------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+.ipynb_checkpoints/
+
+# ---- Windows / OneDrive junk --------------------------------------------
+Thumbs.db
+desktop.ini
+~$*

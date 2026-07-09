@@ -1,0 +1,31 @@
+{
+  "source": "Results/metrics/ModelMetrics_CrossVal.csv",
+  "method": "5-fold KFold cross-validation (random_state=42), refit per fold via engine.train_models.model_estimators()['rf1']",
+  "note": "Cubic-subset numbers are the ones to cite; see Limitations in model_card.md.",
+  "params": {
+    "a": {
+      "MSE_all": 0.3374786286741668,
+      "MAE_all": 0.30975660794441895,
+      "R2_all": 0.8900000378459589,
+      "MSE_cubic": 0.06597671146808103,
+      "MAE_cubic": 0.12170125469766833,
+      "R2_cubic": 0.9774885767302153
+    },
+    "b": {
+      "MSE_all": 0.36110405144903945,
+      "MAE_all": 0.3162279099703139,
+      "R2_all": 0.8826722973354287,
+      "MSE_cubic": 0.06597608251914895,
+      "MAE_cubic": 0.12170079691163904,
+      "R2_cubic": 0.977488791329205
+    },
+    "c": {
+      "MSE_all": 0.4653789800743479,
+      "MAE_all": 0.3819544412997051,
+      "R2_all": 0.8552409284805873,
+      "MSE_cubic": 0.06958690674356993,
+      "MAE_cubic": 0.12386172201040803,
+      "R2_cubic": 0.9762567688373284
+    }
+  }
+}

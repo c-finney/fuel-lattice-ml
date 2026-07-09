@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "materials_project": {
+      "client": "mp-api",
+      "queried_at": "2026-06-25T15:03:29.794248+00:00",
+      "db_version": null
+    },
+    "packages": {
+      "python": "3.12.10",
+      "sklearn": "1.9.0",
+      "xgboost": "3.3.0",
+      "numpy": "2.5.1",
+      "pandas": "2.3.3",
+      "joblib": "1.5.3",
+      "pymatgen": "unknown",
+      "matminer": "0.10.1"
+    },
+    "training_rows": 64128,
+    "n_features": 145,
+    "build_thresh_angstrom": 20,
+    "train_thresh_angstrom": 10
+  },
+  "models": {
+    "rf1": {
+      "file": "DependentRFModel.joblib",
+      "compressed": false,
+      "bytes": 3966646433,
+      "sha256": "cbd71b57793764d886e33fc92a50bceb002056d53eeb4542d65a879570fdcab2",
+      "uri": "hf://c-finney/fuel-lattice-ml/DependentRFModel.joblib",
+      "status": "trained"
+    },
+    "rf2": {
+      "status": "not_trained"
+    },
+    "gbr1": {
+      "status": "not_trained"
+    },
+    "gbr2": {
+      "status": "not_trained"
+    },
+    "lin": {
+      "status": "not_trained"
+    }
+  }
+}

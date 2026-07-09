@@ -1,0 +1,12 @@
+{
+  "model_key": "rf2",
+  "estimator": "sklearn.multioutput.MultiOutputRegressor",
+  "wraps": "sklearn.ensemble.RandomForestRegressor",
+  "params": {
+    "n_estimators": 600,
+    "random_state": 42
+  },
+  "multioutput": "wrapped",
+  "targets": ["a", "b", "c"],
+  "status": "not_trained"
+}

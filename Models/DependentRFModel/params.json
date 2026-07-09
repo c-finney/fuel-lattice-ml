@@ -1,0 +1,11 @@
+{
+  "model_key": "rf1",
+  "estimator": "sklearn.ensemble.RandomForestRegressor",
+  "params": {
+    "n_estimators": 600,
+    "random_state": 42
+  },
+  "multioutput": "native",
+  "targets": ["a", "b", "c"],
+  "status": "trained"
+}
