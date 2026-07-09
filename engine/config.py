@@ -13,6 +13,17 @@ import os
 # ---------------------------------------------------------------------------
 REPO_ROOT = Path(__file__).resolve().parents[1]   # …/fuel-lattice-ml/
 
+# Load .env BEFORE resolving DATA_ROOT below. load_mp_key() also calls
+# load_dotenv(), but only lazily when a caller actually needs MP_API_KEY —
+# by then this module has already finished executing top-level statements,
+# so LATTICE_DATA_ROOT set only in .env (not a real process env var) would
+# never be seen by the os.environ.get() call a few lines down. Loading here,
+# unconditionally, at import time, is what makes .env-only configuration work
+# for DATA_ROOT specifically. dotenv does not override a real env var that is
+# already set, so an explicit process-level LATTICE_DATA_ROOT still wins.
+from dotenv import load_dotenv
+load_dotenv(REPO_ROOT / ".env")
+
 # Home for the big regenerable artifacts (model binary + generated datasets).
 # Defaults to REPO_ROOT, so a fresh clone is fully self-contained. Only a
 # consumer that wants to avoid a second multi-GB copy on disk (e.g. the
