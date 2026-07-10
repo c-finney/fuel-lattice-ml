@@ -29,8 +29,27 @@ class TestSeedResume:
 
         # Point config at an isolated temp tree with ONLY the seed present —
         # no build manifest, simulating a fresh clone.
-        monkeypatch.setattr(config, "DATASETS", tmp_path / "Dataset")
-        monkeypatch.setattr(config, "BUILD_MANIFEST", tmp_path / "Dataset" / ".build_manifest.json")
+        #
+        # WARNING: config.py computes each derived path ONCE at import time
+        # (e.g. FEATURELABELS = FEATURE_DIR / "FeatureLabels.joblib"). Patching
+        # config.DATASETS does NOT retroactively change config.DATASET_FEATURIZED,
+        # config.FEATURE_DIR, or config.FEATURELABELS — those are independent
+        # bound values, not properties recomputed from DATASETS. build() writes
+        # to all of DATASET_FEATURIZED, FEATURE_DIR, and FEATURELABELS, so every
+        # one of them must be patched here individually. Missing even one means
+        # this "isolated" test silently overwrites real committed production
+        # artifacts — which is exactly what happened before this comment was
+        # added: FEATURE_DIR/FEATURELABELS were not patched, and a run of this
+        # test overwrote the committed Models/feature_labels/FeatureLabels.joblib
+        # with a corrupted (matminer-labels-stripped) mock result that then got
+        # committed and pushed before the corruption was noticed.
+        dataset_dir = tmp_path / "Dataset"
+        feature_dir = tmp_path / "Models" / "feature_labels"
+        monkeypatch.setattr(config, "DATASETS", dataset_dir)
+        monkeypatch.setattr(config, "BUILD_MANIFEST", dataset_dir / ".build_manifest.json")
+        monkeypatch.setattr(config, "DATASET_FEATURIZED", dataset_dir / "MP_Dataset_Featurized.csv")
+        monkeypatch.setattr(config, "FEATURE_DIR", feature_dir)
+        monkeypatch.setattr(config, "FEATURELABELS", feature_dir / "FeatureLabels.joblib")
         seed_dir = tmp_path / "Data"
         seed_dir.mkdir(parents=True)
         seed_path = seed_dir / "MP_Dataset_Original_Trimmed.csv"

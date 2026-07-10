@@ -5,7 +5,8 @@ All heavy dependencies (MP, matminer, joblib models) are mocked.
 Verifies:
   - UN0.5C0.5 returns status="ok", cubic, single-a headline
   - Headline value is in a physically sane range (~4.5-5.5 Å)
-  - Table contains no LR row (D6)
+  - Table contains no Linear Regression row (LR is a baseline sanity check only,
+    never shown in prediction output — see config.REPORTABLE)
   - Appropriate warnings field is present
 """
 
@@ -120,7 +121,8 @@ class TestPredictSmoke:
 
     def test_no_lr_in_table(self):
         """
-        Table must not contain a Linear Regression row (D6).
+        Table must not contain a Linear Regression row — it is excluded from
+        config.REPORTABLE and never shown in prediction output.
         """
         from engine import predict, config
 

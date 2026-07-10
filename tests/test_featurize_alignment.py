@@ -2,11 +2,13 @@
 test_featurize_alignment.py — Feature label alignment tests.
 
 Critical checks:
-  1. 'nelements' is absent from the base feature label list (D15 regression guard)
+  1. 'nelements' is absent from the base feature label list — it is a dedup-only
+     column, never a model feature; including it would KeyError predict()
   2. base_feature_labels() returns exactly 503 labels
   3. A featurized prediction frame uses ML_FeatureLabels exactly when available,
      and the columns match without extra or missing entries
-  4. 'spacegroup_num' (scalar) is present in ML_FeatureLabels (M2)
+  4. 'spacegroup_num' (scalar) is present in ML_FeatureLabels — training drops the
+     sg_* one-hot columns but keeps this scalar
   5. No sg_* OHE columns in ML_FeatureLabels (they are dropped in train)
 """
 
@@ -23,14 +25,14 @@ class TestFeatureLabelAlignment:
 
     def test_nelements_absent_from_base_labels(self):
         """
-        REGRESSION TEST (D15): 'nelements' must NOT appear in base_feature_labels.
+        REGRESSION TEST: 'nelements' must NOT appear in base_feature_labels.
         If it does, predict_one will KeyError because the prediction frame never
         constructs a 'nelements' column.
         """
         fzer = make_featurizer()
         labels = base_feature_labels(fzer)
         assert "nelements" not in labels, (
-            "D15 violation: 'nelements' found in base_feature_labels. "
+            "'nelements' found in base_feature_labels — it must stay dedup-only. "
             "This will cause a KeyError in prediction."
         )
 
@@ -86,26 +88,28 @@ class TestFeatureLabelAlignment:
 
     def test_ml_feature_labels_retain_spacegroup_num(self):
         """
-        scalar 'spacegroup_num' MUST remain in ML_FeatureLabels (M2).
+        scalar 'spacegroup_num' MUST remain in ML_FeatureLabels — training drops
+        the sg_* one-hot columns but keeps this scalar.
         """
         if not config.ML_FEATURELABELS.exists():
             pytest.skip("ML_FeatureLabels.joblib not built yet — skipping")
         import joblib
         ml_labels = joblib.load(config.ML_FEATURELABELS)
         assert "spacegroup_num" in ml_labels, (
-            "M2 violation: 'spacegroup_num' scalar is missing from ML_FeatureLabels."
+            "'spacegroup_num' scalar is missing from ML_FeatureLabels."
         )
 
     def test_ml_feature_labels_exclude_nelements(self):
         """
-        D15 regression guard on ML_FeatureLabels: 'nelements' must not appear.
+        Regression guard on ML_FeatureLabels: 'nelements' must not appear
+        (dedup-only column, never a model feature).
         """
         if not config.ML_FEATURELABELS.exists():
             pytest.skip("ML_FeatureLabels.joblib not built yet — skipping")
         import joblib
         ml_labels = joblib.load(config.ML_FEATURELABELS)
         assert "nelements" not in ml_labels, (
-            "D15 violation: 'nelements' in ML_FeatureLabels will KeyError predict."
+            "'nelements' in ML_FeatureLabels will KeyError predict."
         )
 
     def test_ml_feature_labels_include_nsites(self):
