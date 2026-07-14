@@ -3,7 +3,7 @@
   "provenance": {
     "materials_project": {
       "client": "mp-api",
-      "queried_at": "2026-06-25T15:03:29.794248+00:00",
+      "queried_at": null,
       "db_version": null
     },
     "packages": {
@@ -25,22 +25,42 @@
     "rf1": {
       "file": "DependentRFModel.joblib",
       "compressed": false,
-      "bytes": 3966646433,
-      "sha256": "cbd71b57793764d886e33fc92a50bceb002056d53eeb4542d65a879570fdcab2",
+      "bytes": 3966648193,
+      "sha256": "806e57d9c857cfe3233741a5627eebb93d9d0261f67b2f9f15a93227d14a1373",
       "uri": "hf://c-finney/fuel-lattice-ml/DependentRFModel.joblib",
       "status": "trained"
     },
     "rf2": {
-      "status": "not_trained"
+      "file": "IndependentRFModel.joblib",
+      "compressed": false,
+      "bytes": 9735288229,
+      "sha256": "15c21119c71d4d64697efae110a5f95c22b9bbbf3852fc6b48eaf3f4d4881b5b",
+      "uri": null,
+      "status": "trained"
     },
     "gbr1": {
-      "status": "not_trained"
+      "file": "XGBoostGBRModel.joblib",
+      "compressed": false,
+      "bytes": 51341788,
+      "sha256": "4a4db5cce30feba66313f772f58de351541582cf22f9e57b1c223c1542e17905",
+      "uri": null,
+      "status": "trained"
     },
     "gbr2": {
-      "status": "not_trained"
+      "file": "ScikitLearnGBRModel.joblib",
+      "compressed": false,
+      "bytes": 22965965,
+      "sha256": "27f6a0d68c8cd266bb0a4feb5601e7fb12148f3495243b0c9269700ddfd0f3d5",
+      "uri": null,
+      "status": "trained"
     },
     "lin": {
-      "status": "not_trained"
+      "file": "LinearRegressionModel.joblib",
+      "compressed": false,
+      "bytes": 17442,
+      "sha256": "450649ba2d27d68543d5f157bb769e18fbe3dd75f964a33a915e5c113adbcb06",
+      "uri": null,
+      "status": "trained"
     }
   }
 }

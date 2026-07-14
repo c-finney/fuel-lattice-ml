@@ -89,6 +89,10 @@ def upload(repo_id: str, models: list[str] | None = None, private: bool = True) 
         uri = f"hf://{repo_id}/{entry['file']}"
         manifest["models"][key]["uri"] = uri
         manifest["models"][key]["sha256"] = local_hash
+        # `bytes` MUST be refreshed alongside sha256. It previously was not, so an
+        # upload that followed a retrain left a manifest whose hash was right and whose
+        # size was stale — a half-corrected record is harder to spot than a fully stale one.
+        manifest["models"][key]["bytes"] = path.stat().st_size
         changed = True
         print(f"[upload_models] {key}: done -> {uri}")
 
