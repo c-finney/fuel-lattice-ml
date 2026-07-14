@@ -43,16 +43,35 @@ None of these block continued private development.
 - [x] HuggingFace repo created: `c-finney/fuel-lattice-ml`, **private**, model binary
       uploaded uncompressed (3,966,646,433 bytes, SHA-256 recorded in
       `Models/MANIFEST.json`).
+
+> [!danger] **BLOCKER — the HF artifact and `MANIFEST.json` are STALE (found 2026-07-14).**
+> `rf1` was **retrained** on 2026-07-13 (`cli.py train --full`). The HF upload and the manifest
+> both predate it and **no longer describe the shipped model**:
+>
+> | | `MANIFEST.json` | actual binary on disk |
+> |---|---|---|
+> | bytes | `3966646433` | **`3966648193`** |
+> | sha256 | `cbd71b57…0fdcab2` | **`806e57d9…d14a1373`** |
+>
+> A clean clone running `scripts/fetch_models.py` would pull the **OLD** `rf1` — a different model
+> from the one behind every number in `Results/metrics/ModelMetrics_CrossVal.csv`, the four model
+> cards, and `Results/benchmarks/`. **The artifact and the documentation would describe different
+> models.** Re-upload `rf1` and regenerate the manifest (`scripts/write_model_manifest.py`)
+> **before** any public flip.
+
+- [ ] **Re-upload the current `rf1` to HF and regenerate `Models/MANIFEST.json`.** (Do **not**
+      upload `rf2` — 9,735,288,229 bytes and last on CV R²_cubic; user decision 2026-07-14.)
 - [ ] HF repo flipped private → public (or transferred to an ORNL-controlled namespace
       first — same open question as the GitHub repo above).
 - [ ] `scripts/fetch_models.py` verified end-to-end on a clean clone **without**
-      `HF_TOKEN` set (i.e. after the HF repo is actually public).
+      `HF_TOKEN` set (i.e. after the HF repo is actually public). **This is the check that would
+      have caught the stale-manifest blocker above — it has never been run.**
 
 ## Tests / correctness
 
-- [x] `python -m pytest tests/ -v` — **50 passed** locally (includes
-      `test_params_parity.py`'s notebook/hyperparameter guard and
-      `test_seed_resume.py`'s seed-resume regression guard).
+- [x] `python -m pytest tests/ -v` — **51 passed** locally as of 2026-07-14 (includes
+      `test_params_parity.py`'s notebook/hyperparameter guard, `test_seed_resume.py`'s
+      seed-resume regression guard, and the reference-resolver tie-break tests).
 - [ ] Re-run `python -m pytest tests/` on a genuinely clean clone (fresh `.venv`,
       no local caches) before the public flip.
 - [x] End-to-end acceptance criteria from the implementation plan — see the plan
