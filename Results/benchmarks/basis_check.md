@@ -38,12 +38,59 @@ Hosts with **no** in-repo experimental value (delta UNKNOWN — deliberately not
 2. **The sign flips** (UN −0.006621, UC −0.022736, CeO2 **+0.057365**). A single global
    offset is refuted by our own three points. Their mean is meaningless and is not computed.
 3. **The delta is not attributable.** It inseparably bundles exchange-correlation functional
-   error, 0 K (DFT) vs ~room-temperature (experiment) thermal expansion, zero-point motion,
+   error, 0 K (DFT) vs finite-temperature (experiment) thermal expansion, zero-point motion,
    and error in the experimental value itself. Three numbers cannot separate four causes.
 
-A defensible correction would need an independent, citable experimental reference set
-covering a meaningful share of the training domain, at a stated temperature, with held-out
-validation. That does not exist in this repo, so the correction is **not** asserted.
+### The temperature confound — and what survives it
+
+DFT relaxes at **0 K** (and without zero-point motion). The experimental values are measured at
+some **T > 0** — and in the case of UN, at a temperature the source *does not even state*
+(COD 9008757, Wyckoff *Crystal Structures* 1963, carries no `_cell_measurement_temperature`).
+Every material expands on heating, so `a_exp(T) > a_exp(0 K)`, and therefore:
+
+```
+DFT − a_exp(0K)  =  [DFT − a_exp(T)]  +  [a_exp(T) − a_exp(0K)]
+                 =   measured delta   +   a strictly POSITIVE term
+```
+
+**The same-temperature delta is therefore MORE POSITIVE than the delta we measured.** That has
+a sharp consequence for which of our three anchors can be trusted:
+
+| anchor | measured delta | same-temperature delta | verdict |
+|---|---|---|---|
+| CeO2 | **+0.057365** | even more positive | **ROBUST** — DFT genuinely exceeds experiment. |
+| UN | −0.006621 | less negative, possibly **positive** | **SIGN UNDETERMINED** |
+| UC | −0.022736 | less negative, possibly **positive** | **SIGN UNDETERMINED** |
+
+A thermal-expansion term on a ~4.9 Å cell over a few hundred K is plausibly the same order as the
+UN/UC deltas. So: the **CeO2 result stands** — and with it the explanation for the uniform
+over-prediction on (Ce,Nd)O2 — but **do NOT claim "DFT under-estimates UN/UC"**. That requires a
+*cited* thermal-expansion coefficient, which this repo does not have. The magnitude of the
+correction is unknown; only its **sign** is known.
+
+### What a defensible calibration reference would need
+
+Per entry — checked against a real candidate (COD 9008757, UN), which **fails 3 of 6**:
+
+| # | Requirement | COD 9008757 |
+|---|---|---|
+| 1 | `_cell_measurement_temperature` — **mandatory** | ✗ **absent** |
+| 2 | standard uncertainty on `_cell_length_a` (`4.884(2)`) | ✗ bare `4.884` |
+| 3 | **measured** stoichiometry (UN₁₋ₓ / UO₂₊ₓ — `a` depends strongly on O/M) | ✗ just "UN" |
+| 4 | **primary** diffraction source, not a compilation | ✗ Wyckoff 1963 textbook tabulation |
+| 5 | spacegroup matches the MP entry | ✓ Fm-3m (225) = mp-1865 |
+| 6 | conventional-cell setting | ✓ Z=4, a = 4.884 Å |
+
+> Note `_cell_length_a` = 4.884 Å in that CIF is **exactly** `UNUC.csv`'s `a_true` for `U1 N1` —
+> so the benchmark is very likely built on that same 1963 value, and **inherits its missing
+> temperature and missing uncertainty**. It is not an independent check on this problem.
+
+Per set: N large enough to fit **and hold out** (dozens, not 3); spanning the training domain, not
+just fuels; every entry matched to a specific MP `material_id` with the same spacegroup and
+composition; the calibration expressed as a **learned map** (DFT a → exp a at a reference T, with
+structure/composition features) — **never a single scalar**, which our own three points already
+refute by sign flip; and held-out validation reporting residual + CI. **ICSD is a better source than
+COD** — it records temperature far more consistently.
 
 ## (B) Basis-invariant model metrics
 
