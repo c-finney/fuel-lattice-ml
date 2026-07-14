@@ -15,7 +15,7 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
 
 - `/lattice-predict UN0.5C0.5` — single composition (natural-language friendly).
 - `/lattice-predict "U1 N0.5 C0.5"` — spaced formula also accepted.
-- `/lattice-predict Data/benchmarks/CompoundsToPredict.csv` — batch CSV
+- `/lattice-predict Data/benchmarks/UNUC.csv` — batch CSV
   (`composition`[,`ref_mp-id`,`y`,`a_true`]).
 - `/lattice-predict Ce0.8343Nd0.1657O2 reference=mp-20194` — force the reference structure.
 - `/lattice-predict UC0.7N0.3 models=rf1,gbr1` — restrict to specific models.

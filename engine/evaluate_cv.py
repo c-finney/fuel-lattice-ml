@@ -71,11 +71,31 @@ def evaluate(
         print(f"[evaluate] Cross-validating {config.MODEL_FILES[key][1]} ({key})…")
         est = estimators[key]
 
-        # Push parallelism into the estimator (see n_jobs docstring above).
-        if hasattr(est, "n_jobs"):
-            est.set_params(n_jobs=n_jobs)
-        elif hasattr(est, "estimator") and hasattr(est.estimator, "n_jobs"):
-            est.estimator.set_params(n_jobs=n_jobs)
+        # Push parallelism into the INNERMOST estimator, never into a meta-estimator
+        # wrapper. (See also the n_jobs docstring above, about not parallelizing folds.)
+        #
+        # This ordering is load-bearing, and getting it backwards OOM-killed the rf2 CV
+        # on a 31 GB box (2026-07-13):
+        #
+        #   MultiOutputRegressor(n_jobs=-1) fans the 3 outputs (a, b, c) out to loky
+        #   PROCESSES. Each fits a complete 600-tree forest (~3.2 GB for rf2) and pickles
+        #   it back, so the parent holds all three (~9.7 GB) while the workers still hold
+        #   their own copies. Worse, the inner RandomForestRegressor is left at n_jobs=1,
+        #   so we pay maximum memory for minimum parallelism.
+        #
+        #   RandomForestRegressor(n_jobs=-1) instead parallelizes TREE BUILDING with
+        #   THREADS over a single shared copy of X. Same wall-clock win, a fraction of
+        #   the RAM, and only one forest is resident at a time.
+        #
+        # The old code tested the wrapper FIRST (`if hasattr(est, "n_jobs")`), which
+        # always matches for MultiOutputRegressor — so the inner branch never ran.
+        inner = getattr(est, "estimator", None)
+        if inner is not None and hasattr(inner, "n_jobs"):
+            inner.set_params(n_jobs=n_jobs)      # rf2, lin: parallelize inside (threads)
+            if hasattr(est, "n_jobs"):
+                est.set_params(n_jobs=1)         # keep the wrapper sequential
+        elif hasattr(est, "n_jobs"):
+            est.set_params(n_jobs=n_jobs)        # rf1, gbr1, gbr2: no inner n_jobs
 
         Y_pred = cross_val_predict(est, X, Y, cv=cv, n_jobs=1)
 

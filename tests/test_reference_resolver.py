@@ -1,9 +1,13 @@
 """
 test_reference_resolver.py — Tests for endmembers() and resolve_reference().
 
-All MP calls are mocked. Tests cover:
+All MP calls are mocked, with values that MATCH Data/reference_systems.json.
+Tests cover:
   - U(N,C) end-members = {UN, UC}
-  - UN0.5C0.5 tie -> D13 picks by energy_above_hull (lower wins)
+  - UN0.7C0.3 -> N dominant  -> UN
+  - UN0.3C0.7 -> C dominant  -> UC
+  - UN0.5C0.5 tie -> energy_above_hull is degenerate (both 0.0) -> falls through to
+    formation_energy_per_atom -> UN
   - Ce0.2Nd0.8O2 existence guard -> NdO2 rejected -> falls back to CeO2
   - size-3 mixed set -> needs_reference
 """
@@ -80,9 +84,15 @@ _UC_SYMMETRY = {
     "crystal_system": "cubic",
     "spacegroup_num": 225,
     "is_centrosymmetric": True,
-    "n_symmetry_ops": 96,
+    "n_symmetry_ops": 48,
     "nsites": 2,
-    "energy_above_hull": 0.005,
+    # 0.0, NOT 0.005 — matches Data/reference_systems.json. An earlier mock had
+    # 0.005 here, which made the UN/UC tie look decidable on hull energy alone.
+    # It is not: UN and UC are each line compounds on their own chemsys hull, so
+    # both are at 0.0 and the hull comparison is degenerate. The mock's invented
+    # 0.005 meant the tie-break test never exercised the case that actually
+    # occurs in the data.
+    "energy_above_hull": 0.0,
     "_source": "curated_table",
 }
 
@@ -113,11 +123,23 @@ def _mock_reference_symmetry(formula_or_mpid):
 
 
 def _mock_energy_above_hull(formula):
+    """Real curated values — UN and UC are BOTH on the hull, so this cannot break their tie."""
     mapping = {
         "UN": 0.0,
-        "UC": 0.005,
+        "UC": 0.0,
         "CeO2": 0.0,
         "NdO2": None,
+    }
+    return mapping.get(formula)
+
+
+def _mock_formation_energy(formula):
+    """Real curated values (eV/atom, lower = more stable) — this is what breaks the UN/UC tie."""
+    mapping = {
+        "UN": -1.5816823568749996,
+        "UC": -0.2554539324999965,
+        "CeO2": -3.927176196666666,
+        "NdO2": -3.1596579241666647,
     }
     return mapping.get(formula)
 
@@ -130,25 +152,57 @@ class TestResolveReference:
         with patch("engine.reference_resolver.mp_client.reference_symmetry",
                    side_effect=_mock_reference_symmetry), \
              patch("engine.reference_resolver.mp_client.energy_above_hull",
-                   side_effect=_mock_energy_above_hull):
+                   side_effect=_mock_energy_above_hull), \
+             patch("engine.reference_resolver.mp_client.formation_energy",
+                   side_effect=_mock_formation_energy):
             result = resolve_reference(comp)
 
         assert result["status"] == "ok"
         assert result["mp_id"] == "mp-1865"   # UN
         assert "UN" in result["basis"] or "dominant" in result["basis"].lower()
 
-    def test_unc_tie_broken_by_energy(self):
-        """UN0.5C0.5 -> stoichiometric tie -> picks UN (lower energy_above_hull=0.0 vs UC=0.005)"""
+    def test_unc_carbon_dominant_endmember(self):
+        """
+        UN0.3C0.7 -> C fraction=0.7 dominant -> UC must be chosen.
+
+        This is the half of the rule the UNUC.csv benchmark used to get wrong: every
+        row was labelled with UN (mp-1865) regardless of composition, including the
+        C-dominant ones.
+        """
+        comp = parse_composition("UN0.3C0.7")
+        with patch("engine.reference_resolver.mp_client.reference_symmetry",
+                   side_effect=_mock_reference_symmetry), \
+             patch("engine.reference_resolver.mp_client.energy_above_hull",
+                   side_effect=_mock_energy_above_hull), \
+             patch("engine.reference_resolver.mp_client.formation_energy",
+                   side_effect=_mock_formation_energy):
+            result = resolve_reference(comp)
+
+        assert result["status"] == "ok"
+        assert result["mp_id"] == "mp-2489"   # UC
+
+    def test_unc_tie_broken_by_formation_energy(self):
+        """
+        UN0.5C0.5 -> stoichiometric tie -> UN wins.
+
+        energy_above_hull CANNOT decide this: UN and UC are both 0.0 (each is a line
+        compound on its own chemsys hull). The decision must fall through to
+        formation_energy_per_atom, where UN (-1.582) is far more stable than UC (-0.255).
+        Before the fallback existed, an equal-hull tie kept 'original order' — i.e. the
+        50/50 reference depended on dict iteration order.
+        """
         comp = parse_composition("UN0.5C0.5")
         with patch("engine.reference_resolver.mp_client.reference_symmetry",
                    side_effect=_mock_reference_symmetry), \
              patch("engine.reference_resolver.mp_client.energy_above_hull",
-                   side_effect=_mock_energy_above_hull):
+                   side_effect=_mock_energy_above_hull), \
+             patch("engine.reference_resolver.mp_client.formation_energy",
+                   side_effect=_mock_formation_energy):
             result = resolve_reference(comp)
 
         assert result["status"] == "ok"
-        assert result["mp_id"] == "mp-1865"   # UN wins (energy=0.0 < UC energy=0.005)
-        assert "energy_above_hull" in result["basis"].lower() or "tie" in result["basis"].lower()
+        assert result["mp_id"] == "mp-1865"   # UN — more negative formation energy
+        assert "formation_energy" in result["basis"].lower()
 
     def test_cendo2_existence_guard_fallback(self):
         """
@@ -159,7 +213,9 @@ class TestResolveReference:
         with patch("engine.reference_resolver.mp_client.reference_symmetry",
                    side_effect=_mock_reference_symmetry), \
              patch("engine.reference_resolver.mp_client.energy_above_hull",
-                   side_effect=_mock_energy_above_hull):
+                   side_effect=_mock_energy_above_hull), \
+             patch("engine.reference_resolver.mp_client.formation_energy",
+                   side_effect=_mock_formation_energy):
             result = resolve_reference(comp)
 
         assert result["status"] == "ok"

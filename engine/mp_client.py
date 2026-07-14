@@ -274,3 +274,25 @@ def energy_above_hull(formula: str) -> float | None:
     if result and result.get("energy_above_hull") is not None:
         return float(result["energy_above_hull"])
     return None
+
+
+def formation_energy(formula: str) -> float | None:
+    """
+    Return formation_energy_per_atom (eV/atom) for *formula*. LOWER = more stable.
+
+    This is the SECOND tie-break, applied only when energy_above_hull cannot
+    separate two end-members. That is not a hypothetical: UN and UC both sit at
+    energy_above_hull = 0.0, because each is a stable line compound on its own
+    chemsys hull (U-N and U-C) — being "on the hull" is a statement about a
+    compound's own phase diagram, not a cross-system stability ranking. So for
+    the U(N,C) 50/50 row the hull energies are exactly equal and cannot decide
+    anything. formation_energy_per_atom can: UN (-1.582) vs UC (-0.255).
+    """
+    sym = _curated_lookup(formula)
+    if sym is not None and sym.get("formation_energy_per_atom") is not None:
+        return float(sym["formation_energy_per_atom"])
+
+    result = _resolve_by_formula(formula)
+    if result and result.get("formation_energy_per_atom") is not None:
+        return float(result["formation_energy_per_atom"])
+    return None

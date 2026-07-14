@@ -8,7 +8,12 @@ None of these block continued private development.
 - [x] MP notebook key (`csvp7B7…`) revoked — user-confirmed 2026-07-09.
 - [x] Verified the key never reached AERIS git history (100 commits checked, no `.env` ever tracked).
 - [x] `grep -rI 'csvp7B7' .` returns nothing in the working tree (verified via `tests/test_params_parity.py::TestNotebooksImportEngine::test_no_local_paths_or_revoked_key` on every notebook, core and exploratory).
-- [ ] Re-verify `grep -rI 'csvp7B7' .` **and** `git log -p` after `git init` + first commit (this repo's own history, not AERIS's — should be clean since it's a fresh `git init`, but confirm).
+- [x] Re-verified `grep -rI 'csvp7B7' .` **and** `git log -p --all` against this repo's own
+      history, 2026-07-13. Clean. The 4 history hits are all benign: three are this file's own
+      prose quoting the revoked key's prefix, the fourth is the `REVOKED_KEY = "csvp7B7"` sentinel
+      constant in `tests/test_params_parity.py`. `.env` has never been tracked, and the only
+      `MP_API_KEY=` occurrence in a tracked file is the error-message template in
+      `engine/config.py`. **A naive `grep`/secret-scanner will flag those 4 — they are expected.**
 - [x] No `C:/Users/Cade` or `C:/Users/q4f` string anywhere in source (verified by the same test, and by direct `grep` across the working tree during Phase 5).
 
 ## Licensing / attribution

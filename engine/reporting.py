@@ -152,33 +152,76 @@ def format_markdown(payload: dict) -> str:
 # Pred-vs-true plot (single-panel, batch CSV mode)
 # ---------------------------------------------------------------------------
 
-def plot_pred_vs_true(df: pd.DataFrame, out_dir: Path) -> Path:
+# Per-model plot styling — one entry per REPORTABLE model, so every model that
+# predicted is drawn and named. Keys must match config.MODEL_FILES.
+_MODEL_STYLE: dict[str, tuple[str, str]] = {
+    "rf1":  ("o", "tab:orange"),
+    "rf2":  ("^", "tab:green"),
+    "gbr1": ("D", "tab:blue"),
+    "gbr2": ("v", "tab:purple"),
+}
+
+
+def plot_pred_vs_true(df: pd.DataFrame, out_dir: Path, title: str | None = None) -> Path:
     """
-    Scatter plot of predicted vs true 'a' values (for CSV batch mode).
-    Expects columns: a_true, a_pred (or a_pred_rf1, etc.)
+    Scatter plot of predicted vs true 'a' for a batch CSV prediction.
+
+    Plots EVERY model present as its own labelled series, with a legend giving the
+    model name and its MAE. It previously took the FIRST column matching
+    ("pred" in c and "a" in c) and plotted that one series with no label — so the
+    figure showed a single unidentified model and silently discarded the other
+    three, which is useless for the thing this plot exists to support (comparing
+    models on a benchmark).
+
+    Expects: a_true, plus one or more a_pred_<model_key> columns.
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    pred_col = None
-    for c in df.columns:
-        if "pred" in c and "a" in c:
-            pred_col = c
-            break
-
-    if pred_col is None or "a_true" not in df.columns:
+    if "a_true" not in df.columns:
         return out_dir / "no_plot.txt"
 
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.scatter(df["a_true"], df[pred_col], alpha=0.7, s=20)
-    lims = [
-        min(df["a_true"].min(), df[pred_col].min()),
-        max(df["a_true"].max(), df[pred_col].max()),
+    pred_cols = [
+        (key, f"a_pred_{key}")
+        for key in config.REPORTABLE
+        if f"a_pred_{key}" in df.columns
     ]
-    ax.plot(lims, lims, "r--")
-    ax.set_xlabel("True a (Å)")
-    ax.set_ylabel(f"Predicted a (Å)")
-    ax.set_title("Predicted vs True Lattice Parameter a")
+    # Fall back to any a_pred_* column not covered by REPORTABLE (e.g. a headline alias)
+    if not pred_cols:
+        return out_dir / "no_plot.txt"
+
+    fig, ax = plt.subplots(figsize=(7.5, 7))
+
+    # Parity line spans every series, not just one
+    all_vals = [df["a_true"]] + [df[c] for _, c in pred_cols]
+    lo = min(float(s.min()) for s in all_vals)
+    hi = max(float(s.max()) for s in all_vals)
+    pad = 0.02 * (hi - lo) if hi > lo else 0.01
+    lims = [lo - pad, hi + pad]
+    ax.plot(lims, lims, "k--", linewidth=1.2, zorder=1, label="Perfect prediction ($y=x$)")
+
+    for key, col in pred_cols:
+        marker, color = _MODEL_STYLE.get(key, ("o", None))
+        name = config.MODEL_FILES[key][1] if key in config.MODEL_FILES else key
+        valid = df[["a_true", col]].dropna()
+        label = f"{name} ({key})"
+        if len(valid) > 0:
+            mae = float((valid[col] - valid["a_true"]).abs().mean())
+            label = f"{name} ({key}) — MAE {mae:.4f} Å"
+        ax.scatter(
+            df["a_true"], df[col],
+            marker=marker, color=color, s=55, alpha=0.8,
+            edgecolors="white", linewidths=0.5, zorder=2, label=label,
+        )
+
+    ax.set_xlim(lims)
+    ax.set_ylim(lims)
+    ax.set_aspect("equal", adjustable="box")
+    ax.set_xlabel("True $a$ (Å)", fontsize=12)
+    ax.set_ylabel("Predicted $a$ (Å)", fontsize=12)
+    ax.set_title(title or "Predicted vs True Lattice Parameter $a$", fontsize=13)
+    ax.grid(alpha=0.3)
+    ax.legend(fontsize=9, loc="best", framealpha=0.9)
     plt.tight_layout()
 
     out_path = out_dir / "pred_vs_true.png"

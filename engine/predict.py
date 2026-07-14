@@ -39,13 +39,18 @@ from engine.reference_resolver import parse_composition, resolve_reference
 #
 # Both loaders are cached because predict_csv calls predict_one once PER ROW,
 # and predict_one previously reloaded these artifacts from disk on every
-# call. For the 24-row Data/benchmarks/CompoundsToPredict.csv benchmark that
-# meant re-reading the 3.97 GB model file 24 times. The cache turns that into
-# exactly one load for the lifetime of the process (e.g. the long-lived MCP
-# server).
+# call. For the 23-row Data/benchmarks/UNUC.csv benchmark that meant re-reading
+# the 3.97 GB model file 23 times. The cache turns that into exactly one load
+# for the lifetime of the process (e.g. the long-lived MCP server).
+#
+# maxsize MUST be >= the number of models a single run can touch. It was 2,
+# which silently defeated the cache for any batch run over the default model
+# set: predict_one iterates rf1, rf2, gbr1, gbr2 per row, so a 2-slot LRU
+# evicts the model it will need again two lookups later and re-reads ~13.7 GB
+# of forests EVERY row. Sized to the full model table so it cannot thrash.
 # ---------------------------------------------------------------------------
 
-@functools.lru_cache(maxsize=2)
+@functools.lru_cache(maxsize=len(config.MODEL_FILES))
 def _load_model(key: str):
     """
     Load a trained model by key, cached for the process lifetime.
@@ -369,15 +374,31 @@ def predict_csv(
 
     out_df = pd.DataFrame(results)
 
-    # Error metrics if a_true present
+    # Error metrics if a_true present.
+    #
+    # Scored for EVERY model that actually ran, not just rf1. predict_one already
+    # predicts with all of them and writes an a_pred_<key> column each, but this
+    # block used to hardcode a_pred_rf1 — so a batch run reported one model's
+    # error and silently dropped the other three, which is precisely the number
+    # you need to compare models on a benchmark.
     warnings = []
-    if "a_true" in out_df.columns and "a_pred_rf1" in out_df.columns:
-        valid = out_df[["a_true", "a_pred_rf1"]].dropna()
-        if len(valid) > 0:
-            from sklearn.metrics import mean_absolute_error, mean_squared_error
-            mae = mean_absolute_error(valid["a_true"], valid["a_pred_rf1"])
-            mse = mean_squared_error(valid["a_true"], valid["a_pred_rf1"])
-            warnings.append(f"RF1 MAE={mae:.4f} Å, MSE={mse:.6f} Å² over {len(valid)} rows with a_true")
+    metrics: dict[str, dict[str, float]] = {}
+    if "a_true" in out_df.columns:
+        from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+        for key in config.REPORTABLE:
+            col = f"a_pred_{key}"
+            if col not in out_df.columns:
+                continue
+            valid = out_df[["a_true", col]].dropna()
+            if len(valid) == 0:
+                continue
+            mae = mean_absolute_error(valid["a_true"], valid[col])
+            mse = mean_squared_error(valid["a_true"], valid[col])
+            metrics[key] = {"mae": float(mae), "mse": float(mse), "n": int(len(valid))}
+            warnings.append(
+                f"{key} MAE={mae:.4f} Å, MSE={mse:.6f} Å² over {len(valid)} rows with a_true"
+            )
 
     # Save output
     if out_dir:
@@ -386,15 +407,19 @@ def predict_csv(
         out_path = out_dir / "predictions.csv"
         out_df.to_csv(out_path, index=False)
 
-        # Plot
+        # Plot — all models, labelled (see reporting.plot_pred_vs_true)
         if "a_true" in out_df.columns:
-            reporting.plot_pred_vs_true(out_df, out_dir)
+            reporting.plot_pred_vs_true(
+                out_df, out_dir,
+                title=f"Predicted vs True Lattice Parameter $a$ — {Path(path).stem}",
+            )
     else:
         out_path = None
 
     return {
         "rows": len(out_df),
         "predictions_path": str(out_path) if out_path else None,
+        "metrics": metrics,
         "warnings": warnings,
         "dataframe": out_df,
     }

@@ -7,10 +7,18 @@ Multi-sublattice or >2 mixed components -> needs_reference.
 Algorithm:
   1. Parse composition -> identify framework vs mixed elements -> end-members
   2. Pick dominant end-member (largest mixed-element fraction)
-     Tie -> lowest energy_above_hull wins (see mp_client.energy_above_hull)
+     Tie (a true 50/50 mix) -> the MORE STABLE end-member wins, decided in order:
+       a. lowest energy_above_hull            (mp_client.energy_above_hull)
+       b. lowest formation_energy_per_atom    (mp_client.formation_energy)
+     (b) is not a formality: end-members from different chemical systems are each
+     on their own hull and both read energy_above_hull = 0.0, so (a) cannot
+     separate them. UN vs UC is exactly that case.
   3. Existence/compatibility guard: if chosen end-member is not a sane stable host,
      fall back to the other; if neither -> needs_reference
   4. Resolve symmetry via reference_symmetry()
+
+This is the same rule the benchmark CSVs' `ref_mp-id` column follows: the most
+prevalent end-member's mp-id, and for a 50/50 mix the more stable one's.
 """
 
 from __future__ import annotations
@@ -205,20 +213,48 @@ def resolve_reference(
         f1, f2 = sorted_ems[0], sorted_ems[1]
         frac1, frac2 = em_fractions[f1], em_fractions[f2]
         if abs(frac1 - frac2) < 1e-4:
-            # Stoichiometric tie -> resolve by energy_above_hull
+            # Stoichiometric tie (a true 50/50 mix) -> the more STABLE end-member wins.
+            #
+            # energy_above_hull is tried first, but it frequently CANNOT decide:
+            # two end-members from different chemical systems are each on their own
+            # hull, so both read 0.0. That is exactly the U(N,C) case (UN and UC).
+            # Falling through to "keep original order" there would make the 50/50
+            # reference depend on dict iteration order — silently arbitrary.
+            # formation_energy_per_atom is the real discriminator: UN -1.582 vs
+            # UC -0.255 eV/atom.
             e1 = mp_client.energy_above_hull(f1)
             e2 = mp_client.energy_above_hull(f2)
-            # If both available, pick lower; if only one, pick it; if neither, keep original order
-            if e1 is not None and e2 is not None:
-                sorted_ems = [f1, f2] if e1 <= e2 else [f2, f1]
-                tie_basis = f"stoichiometric tie broken by energy_above_hull ({sorted_ems[0]}: {min(e1,e2):.4f} eV/atom)"
-            elif e1 is not None:
-                tie_basis = f"stoichiometric tie; only {f1} energy known"
-            elif e2 is not None:
-                sorted_ems = [f2, f1]
-                tie_basis = f"stoichiometric tie; only {f2} energy known"
+
+            hull_decided = (
+                e1 is not None and e2 is not None and abs(e1 - e2) > 1e-6
+            )
+            if hull_decided:
+                sorted_ems = [f1, f2] if e1 < e2 else [f2, f1]
+                tie_basis = (
+                    f"stoichiometric tie broken by energy_above_hull "
+                    f"({sorted_ems[0]}: {min(e1, e2):.4f} eV/atom)"
+                )
             else:
-                tie_basis = f"stoichiometric tie; no energy data — defaulting to first: {sorted_ems[0]}"
+                # Hull energies are equal (or unknown) -> fall back to formation energy.
+                g1 = mp_client.formation_energy(f1)
+                g2 = mp_client.formation_energy(f2)
+                if g1 is not None and g2 is not None:
+                    sorted_ems = [f1, f2] if g1 <= g2 else [f2, f1]
+                    tie_basis = (
+                        f"stoichiometric tie; energy_above_hull equal "
+                        f"({e1} vs {e2}) -> broken by formation_energy_per_atom "
+                        f"({sorted_ems[0]}: {min(g1, g2):.4f} eV/atom, more stable)"
+                    )
+                elif g1 is not None:
+                    tie_basis = f"stoichiometric tie; only {f1} formation energy known"
+                elif g2 is not None:
+                    sorted_ems = [f2, f1]
+                    tie_basis = f"stoichiometric tie; only {f2} formation energy known"
+                else:
+                    tie_basis = (
+                        f"stoichiometric tie; no stability data — defaulting to "
+                        f"first: {sorted_ems[0]}"
+                    )
         else:
             tie_basis = f"dominant mixed element ({sorted_ems[0]}, fraction={frac1:.4f})"
     else:

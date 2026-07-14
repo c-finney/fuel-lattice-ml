@@ -61,12 +61,46 @@ fitted binary shipped in `Models/binaries/`.
 (including MSE) are in the CSV. Predicted-vs-actual scatter:
 `Results/figures/pred_vs_true_rf1.png`.
 
-No comparative claim against `rf2`/`gbr1`/`gbr2`/`lin` is made anywhere in this
-repository — none of those models have been trained or cross-validated here, so "most
-accurate" is not a substantiated statement. `rf1` is the headline model because it is
-the **only** trained model, not because it has been shown to outperform alternatives.
+### Why `rf1` is the headline model
+
+All four reportable models are now trained, 5-fold cross-validated
+(`Results/metrics/ModelMetrics_CrossVal.csv`), **and** run against both solid-solution
+benchmarks (`Results/benchmarks/basis_check.md`). `rf1` is first in `config.HEADLINE_PREF`
+on that combined evidence — **not** because it wins any single metric, but because it is the
+only model with **no weak axis**.
+
+Across the 8 metrics (CV MAE_cubic / R²_cubic, plus per-benchmark Pearson r, de-biased
+scatter, and MAE for U(N,C) and (Ce,Nd)O₂), **`rf1` ranks 2nd on six and is never worse
+than 3rd.** The models that beat it each fail somewhere it does not:
+
+- **`gbr1`** wins cross-validation (`MAE_cubic` 0.113556 Å vs `rf1`'s 0.121701 Å, while
+  being 77× smaller) — and then posts **Pearson r = −0.0972** on the U(N,C) benchmark. It
+  does not track the compositional trend at all. Choosing a headline on CV alone would ship
+  a model that cannot interpolate U(N,C).
+- **`rf2`** wins *both* benchmarks (r = 0.9405 and 0.9706, best on each) — but is **last**
+  on CV R²_cubic (0.976283) and weighs **9.74 GB**, 2.5× `rf1`.
+- **`rf1`'s** own two 3rd-places are benign: CV R²_cubic, where all four models sit between
+  0.976283 and 0.983007 (effectively tied), and (Ce,Nd)O₂ *absolute* MAE — the one metric
+  contaminated by the DFT-vs-experiment label-basis offset (see Limitations), and therefore
+  the least meaningful of the eight.
+
+`rf1` is a genuine compromise, not a default: strong CV **and** faithful trend-tracking,
+at the cost of a 3.97 GB binary.
 
 ## Limitations
+
+- **The training labels are DFT, the benchmarks are experimental — these are different
+  quantities.** Every lattice parameter in the training data is Materials-Project
+  DFT-relaxed geometry. (MP's `theoretical: False` flag means the structure was *observed*,
+  not that its lattice parameters were *measured*.) A benchmark MAE against experimental
+  `a_true` therefore contains the DFT-vs-experiment discrepancy on top of the model's own
+  error, and must not be quoted as pure model error. The effect is material-specific and
+  **changes sign**: DFT − experiment is −0.006621 Å for UN, −0.022736 Å for UC, but
+  **+0.057365 Å** for CeO2 — which accounts for essentially all of the uniform
+  over-prediction every model shows on the (Ce,Nd)O2 benchmark. No DFT→experiment correction
+  is shipped, because only 3 of the 9 curated hosts have an in-repo experimental value and
+  the sign flips across those 3. Use the offset-invariant slope / Pearson r reported by
+  `scripts/basis_check.py` when comparing models. See `Results/benchmarks/basis_check.md`.
 
 - **Validated primarily on cubic hosts.** The cubic-subset R² (~0.976–0.977) is
   substantially higher than the all-systems R² (~0.855–0.890). Predictions for

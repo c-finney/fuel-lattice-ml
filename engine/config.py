@@ -106,12 +106,35 @@ MODEL_FILES = {
 # Linear Regression is trained only under `train --full` and is never shown
 # in prediction output — it exists solely as a baseline sanity check.
 REPORTABLE    = ["rf1", "rf2", "gbr1", "gbr2"]
-# rf1 (Dependent RF) is currently the ONLY trained model shipped in this
-# repository; the rest of this list is fallback order for if/when the others
-# are trained. Do not describe this as an accuracy ranking — no comparative
-# cross-validation across rf1/rf2/gbr1/gbr2 has been run. See
-# Results/metrics/ModelMetrics_CrossVal.csv for rf1's own metrics.
-HEADLINE_PREF = ["rf1", "rf2", "gbr2", "gbr1"]
+
+# EVIDENCE-BASED as of 2026-07-14. All four models are trained and 5-fold
+# cross-validated (Results/metrics/ModelMetrics_CrossVal.csv) AND run against both
+# solid-solution benchmarks (Results/benchmarks/basis_check.md). The previous ordering
+# — ["rf1", "rf2", "gbr2", "gbr1"] — carried the caveat "no comparative cross-validation
+# has been run". It has now been run, twice over, and the ordering below is derived from it.
+#
+# rf1 is FIRST because it is the only model with no weak axis. Across the 8 metrics
+# (CV MAE_cubic / R2_cubic, and per-benchmark Pearson r / de-biased scatter / MAE for
+# UNUC + CeO2Nd2O3) it ranks 2nd on six and is never worse than 3rd:
+#
+#   - gbr1 WINS cross-validation (MAE_cubic 0.113556 A vs rf1 0.121701) but then posts
+#     Pearson r = -0.0972 on the U(N,C) benchmark — it does not track the compositional
+#     trend AT ALL. Its respectable raw MAE there (0.039714 A) is proximity, not skill.
+#     Ranking it first on CV alone would ship a model that cannot interpolate U(N,C).
+#   - rf2 WINS both benchmarks (r = 0.9405 / 0.9706, best on both) but is LAST on
+#     CV R2_cubic (0.976283) and is 9,735,288,229 bytes — 2.5x rf1, 190x gbr1.
+#   - rf1's own two 3rd-places are benign: CV R2_cubic, where all four sit between
+#     0.976283 and 0.983007 (effectively tied); and CeO2 absolute MAE, which is the one
+#     metric CONTAMINATED by the DFT-vs-experiment label-basis offset (see basis_check.md)
+#     and therefore the least meaningful of the eight.
+#
+# gbr2 is LAST because gbr1 beats it on ALL EIGHT metrics. The old ordering had these two
+# inverted, placing the weakest model ahead of the stronger one.
+#
+# CAUTION: a benchmark MAE is NOT pure model error — the models predict DFT geometry and
+# the benchmarks are experimental. Use Pearson r / slope (invariant to a constant offset)
+# when comparing models. See Results/benchmarks/basis_check.md.
+HEADLINE_PREF = ["rf1", "rf2", "gbr1", "gbr2"]
 
 # ---------------------------------------------------------------------------
 # Artifact file paths (convenience)

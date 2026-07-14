@@ -7,7 +7,8 @@
     "n_symmetry_ops": 48,
     "nsites": 2,
     "energy_above_hull": 0.0,
-    "note": "rocksalt Fm-3m; verified mp-id (CompoundsToPredict.csv). Symmetry confirmed from live MP 2026-06-25."
+    "formation_energy_per_atom": -1.5816823568749996,
+    "note": "rocksalt Fm-3m; verified mp-id (UNUC.csv). Symmetry confirmed from live MP 2026-06-25. Ties with UC on energy_above_hull (both 0.0 — each is a line compound on its own chemsys hull), so the U(N,C) 50/50 tie is broken on formation_energy_per_atom, where UN (-1.582) is far more stable than UC (-0.255)."
   },
   "UC": {
     "mp_id": "mp-2489",
@@ -17,7 +18,8 @@
     "n_symmetry_ops": 48,
     "nsites": 2,
     "energy_above_hull": 0.0,
-    "note": "rocksalt Fm-3m; verified mp-id (CompoundsToPredict.csv). n_symmetry_ops corrected to 48 (live MP 2026-06-25; notebook 3 showed 96 which was an artifact)."
+    "formation_energy_per_atom": -0.2554539324999965,
+    "note": "rocksalt Fm-3m; verified mp-id (UNUC.csv). n_symmetry_ops corrected to 48 (live MP 2026-06-25; notebook 3 showed 96 which was an artifact). Reference host for the C-dominant half of U(N,C) (y < 0.5)."
   },
   "CeO2": {
     "mp_id": "mp-20194",
@@ -27,7 +29,8 @@
     "n_symmetry_ops": 48,
     "nsites": 3,
     "energy_above_hull": 0.0,
-    "note": "fluorite Fm-3m; verified mp-id (CeO2Nd2O3Vals.csv). Symmetry confirmed from live MP 2026-06-25."
+    "formation_energy_per_atom": -3.927176196666666,
+    "note": "fluorite Fm-3m; verified mp-id (CeO2Nd2O3Vals.csv). Symmetry confirmed from live MP 2026-06-25. Ce is the dominant cation on every row of that benchmark (min Ce fraction 0.6451), so CeO2 is the reference throughout — no tie arises."
   },
   "UO2": {
     "mp_id": "mp-1597",
@@ -37,6 +40,7 @@
     "n_symmetry_ops": 48,
     "nsites": 3,
     "energy_above_hull": 0.0,
+    "formation_energy_per_atom": -3.75044424,
     "note": "fluorite Fm-3m; lowest e_above_hull UO2 in MP. Confirmed from live MP 2026-06-25. mp-308 (hexagonal, sg=189) is an experimental polymorph but higher energy — do not use as default."
   },
   "PuO2": {
@@ -47,6 +51,7 @@
     "n_symmetry_ops": 48,
     "nsites": 3,
     "energy_above_hull": 0.0,
+    "formation_energy_per_atom": -3.4930670729166615,
     "note": "fluorite Fm-3m; lowest e_above_hull PuO2 in MP. Confirmed from live MP 2026-06-25."
   },
   "ThO2": {
@@ -57,6 +62,7 @@
     "n_symmetry_ops": 48,
     "nsites": 3,
     "energy_above_hull": 0.0,
+    "formation_energy_per_atom": -4.36779017333333,
     "note": "fluorite Fm-3m; lowest e_above_hull ThO2 in MP. Confirmed from live MP 2026-06-25. mp-1102569 (Pnma, experimental) has higher e_hull=0.1497."
   },
   "ZrO2": {
@@ -67,6 +73,7 @@
     "n_symmetry_ops": 4,
     "nsites": 12,
     "energy_above_hull": 0.0,
+    "formation_energy_per_atom": -3.813617754999999,
     "note": "baddeleyite P2_1/c; lowest e_above_hull ZrO2 in MP. Confirmed from live MP 2026-06-25. For UO2-ZrO2 solid solutions, the host is UO2 (fluorite); ZrO2 reference only needed if Zr-dominant."
   },
   "Nd2O3": {
@@ -77,6 +84,7 @@
     "n_symmetry_ops": 24,
     "nsites": 40,
     "energy_above_hull": 0.0,
+    "formation_energy_per_atom": -3.781547341499998,
     "note": "bixbyite Ia-3; lowest e_above_hull Nd2O3 in MP. Confirmed from live MP 2026-06-25. mp-2763 (trigonal P-3m1) is slightly higher energy."
   },
   "NdO2": {
@@ -87,6 +95,7 @@
     "n_symmetry_ops": 4,
     "nsites": 6,
     "energy_above_hull": 0.0,
+    "formation_energy_per_atom": -3.1596579241666647,
     "note": "NON-HOST: Nd4+ is not a stable oxidation state; NdO2 is not a viable fluorite host. For Ce1-xNdxO2 solid solutions, use CeO2 (mp-20194) as reference. Confirmed from live MP 2026-06-25."
   }
 }

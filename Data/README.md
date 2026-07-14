@@ -27,5 +27,52 @@ Materials Project API calls. Also sourced from the Materials Project (CC BY 4.0)
 Experimental validation data with known lattice parameters (`a_true` column), used by
 the prediction notebook and as regression-test fixtures:
 
-- `CompoundsToPredict.csv` — the U(N,C) system, based on an experimental fit.
-- `CeO2Nd2O3Vals.csv` — the (Ce,Nd)O2 system.
+- `UNUC.csv` — the U(N,C) system (23 rows), based on an experimental fit.
+- `CeO2Nd2O3Vals.csv` — the (Ce,Nd)O2 system (7 rows).
+
+> ### ⚠ Label-basis mismatch — read before quoting any benchmark MAE
+>
+> **The models are trained on DFT lattice parameters. These benchmarks are experimental
+> measurements. They are not the same quantity.** A benchmark MAE is therefore *not* pure
+> model error — it contains the DFT-vs-experiment discrepancy, inherited through the
+> training labels.
+>
+> `MP_Dataset_Original_Trimmed.csv` comes from the Materials Project, where **every lattice
+> parameter is DFT-relaxed**. Note that MP's `theoretical: False` flag means the structure
+> has been *observed*, **not** that its lattice parameters were *measured* — e.g. `mp-1865`
+> (UN) is flagged `theoretical: False` and still carries a computed a = 4.877379 Å, against
+> an experimental 4.884 Å.
+>
+> The effect is real and material-dependent. For CeO2 (`mp-20194`) the DFT value exceeds the
+> experimental one by **+0.057365 Å**, which accounts for essentially all of the uniform
+> over-prediction every model shows on the (Ce,Nd)O2 benchmark.
+>
+> **No DFT→experiment correction is shipped**, because this repo cannot justify one: only 3 of
+> the 9 curated hosts have an experimental value here at all, and the delta's *sign flips*
+> across those 3 (UN −0.006621, UC −0.022736, CeO2 +0.057365 Å).
+>
+> Run **`.venv/Scripts/python scripts/basis_check.py`** → `Results/benchmarks/basis_check.md`
+> for the full anchor table, and for the **slope / Pearson r** metrics, which are invariant to
+> a constant offset and are therefore the defensible way to compare models here.
+
+### The `ref_mp-id` column
+
+`ref_mp-id` names the **reference host structure** whose symmetry is fed to the model
+(crystal system, spacegroup, site count) — it is not a label, it is an input. One rule
+governs it, and it is the same rule `engine/reference_resolver.py` applies when the
+column is absent:
+
+> **Use the most prevalent end-member's mp-id. For a 50/50 mix, use the more stable one's.**
+
+Worked through for the two benchmarks:
+
+- **`UNUC.csv`** — `U N_y C_(1-y)`. `y > 0.5` → **UN, `mp-1865`**; `y < 0.5` → **UC,
+  `mp-2489`**. The `y = 0.5` row is a true tie, broken on stability: UN and UC have the
+  *same* `energy_above_hull` (0.0 — each is a line compound on its own chemsys hull, so
+  hull energy says nothing about which is more stable than the other), so the decision
+  falls to `formation_energy_per_atom`, where **UN (−1.582 eV/atom) beats UC (−0.255)**.
+  The 50/50 row therefore takes `mp-1865`.
+- **`CeO2Nd2O3Vals.csv`** — `Ce_x Nd_(1-x) O2`. Ce is dominant on every row (lowest Ce
+  fraction is 0.6451), so **CeO2, `mp-20194`** throughout; no tie arises. NdO2 would be
+  invalid as a host regardless — Nd is 3+, so NdO2 is not a stable fluorite (see the
+  non-host guard in `reference_resolver.py`).
