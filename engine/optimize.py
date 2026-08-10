@@ -48,7 +48,7 @@ def evaluate_model(
     dedup_keys: tuple[str, ...] = DEDUP_KEYS_TRAIN,
 ) -> dict:
     """
-    Fit a single Dependent-RF-style model on a filtered slice of *df_full*
+    Fit a single Lumped-RF-style model on a filtered slice of *df_full*
     and return its held-out MSE/MAE/R2 plus provenance fields.
 
     Parameters

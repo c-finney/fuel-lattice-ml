@@ -9,7 +9,7 @@ pymatgen>=2024.1.1
 matminer>=0.9.0
 
 # Machine learning — scikit-learn and joblib are PINNED, not just
-# lower-bounded. The shipped model (Models/binaries/DependentRFModel.joblib)
+# lower-bounded. The shipped model (Models/binaries/LumpedRFModel.joblib)
 # was pickled under scikit-learn 1.9.0. joblib's ndarray reconstruction uses
 # an in-place `array.shape = ...` assignment that NumPy >= 2.5 deprecated;
 # our code loads models with mmap_mode="r" which avoids that path entirely

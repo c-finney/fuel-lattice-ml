@@ -12,7 +12,7 @@ clone — see `engine/build_dataset.py` and the root `README.md`'s Quickstart.
 
 **Sourced from the Materials Project** (https://materialsproject.org), licensed
 **CC BY 4.0**. Any redistribution of this file, or of models trained from it
-(`Models/binaries/DependentRFModel.joblib`), must retain that attribution.
+(`Models/binaries/LumpedRFModel.joblib`), must retain that attribution.
 
 ## `reference_systems.json`
 

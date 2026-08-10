@@ -2,7 +2,7 @@
 name: lattice-train
 description: >
   Train the lattice-parameter regression models on the featurized dataset (full-dataset
-  fit). Fast mode trains Dependent RF (rf1) only — the model already shipped in this
+  fit). Fast mode trains Lumped RF (rf1) only — the model already shipped in this
   repository. Use when the user asks to train, retrain, or fit the lattice-parameter
   models, or invokes /lattice-train.
 ---
@@ -14,15 +14,15 @@ Cross-validation is **not** done here — it is a separate metrics-only step
 
 ## Usage
 
-- `/lattice-train` or `/lattice-train fast` — train **Dependent RF only** (`rf1`, the
-  model already shipped in this repository as `Models/binaries/DependentRFModel.joblib`;
+- `/lattice-train` or `/lattice-train fast` — train **Lumped RF only** (`rf1`, the
+  model already shipped in this repository as `Models/binaries/LumpedRFModel.joblib`;
   default).
 - `/lattice-train full` — train all reportable models plus Linear Regression (LR is
   stored but never shown in prediction output).
 - `/lattice-train models=rf1,gbr1` — train an explicit subset.
 
-Model keys: `rf1`=Dependent RF (headline — currently the only trained model in this
-repository), `rf2`=Independent RF, `gbr1`=Dependent GBR (XGBoost), `gbr2`=Independent
+Model keys: `rf1`=Lumped RF (headline — currently the only trained model in this
+repository), `rf2`=Independent RF, `gbr1`=Lumped GBR (XGBoost), `gbr2`=Independent
 GBR (HistGBR), `lin`=Linear Regression (full only, never reported).
 
 ## Procedure
@@ -52,6 +52,6 @@ GBR (HistGBR), `lin`=Linear Regression (full only, never reported).
 - Final models are full-dataset fits (`.fit(X, Y)`) — these are what prediction loads.
 - Use `/lattice-evaluate` to estimate model accuracy via 5-fold cross-validation; that
   step refits its own fold models and never touches these saved binaries.
-- Overwriting `Models/binaries/DependentRFModel.joblib` here means it no longer matches
-  `Models/DependentRFModel/metrics.json` (generated from a specific past cross-validation
+- Overwriting `Models/binaries/LumpedRFModel.joblib` here means it no longer matches
+  `Models/LumpedRFModel/metrics.json` (generated from a specific past cross-validation
   run) until you re-run `/lattice-evaluate` — mention this if the user retrains `rf1`.

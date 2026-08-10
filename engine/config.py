@@ -96,9 +96,9 @@ QUERY_FIELDS = [
 # Model registry  key -> (filename, human_label)
 # ---------------------------------------------------------------------------
 MODEL_FILES = {
-    "rf1":  ("DependentRFModel.joblib",        "Dependent RF"),
+    "rf1":  ("LumpedRFModel.joblib",        "Lumped RF"),
     "rf2":  ("IndependentRFModel.joblib",       "Independent RF"),
-    "gbr1": ("XGBoostGBRModel.joblib",          "Dependent GBR (XGBoost)"),
+    "gbr1": ("XGBoostGBRModel.joblib",          "Lumped GBR (XGBoost)"),
     "gbr2": ("ScikitLearnGBRModel.joblib",      "Independent GBR (HistGBR)"),
     "lin":  ("LinearRegressionModel.joblib",    "Linear Regression"),
 }

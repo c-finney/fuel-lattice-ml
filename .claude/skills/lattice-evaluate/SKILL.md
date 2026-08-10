@@ -34,7 +34,7 @@ prediction are the full-dataset fits produced by `/lattice-train`.
 4. **Report:** summarize `Results/metrics/ModelMetrics_CrossVal.csv` — per-model
    MAE/MSE/R² for a, b, c, both overall and cubic-only. Quote the **cubic-only**
    numbers as the headline accuracy figures — the model was validated primarily on
-   cubic hosts and the all-systems numbers are materially worse. Note that Dependent RF
+   cubic hosts and the all-systems numbers are materially worse. Note that Lumped RF
    (`rf1`) is the headline model because it is the only trained model in this
    repository, not because a comparative ranking has been established — do not claim
    it is "most accurate" unless multiple models have actually been evaluated here.

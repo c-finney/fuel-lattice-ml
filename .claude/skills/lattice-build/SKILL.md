@@ -48,7 +48,7 @@ thin, narrated wrapper).
 
 4. **On completion**, report the final row count and the artifacts written
    (`Dataset/MP_Dataset_Featurized.csv`, `Models/feature_labels/*`), and that the next
-   step is `/lattice-train` (default fast = Dependent RF only). The build does **not**
+   step is `/lattice-train` (default fast = Lumped RF only). The build does **not**
    train any models.
 
 ## Notes

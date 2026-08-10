@@ -32,7 +32,7 @@ None of these block continued private development.
 - [x] Funding program confirmed: DOE Office of Science, WDTS / SULI, hosted at ORNL,
       administered by ORISE.
 - [x] Materials Project **CC BY 4.0** attribution present in `README.md`, `NOTICE`,
-      `Data/README.md`, and `Models/DependentRFModel/model_card.md` (the seed dataset
+      `Data/README.md`, and `Models/LumpedRFModel/model_card.md` (the seed dataset
       *and* the trained model are both derived works).
 
 ## Repository / hosting
@@ -41,26 +41,33 @@ None of these block continued private development.
       (once approved); `git submodule set-url` updated in the AERIS-AgentFactory
       submodule; `.gitmodules` there committed.
 - [x] HuggingFace repo created: `c-finney/fuel-lattice-ml`, **private**, model binary
-      uploaded uncompressed (3,966,646,433 bytes, SHA-256 recorded in
+      uploaded uncompressed (3,966,648,193 bytes, SHA-256 recorded in
       `Models/MANIFEST.json`).
 
-> [!danger] **BLOCKER — the HF artifact and `MANIFEST.json` are STALE (found 2026-07-14).**
-> `rf1` was **retrained** on 2026-07-13 (`cli.py train --full`). The HF upload and the manifest
-> both predate it and **no longer describe the shipped model**:
+> [!success] **RESOLVED — the 2026-07-14 staleness blocker is closed (verified 2026-08-10).**
+> `rf1` was **retrained** on 2026-07-13 (`cli.py train --full`); the HF upload and the manifest
+> both predated it, so a clean clone would have pulled the **OLD** `rf1` — a different model from
+> the one behind every number in `Results/metrics/ModelMetrics_CrossVal.csv`, the model cards, and
+> `Results/benchmarks/`. Re-upload + manifest regeneration landed in `c6b1532`.
 >
-> | | `MANIFEST.json` | actual binary on disk |
+> **Verified by direct measurement, not by reading the manifest** — the local binary was hashed and
+> the HuggingFace copy queried via `HfApi.model_info(files_metadata=True)`:
+>
+> | | bytes | sha256 |
 > |---|---|---|
-> | bytes | `3966646433` | **`3966648193`** |
-> | sha256 | `cbd71b57…0fdcab2` | **`806e57d9…d14a1373`** |
+> | local `Models/binaries/LumpedRFModel.joblib` | `3966648193` | `806e57d9…d14a1373` |
+> | `Models/MANIFEST.json` → `rf1` | `3966648193` ✓ | `806e57d9…d14a1373` ✓ |
+> | HuggingFace LFS record | `3966648193` ✓ | `806e57d9…d14a1373` ✓ |
 >
-> A clean clone running `scripts/fetch_models.py` would pull the **OLD** `rf1` — a different model
-> from the one behind every number in `Results/metrics/ModelMetrics_CrossVal.csv`, the four model
-> cards, and `Results/benchmarks/`. **The artifact and the documentation would describe different
-> models.** Re-upload `rf1` and regenerate the manifest (`scripts/write_model_manifest.py`)
-> **before** any public flip.
+> All three agree, so `scripts/fetch_models.py` pulls the current model and its SHA-256 gate passes.
+> The superseded values were `bytes 3966646433` / `sha256 cbd71b57…0fdcab2`; they are recorded here
+> only as history and **must not** be reintroduced into any card, manifest, or doc.
 
-- [ ] **Re-upload the current `rf1` to HF and regenerate `Models/MANIFEST.json`.** (Do **not**
-      upload `rf2` — 9,735,288,229 bytes and last on CV R²_cubic; user decision 2026-07-14.)
+- [x] **Re-upload the current `rf1` to HF and regenerate `Models/MANIFEST.json`** — done in
+      `c6b1532`, re-verified 2026-08-10 (table above). The HF object is named
+      `LumpedRFModel.joblib`, matching the manifest `uri` after the Dependent→Lumped rename, so the
+      fetch path is intact. (Do **not** upload `rf2` — 9,735,288,229 bytes and last on CV R²_cubic;
+      user decision 2026-07-14.)
 - [ ] HF repo flipped private → public (or transferred to an ORNL-controlled namespace
       first — same open question as the GitHub repo above).
 - [ ] `scripts/fetch_models.py` verified end-to-end on a clean clone **without**

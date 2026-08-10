@@ -1,7 +1,7 @@
-# Dependent RF (`rf1`) — the shipped model
+# Lumped RF (`rf1`) — the shipped model
 
 **Status: trained.** This is the only trained model binary in this repository
-(`Models/binaries/DependentRFModel.joblib`, 3,966,646,433 bytes) and the headline model
+(`Models/binaries/LumpedRFModel.joblib`, 3,966,648,193 bytes) and the headline model
 returned by `cli.py predict` / the `predict_lattice_parameter` MCP tool.
 
 ## Intended use

@@ -7,7 +7,7 @@ the repository, 2.5× `rf1`).
 ## Description
 
 A `MultiOutputRegressor` wrapping one independent `RandomForestRegressor` per lattice
-parameter (a, b, c), as opposed to `rf1` (Dependent RF), which uses a single native
+parameter (a, b, c), as opposed to `rf1` (Lumped RF), which uses a single native
 multi-output forest where every tree predicts all three parameters jointly.
 
 ## Hyperparameters

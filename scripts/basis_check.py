@@ -21,7 +21,7 @@ It will NOT emit a DFT->experiment correction factor. That would be unprovable h
   1. n = 3. Only three of the nine curated hosts (UN, UC, CeO2) have an experimental value
      anywhere in this repository — they are benchmark end-members. The other six (UO2, PuO2,
      ThO2, ZrO2, Nd2O3, NdO2) have NO experimental lattice parameter in-repo, so their delta
-     is simply unknown. Filling them in from memory or from an uncited source is exactly the
+     is unknown. Filling them in from memory or from an uncited source is exactly the
      kind of claim this script refuses to make.
   2. The sign of the delta FLIPS across those three points (UN -0.006621, UC -0.022736,
      CeO2 +0.057365 A). A single global offset is therefore refuted by our own data. Their
@@ -169,7 +169,7 @@ def main() -> int:
     w("")
     w("| anchor | measured delta | same-temperature delta | verdict |")
     w("|---|---|---|---|")
-    w("| CeO2 | **+0.057365** | even more positive | **ROBUST** — DFT genuinely exceeds experiment. |")
+    w("| CeO2 | **+0.057365** | even more positive | **HOLDS** — DFT exceeds experiment. |")
     w("| UN | −0.006621 | less negative, possibly **positive** | **SIGN UNDETERMINED** |")
     w("| UC | −0.022736 | less negative, possibly **positive** | **SIGN UNDETERMINED** |")
     w("")

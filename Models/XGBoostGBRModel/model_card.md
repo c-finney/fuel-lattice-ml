@@ -1,4 +1,4 @@
-# Dependent GBR — XGBoost (`gbr1`)
+# Lumped GBR — XGBoost (`gbr1`)
 
 **Status: trained and 5-fold cross-validated.** Binary: `Models/binaries/XGBoostGBRModel.joblib`
 (51,341,788 bytes).
@@ -7,7 +7,7 @@
 
 An `XGBRegressor` using `multi_strategy="multi_output_tree"`, i.e. a single native
 multi-output gradient-boosted forest where each tree predicts all three lattice
-parameters (a, b, c) jointly — analogous to `rf1`'s "dependent" design, but gradient
+parameters (a, b, c) jointly — analogous to `rf1`'s "lumped" design, but gradient
 boosted rather than bagged.
 
 ## Hyperparameters

@@ -207,7 +207,7 @@ def main(argv=None):
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--fast", action="store_true",
-                       help="Train Dependent RF only (rf1) — fastest")
+                       help="Train Lumped RF only (rf1) — fastest")
     group.add_argument("--full", action="store_true",
                        help="Train all models (rf1, rf2, gbr1, gbr2, lin)")
     group.add_argument("--models", type=str,

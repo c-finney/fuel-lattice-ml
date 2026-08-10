@@ -15,10 +15,10 @@ Models/
     params.json                  committed — exact hyperparameters (parity-test fixture)
     metrics.json                 committed, ONLY for trained models
   binaries/                      GITIGNORED — fetched via scripts/fetch_models.py
-    DependentRFModel.joblib        3.97 GB, the only trained model in this repository
+    LumpedRFModel.joblib        3.97 GB, the only trained model in this repository
 ```
 
-## Only `rf1` (Dependent RF) is trained
+## Only `rf1` (Lumped RF) is trained
 
 `Models/{IndependentRFModel,XGBoostGBRModel,ScikitLearnGBRModel,LinearRegressionModel}/`
 each carry only a `model_card.md` and `params.json` marked `"status": "not_trained"`.

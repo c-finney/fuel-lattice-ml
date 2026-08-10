@@ -58,7 +58,7 @@ a sharp consequence for which of our three anchors can be trusted:
 
 | anchor | measured delta | same-temperature delta | verdict |
 |---|---|---|---|
-| CeO2 | **+0.057365** | even more positive | **ROBUST** — DFT genuinely exceeds experiment. |
+| CeO2 | **+0.057365** | even more positive | **HOLDS** — DFT exceeds experiment. |
 | UN | −0.006621 | less negative, possibly **positive** | **SIGN UNDETERMINED** |
 | UC | −0.022736 | less negative, possibly **positive** | **SIGN UNDETERMINED** |
 
@@ -105,18 +105,18 @@ removing that bias — i.e. how well the model tracks the trend once the offset 
 
 | model | MAE vs exp (Å) | bias (Å) | scatter (Å) | slope | Pearson r |
 |---|---|---|---|---|---|
-| Dependent RF (`rf1`) | 0.019434 | -0.019217 | 0.014994 | 1.240 | 0.9012 |
+| Lumped RF (`rf1`) | 0.019434 | -0.019217 | 0.014994 | 1.240 | 0.9012 |
 | Independent RF (`rf2`) | 0.011661 | -0.009565 | 0.011433 | 1.217 | 0.9405 |
-| Dependent GBR (XGBoost) (`gbr1`) | 0.039714 | +0.039196 | 0.047603 | -0.164 | -0.0972 |
+| Lumped GBR (XGBoost) (`gbr1`) | 0.039714 | +0.039196 | 0.047603 | -0.164 | -0.0972 |
 | Independent GBR (HistGBR) (`gbr2`) | 0.048023 | -0.028282 | 0.048652 | -0.426 | -0.2696 |
 
 ### (Ce,Nd)O2 — `CeO2Nd2O3` (n = 7)
 
 | model | MAE vs exp (Å) | bias (Å) | scatter (Å) | slope | Pearson r |
 |---|---|---|---|---|---|
-| Dependent RF (`rf1`) | 0.132906 | +0.132906 | 0.009048 | 0.776 | 0.9451 |
+| Lumped RF (`rf1`) | 0.132906 | +0.132906 | 0.009048 | 0.776 | 0.9451 |
 | Independent RF (`rf2`) | 0.149348 | +0.149348 | 0.006921 | 0.829 | 0.9706 |
-| Dependent GBR (XGBoost) (`gbr1`) | 0.086420 | +0.086420 | 0.036206 | 2.086 | 0.9210 |
+| Lumped GBR (XGBoost) (`gbr1`) | 0.086420 | +0.086420 | 0.036206 | 2.086 | 0.9210 |
 | Independent GBR (HistGBR) (`gbr2`) | 0.113491 | +0.113491 | 0.036960 | 1.606 | 0.7789 |
 
 ### Reading these

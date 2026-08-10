@@ -247,6 +247,10 @@ def plot_actual_vs_predicted(
     labels: list | None = None,
     display_others: bool = True,
     outdir: Path | str | None = None,
+    stat_prefix: str = "",
+    dataset_label: str = "Full Dataset Size",
+    dataset_size: int | None = None,
+    show_suptitle: bool = True,
 ):
     """
     3-panel actual-vs-predicted scatter grid (one panel per lattice
@@ -330,13 +334,19 @@ def plot_actual_vs_predicted(
             tick.set_fontweight("bold")
 
         if display_statistics and mse_vals is not None and mae_vals is not None and r2_vals is not None:
+            # stat_prefix / dataset_label / dataset_size exist because the caller may
+            # pass metrics computed on a SUBSET (e.g. cubic-only) while `df` holds the
+            # full frame. Labelling those "Full Dataset Size" misdescribes them. Defaults
+            # reproduce the previous output exactly.
             stats = (
-                f"MSE={mse_vals[i]:.4f}\n"
-                f"MAE={mae_vals[i]:.4f}\n"
-                f"R²={r2_vals[i]:.4f}"
+                f"{stat_prefix}MSE={mse_vals[i]:.4f}\n"
+                f"{stat_prefix}MAE={mae_vals[i]:.4f}\n"
+                f"{stat_prefix}R²={r2_vals[i]:.4f}"
             )
-            if df is not None:
-                stats += f"\nFull Dataset Size={len(df)}"
+            n_shown = dataset_size if dataset_size is not None else (
+                len(df) if df is not None else None)
+            if n_shown is not None:
+                stats += f"\n{dataset_label}={n_shown}"
             ax.text(
                 0.05, 0.95, stats,
                 transform=ax.transAxes, verticalalignment="top",
@@ -344,11 +354,17 @@ def plot_actual_vs_predicted(
                 fontsize=16, fontweight="bold",
             )
 
-    fig.suptitle(
-        f"Predicted vs. Actual Lattice Parameter Using\n{model_name}",
-        fontsize=24, fontweight="bold",
-    )
-    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    # show_suptitle=False is for figures that carry a journal caption instead — the
+    # caption would otherwise duplicate the title. Per-panel titles are kept either
+    # way, since they identify which lattice parameter each subplot shows.
+    if show_suptitle:
+        fig.suptitle(
+            f"Predicted vs. Actual Lattice Parameter Using\n{model_name}",
+            fontsize=24, fontweight="bold",
+        )
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
+    else:
+        plt.tight_layout()
 
     if outdir is not None:
         outdir = Path(outdir)

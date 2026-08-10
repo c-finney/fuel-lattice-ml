@@ -25,7 +25,7 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 DIR_TO_KEY = {
-    "DependentRFModel": "rf1",
+    "LumpedRFModel": "rf1",
     "IndependentRFModel": "rf2",
     "XGBoostGBRModel": "gbr1",
     "ScikitLearnGBRModel": "gbr2",

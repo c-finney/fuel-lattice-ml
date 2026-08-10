@@ -23,11 +23,11 @@
   },
   "models": {
     "rf1": {
-      "file": "DependentRFModel.joblib",
+      "file": "LumpedRFModel.joblib",
       "compressed": false,
       "bytes": 3966648193,
       "sha256": "806e57d9c857cfe3233741a5627eebb93d9d0261f67b2f9f15a93227d14a1373",
-      "uri": "hf://c-finney/fuel-lattice-ml/DependentRFModel.joblib",
+      "uri": "hf://c-finney/fuel-lattice-ml/LumpedRFModel.joblib",
       "status": "trained"
     },
     "rf2": {

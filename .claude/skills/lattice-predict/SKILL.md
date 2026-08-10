@@ -43,7 +43,7 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
    - On **yes**, run in the **background** (`run_in_background: true`), narrating progress:
      - If the featurized dataset is missing: run the build first (`cli.py build --resume`),
        then a fast train.
-     - Fast train (Dependent RF only — fastest, and the model already shipped here):
+     - Fast train (Lumped RF only — fastest, and the model already shipped here):
        `cli.py train --fast`.
      - When the background job finishes, continue to step 4.
    - On **no**, stop and tell the user they can run `/lattice-build` then `/lattice-train`
@@ -65,7 +65,7 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
    - `ok` → format the answer (step 6).
 
 6. **Report:**
-   - **Headline:** the **Dependent RF** value (state the model name). For a **cubic**
+   - **Headline:** the **Lumped RF** value (state the model name). For a **cubic**
      host report a single lattice parameter `a` (Å); for **non-cubic** report `a`, `b`,
      `c` separately and add the non-cubic accuracy caution.
    - **Table:** all available models **except Linear Regression**, one row each

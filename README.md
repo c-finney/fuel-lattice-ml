@@ -25,7 +25,7 @@ uv pip install --python .venv/Scripts/python.exe -r requirements.txt   # Windows
 cp .env.example .env
 # Edit .env and set HF_TOKEN=<your token> (needed only to fetch the model — see below)
 
-python scripts/fetch_models.py          # downloads Models/binaries/DependentRFModel.joblib (~4 GB)
+python scripts/fetch_models.py          # downloads Models/binaries/LumpedRFModel.joblib (~4 GB)
 python cli.py predict --composition "UN0.5C0.5"
 ```
 
@@ -33,7 +33,7 @@ If you'd rather train from scratch instead of fetching the binary:
 
 ```bash
 python cli.py build --resume    # ~9 minutes — featurization only, no MP query
-python cli.py train --fast      # ~10 minutes — trains rf1 (Dependent RF)
+python cli.py train --fast      # ~10 minutes — trains rf1 (Lumped RF)
 python cli.py predict --composition "UN0.5C0.5"
 ```
 
@@ -94,20 +94,20 @@ because they're the same `engine/` code.
 
 | Key | Name | Status |
 |---|---|---|
-| `rf1` | Dependent RF | **trained** — the model shipped in this repository |
+| `rf1` | Lumped RF | **trained** — the model shipped in this repository |
 | `rf2` | Independent RF | not trained |
-| `gbr1` | Dependent GBR (XGBoost) | not trained |
+| `gbr1` | Lumped GBR (XGBoost) | not trained |
 | `gbr2` | Independent GBR (HistGBR) | not trained |
 | `lin` | Linear Regression | not trained (baseline only, never reported) |
 
 `rf1` is the headline model because it is the **only** trained model in this
 repository — not because a comparative accuracy ranking has been established. See
-`Models/DependentRFModel/model_card.md` for its actual cross-validated metrics
+`Models/LumpedRFModel/model_card.md` for its actual cross-validated metrics
 (5-fold CV, cubic subset: R² ≈ 0.977, MAE ≈ 0.122 Å).
 
 ## Fetching the model binary
 
-`Models/binaries/DependentRFModel.joblib` (3.97 GB) is **not** in git — see the root
+`Models/binaries/LumpedRFModel.joblib` (3.97 GB) is **not** in git — see the root
 `.gitignore`. It's hosted on HuggingFace and fetched via:
 
 ```bash

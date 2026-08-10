@@ -92,7 +92,7 @@ class TestPredictSmoke:
             path = str(path)
             if "ML_FeatureLabels" in path:
                 return mock_labels
-            if "DependentRF" in path:
+            if "LumpedRF" in path:
                 return _make_mock_rf_model(4.91)
             if "IndependentRF" in path:
                 return _make_mock_rf_model(4.90)
@@ -133,7 +133,7 @@ class TestPredictSmoke:
             path = str(path)
             if "ML_FeatureLabels" in path:
                 return mock_labels
-            if "DependentRF" in path:
+            if "LumpedRF" in path:
                 return _make_mock_rf_model(4.91)
             if "LinearRegression" in path:
                 # Should never be loaded (LR excluded from REPORTABLE)
@@ -233,7 +233,7 @@ class TestPredictCsvNonCubicColumns:
                 "units": "Å",
             },
             "table": [
-                {"model_key": "rf1", "model_name": "Dependent RF",
+                {"model_key": "rf1", "model_name": "Lumped RF",
                  "a": "3.5000", "b": "3.5000", "c": "6.0000"},
             ],
             "reference": {"mp_id": "mp-2486", "crystal_system": "tetragonal"},
