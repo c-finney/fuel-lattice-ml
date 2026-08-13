@@ -278,6 +278,12 @@ def plot_actual_vs_predicted(
     """
     fig, axes = plt.subplots(1, 3, figsize=(18, 10))
     Y_test_df = Y_test.reset_index(drop=True)
+    # Y_pred_df must be reset too. The boolean `mask` below is built from X_test_full,
+    # which IS reset, so it carries a 0..n-1 RangeIndex. Indexing a caller-supplied
+    # Y_pred_df that kept its original index with that mask raises a bare pandas
+    # alignment error. Resetting here makes the function index-agnostic instead of
+    # silently requiring callers to pre-align.
+    Y_pred_df = Y_pred_df.reset_index(drop=True)
 
     for i, param in enumerate(Y_test_df.columns):
         ax = axes[i]

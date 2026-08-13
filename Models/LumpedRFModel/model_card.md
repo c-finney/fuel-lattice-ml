@@ -96,8 +96,13 @@ at the cost of a 3.97 GB binary.
   `a_true` therefore contains the DFT-vs-experiment discrepancy on top of the model's own
   error, and must not be quoted as pure model error. The effect is material-specific and
   **changes sign**: DFT − experiment is −0.006621 Å for UN, −0.022736 Å for UC, but
-  **+0.057365 Å** for CeO2 — which accounts for essentially all of the uniform
-  over-prediction every model shows on the (Ce,Nd)O2 benchmark. No DFT→experiment correction
+  **+0.057365 Å** for CeO2 — which accounts for **43.16 %** of this model's over-prediction on
+  the (Ce,Nd)O2 benchmark (bias 0.1329055714 Å, n = 7, from
+  `Results/benchmarks/basis_check.csv`). <!-- conv: 0.05736534776520852 / 0.1329055714 = 0.4316 -->
+  **The majority of the over-prediction is therefore genuine model error, not a label-basis
+  artefact.** An earlier version of this card said the basis mismatch accounted for
+  "essentially all" of it; that is false for every model (largest share 66.38 %, `gbr1`) and was
+  corrected 2026-08-12. No DFT→experiment correction
   is shipped, because only 3 of the 9 curated hosts have an in-repo experimental value and
   the sign flips across those 3. Use the offset-invariant slope / Pearson r reported by
   `scripts/basis_check.py` when comparing models. See `Results/benchmarks/basis_check.md`.

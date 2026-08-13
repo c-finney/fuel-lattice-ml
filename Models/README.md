@@ -15,15 +15,33 @@ Models/
     params.json                  committed — exact hyperparameters (parity-test fixture)
     metrics.json                 committed, ONLY for trained models
   binaries/                      GITIGNORED — fetched via scripts/fetch_models.py
-    LumpedRFModel.joblib        3.97 GB, the only trained model in this repository
+    LumpedRFModel.joblib        3.97 GB, the only PUBLISHED binary (all five are CV'd)
 ```
 
-## Only `rf1` (Lumped RF) is trained
+> **An empty `binaries/` is expected, not a broken checkout.** Binaries are gitignored and
+> fetched on demand with `python scripts/fetch_models.py` (needs `HF_TOKEN` in `.env` while
+> the HF repo is private). A fresh clone has `binaries/` holding only `.gitkeep` until you
+> fetch, and every model-dependent script will fail until then.
+
+## Only `rf1` (Lumped RF) is PUBLISHED — but all five are cross-validated
 
 `Models/{IndependentRFModel,XGBoostGBRModel,ScikitLearnGBRModel,LinearRegressionModel}/`
-each carry only a `model_card.md` and `params.json` marked `"status": "not_trained"`.
-Do not assume a multi-model comparison exists — none has been run. See
-`Results/metrics/ModelMetrics_CrossVal.csv` for `rf1`'s own cross-validation numbers.
+carry a `model_card.md` and a `params.json`; only `LumpedRFModel/` also has a
+`metrics.json` and a fetchable binary.
+
+**A multi-model comparison HAS been run** — `Results/metrics/ModelMetrics_CrossVal.csv`
+holds 5-fold CV rows for all five keys (× the `a`/`b`/`c` targets), and
+`Results/benchmarks/basis_check.md` scores four of them on both solid-solution
+benchmarks. The earlier text here said none had been run; that was stale.
+
+> [!warning] **`MANIFEST.json` and `params.json` disagree on `"status"` (found 2026-08-12).**
+> The manifest marks all five `"trained"`; four `params.json` files say `"not_trained"`.
+> The two are using different senses of the word — *fit during CV* (all five) versus
+> *persisted full-dataset artifact* (`rf1` only). Neither has been changed here: which
+> field is authoritative is a release-review decision. Treat
+> `Results/metrics/ModelMetrics_CrossVal.csv` as the measured ground truth.
+> Note `tests/test_params_parity.py` pins `params.json` against
+> `engine/train_models.model_estimators()`, so editing those status fields is not free.
 
 ## Fetching the binary
 

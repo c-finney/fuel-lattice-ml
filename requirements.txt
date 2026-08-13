@@ -27,6 +27,9 @@ numpy
 # Progress + plotting
 tqdm
 matplotlib
+# seaborn is imported by FuelLatticeParameterModelPrediction.ipynb (cell 8). Without it
+# that cell fails on a fresh clone. engine/reporting.py itself is pure matplotlib.
+seaborn
 
 # MCP server
 mcp>=1.2

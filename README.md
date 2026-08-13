@@ -92,18 +92,38 @@ because they're the same `engine/` code.
 
 ## Model summary
 
-| Key | Name | Status |
-|---|---|---|
-| `rf1` | Lumped RF | **trained** — the model shipped in this repository |
-| `rf2` | Independent RF | not trained |
-| `gbr1` | Lumped GBR (XGBoost) | not trained |
-| `gbr2` | Independent GBR (HistGBR) | not trained |
-| `lin` | Linear Regression | not trained (baseline only, never reported) |
+"Trained" means two different things in this repository, so the table states both
+explicitly:
 
-`rf1` is the headline model because it is the **only** trained model in this
-repository — not because a comparative accuracy ranking has been established. See
-`Models/LumpedRFModel/model_card.md` for its actual cross-validated metrics
-(5-fold CV, cubic subset: R² ≈ 0.977, MAE ≈ 0.122 Å).
+- **Cross-validated** — the model was fit during 5-fold CV and has real measured
+  metrics. True of all five; the numbers are in
+  `Results/metrics/ModelMetrics_CrossVal.csv`, which carries rows for every key.
+- **Published** — a full-dataset fit exists as a fetchable binary artifact. True of
+  `rf1` only. This is the model the reported results and the MCP tool use.
+
+| Key | Name | Cross-validated | Published (binary fetchable) |
+|---|---|---|---|
+| `rf1` | Lumped RF | yes | **yes** — the shipped model |
+| `rf2` | Independent RF | yes | no |
+| `gbr1` | Lumped GBR (XGBoost) | yes | no |
+| `gbr2` | Independent GBR (HistGBR) | yes | no |
+| `lin` | Linear Regression | yes | no (baseline sanity check only, never reported) |
+
+> [!warning] **Two metadata files disagree on the word "trained" (found 2026-08-12).**
+> `Models/MANIFEST.json` marks all five `"status": "trained"`, while
+> `Models/<name>/params.json` marks four of them `"not_trained"`. Both are defensible
+> under one of the two meanings above and neither has been corrected here, because
+> which one is authoritative is a release-review decision, not an editorial one. Rely on
+> `Results/metrics/ModelMetrics_CrossVal.csv` (measured) rather than either status field.
+
+`rf1` is the headline model because it is the **only model with no weak axis** — the
+ordering is evidence-based and derived from cross-validation plus both solid-solution
+benchmarks (the reasoning and the per-metric ranking live in `engine/config.py`,
+`HEADLINE_PREF`). Notably `gbr1` *wins* cross-validation (MAE_cubic 0.113556 Å vs
+`rf1`'s 0.121701 Å) but posts Pearson r = −0.0972 on the U(N,C) benchmark — it does not
+track the compositional trend at all, so CV alone would ship the wrong model. See
+`Models/LumpedRFModel/model_card.md` for `rf1`'s metrics (5-fold CV, cubic subset:
+R² ≈ 0.977, MAE ≈ 0.122 Å) and `Results/benchmarks/basis_check.md` for the benchmarks.
 
 ## Fetching the model binary
 

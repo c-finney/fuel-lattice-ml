@@ -44,8 +44,26 @@ the prediction notebook and as regression-test fixtures:
 > an experimental 4.884 Å.
 >
 > The effect is real and material-dependent. For CeO2 (`mp-20194`) the DFT value exceeds the
-> experimental one by **+0.057365 Å**, which accounts for essentially all of the uniform
-> over-prediction every model shows on the (Ce,Nd)O2 benchmark.
+> experimental one by **+0.057365 Å**, which accounts for a **substantial but partial** share
+> of the uniform over-prediction the models show on the (Ce,Nd)O2 benchmark — and the share is
+> strongly model-dependent, so it must never be quoted as a single figure:
+>
+> | Model | bias on (Ce,Nd)O2 (Å) | share explained by the basis delta |
+> |---|---|---|
+> | Lumped RF (`rf1`, shipped) | 0.1329055714 | **43.16 %** |
+> | Independent RF (`rf2`) | 0.1493484286 | 38.41 % |
+> | Lumped GBR (`gbr1`) | 0.0864198571 | 66.38 % |
+> | Independent GBR (`gbr2`) | 0.1134912857 | 50.55 % |
+>
+> Computed from `Results/benchmarks/basis_check.csv` (`bias_angstrom` per model, n = 7) against
+> the CeO2 anchor delta. <!-- conv: 0.05736534776520852 / 0.1329055714 = 0.4316 -->
+>
+> > **This corrects an earlier claim** that the basis mismatch "accounts for essentially all"
+> > of the over-prediction. That is false for **every** model — the largest share is 66.38 %,
+> > and for the shipped `rf1` it is 43.16 %, so the majority of `rf1`'s over-prediction is
+> > genuine model error, not a label-basis artefact. Do not let the retracted phrasing reach a
+> > manuscript. (Corrected 2026-08-12 from the current committed artifact; earlier figures
+> > quoted elsewhere predate the model retrain and should not be reused.)
 >
 > **No DFT→experiment correction is shipped**, because this repo cannot justify one: only 3 of
 > the 9 curated hosts have an experimental value here at all, and the delta's *sign flips*
