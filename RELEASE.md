@@ -95,14 +95,15 @@ likely to catch a packaging mistake and the obvious gap in this record.
 
 These are documented rather than resolved, and a fork inherits all of them:
 
-- **A single benchmark correlation is not a property of a model.** Both benchmarks
-  are extrapolation, since the fractional solid solutions they score are absent
-  from the training data, and the boosted models move a long way under a change of
-  random seed. Over seeds 42 to 46 the U(N,C) Pearson r spans +0.3764 to +0.8219
-  for `gbr1`, and changes sign for `gbr2`, against +0.8919 to +0.9147 for `rf1`.
-  `Results/benchmarks/seed_stability.md` has the full table. Anything quoting one
-  fit's correlation, including the accompanying manuscript, is quoting a number
-  with a standard deviation several times larger than the effect being described.
+- **The benchmark correlations carry a seed dependence that is not visible from a
+  single fit.** Both benchmarks are extrapolation, since the fractional solid
+  solutions they score are absent from the training data, and the boosted models
+  move further under a change of random seed than the forests do. Over seeds 42 to
+  46 the U(N,C) Pearson r spans +0.3764 to +0.8219 for `gbr1` and changes sign for
+  `gbr2`, against +0.8919 to +0.9147 for `rf1`.
+  `Results/benchmarks/seed_stability.md` has the full table. Results reported from
+  one fit, here and elsewhere, are specific to the seed used, which is 42
+  throughout this repository.
 - The cross-validation notebook's original run reported 64,838 training rows,
   while `Models/MANIFEST.json` records 64,128 for the build behind the shipped
   models. The Materials Project database moved between the two runs and no

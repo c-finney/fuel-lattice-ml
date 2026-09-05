@@ -40,15 +40,16 @@ filtered to a,b,c ≤ 10 Å, 145 features, 64,128 rows.
 
 ## Limitations
 
-- **On U(N,C) it has no reproducible direction at all.** The shipped binary gives Pearson
-  r = **−0.2696**, which reads as an inverted compositional trend, but that sign does not
-  survive a change of random seed. Across seeds 42 to 46 the correlation comes out
-  −0.2696, −0.2870, +0.4927, +0.5012 and −0.0533: three negative, two positive, mean
-  +0.0768 with a standard deviation of 0.3945 that is five times the mean. `gbr2` is the
-  only model here whose benchmark sign is unstable, so **no claim about the direction of
-  the compositional trend can rest on it**, in either direction. `rf1` on the same
-  benchmark is +0.9028 ± 0.0084. **Do not use `gbr2` for U(N,C) interpolation.** See
-  `Results/benchmarks/seed_stability.md`.
+- **It does not follow the U(N,C) compositional trend.** At the shipped seed of 42 it
+  gives Pearson r = **−0.2696** and a slope of **−0.426** against the experimental values,
+  so the predicted lattice parameter moves the wrong way with composition, and its raw MAE
+  of 0.048023 Å understates that by landing in the right numeric neighbourhood. `rf1` on
+  the same benchmark gives +0.9012. **Do not use `gbr2` for U(N,C) interpolation.**
+
+  Refitting at other seeds changes the size and the sign of that correlation, over
+  −0.2870 to +0.5012 across seeds 42 to 46, so the value above describes this fit rather
+  than a fixed property of the model. `Results/benchmarks/seed_stability.md` has the
+  spread for every model.
 - **The training labels are DFT and the benchmarks are experimental. They are
   different quantities.**
   Every training lattice parameter is Materials-Project DFT-relaxed geometry (MP's

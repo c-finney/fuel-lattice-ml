@@ -49,9 +49,9 @@ scored on both solid-solution benchmarks, reporting mean and standard deviation 
 slope and Pearson r, plus whether the sign of r held across every fit.
 
 Read this before quoting any single benchmark correlation. The benchmark sets are 23 and
-7 compositions and both are extrapolation, so one fit's Pearson r is thus not on its own
-evidence about a model class. Where `sign_stable` is false, the direction of the
-compositional trend is a property of that particular fit rather than of the model.
+7 compositions and both are extrapolation, so the spread across seeds is thus wide for some
+models. Where `sign_stable` is false, the sign of that model's correlation varies between
+fits, and a figure quoted from one fit should name the seed it came from.
 
 ## `metrics/feature_spearman_cubic.csv`
 

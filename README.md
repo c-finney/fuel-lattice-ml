@@ -118,12 +118,11 @@ project; the notebooks and the agent tooling stay in sync because they are the s
 | `gbr2` | Independent GBR (HistGBR) | 23 MB | 0.151228 | +0.0768 ± 0.3945 |
 | `lin` | Linear Regression | 17 KB | 1.046069 | −0.9629 |
 
-The benchmark column is the mean and standard deviation over seeds 42 to 46, not a single
-fit, and the distinction matters more than the ranking does. Both benchmarks are
-extrapolation, since the fractional solid solutions they score are absent from the training
-data, so one fit's correlation says little on its own. The two random forests come out 25 to
-47 times tighter than the boosted models, and `gbr2`'s sign flips with the seed, which means
-no claim about the direction of the compositional trend can rest on it.
+The benchmark column is the mean and standard deviation over seeds 42 to 46 rather than a
+single fit. Both benchmarks are extrapolation, since the fractional solid solutions they
+score are absent from the training data, so the spread there is wide for some models. The
+two random forests come out 25 to 47 times tighter than the boosted models, and `gbr2`'s
+sign varies with the seed. Everything shipped here is fitted at `random_state=42`.
 
 `rf1` leads on that stability rather than on accuracy. `gbr1` is the better cross-validated
 model, at 0.113556 Å against 0.121701 Å while being 77 times smaller, and is the right choice

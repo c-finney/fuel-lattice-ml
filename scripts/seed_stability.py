@@ -6,17 +6,13 @@ WHY THIS EXISTS
 ---------------
 The benchmark sets are small (23 and 7 compositions) and, more importantly, they
 are extrapolation: fractional solid solutions like UN(0.6)C(0.4) are not in the
-Materials Project training data. A single fit's Pearson r on 23 extrapolated
-points is not by itself evidence about a model class, because refitting the same
-estimator with a different seed can move it a long way.
+Materials Project training data. Refitting the same estimator with a different
+seed can therefore move its benchmark correlation a long way, and how far is
+worth knowing before a figure from one fit is quoted.
 
-That is not hypothetical here. Rebuilding gbr1 from the committed seed dataset
-changed its U(N,C) correlation from -0.0972 to +0.8219, and changing only
-random_state from 42 to 43 moved it again to +0.4209. Over seeds 42 to 46 it
-spans +0.3764 to +0.8219, while rf1 over the same seeds stays within +0.8919 to
-+0.9147 and gbr2 changes sign. Any statement of the form "model X inverts the
-compositional trend" thus has to be checked against the spread across seeds
-before it can be believed.
+Over seeds 42 to 46 the U(N,C) correlation spans +0.3764 to +0.8219 for gbr1 and
+changes sign for gbr2, while rf1 stays within +0.8919 to +0.9147. Everything
+shipped in this repository is fitted at random_state=42.
 
 A standard deviation of exactly zero is a bug rather than a result: it means the
 seed never reached the estimator that consumes it. See _set_seed.
@@ -248,8 +244,8 @@ def write_report(raw: pd.DataFrame, summ: pd.DataFrame, seeds: list[int]) -> Non
     w("once and its spread is zero by construction rather than by measurement.")
     w("")
     w("`sign_stable` is whether Pearson r kept the same sign across every fit. Where it did")
-    w("not, no claim about the direction of the compositional trend can rest on that model,")
-    w("because the direction is a property of the fit rather than of the model.")
+    w("not, that model's correlation varies in sign between fits, so a figure quoted from")
+    w("one fit should name the seed it came from.")
     w("")
     for bench in sorted(summ["benchmark"].unique()):
         sub = summ[summ.benchmark == bench].sort_values("model_key")

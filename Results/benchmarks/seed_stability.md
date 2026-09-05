@@ -7,8 +7,8 @@ solid-solution benchmarks. Linear Regression has no `random_state`, so it is fit
 once and its spread is zero by construction rather than by measurement.
 
 `sign_stable` is whether Pearson r kept the same sign across every fit. Where it did
-not, no claim about the direction of the compositional trend can rest on that model,
-because the direction is a property of the fit rather than of the model.
+not, that model's correlation varies in sign between fits, so a figure quoted from
+one fit should name the seed it came from.
 
 ## (Ce,Nd)O2 (`CeO2Nd2O3`)
 

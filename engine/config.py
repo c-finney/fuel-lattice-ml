@@ -119,8 +119,7 @@ SCOREABLE     = REPORTABLE + BASELINE
 # (Results/benchmarks/basis_check.md), and the spread of those benchmark metrics
 # across random seeds (Results/benchmarks/seed_stability.md).
 #
-# The seed spread is what decides it, because a single fit's Pearson r on the U(N,C)
-# benchmark is not a property of the model. Both benchmarks are extrapolation: the
+# The seed spread is what decides it. Both benchmarks are extrapolation, since the
 # fractional solid solutions they score are not in the Materials Project training
 # data, and a boosted ensemble refitted with a different seed lands somewhere else.
 # Over seeds 42-46 the U(N,C) correlation comes out as:
@@ -128,11 +127,11 @@ SCOREABLE     = REPORTABLE + BASELINE
 #     rf1    +0.9028 +- 0.0084     (+0.8919 .. +0.9147)
 #     rf2    +0.9362 +- 0.0132     (+0.9172 .. +0.9533)
 #     gbr1   +0.6099 +- 0.2092     (+0.3764 .. +0.8219)
-#     gbr2   +0.0768 +- 0.3945     (-0.2870 .. +0.5012)   SIGN NOT STABLE
+#     gbr2   +0.0768 +- 0.3945     (-0.2870 .. +0.5012)   sign varies with seed
 #
-# The random forests are 25x to 47x tighter than the boosted models, and gbr2's sign
-# depends on the seed, so no statement about the direction of the compositional trend
-# can rest on it. That, and not any single benchmark score, is why the forests lead.
+# The random forests come out 25x to 47x tighter than the boosted models, which is what
+# puts them first here. Every model in this repository is fitted at random_state=42, and
+# a figure reported from one fit is specific to that seed.
 #
 # rf1 over rf2: rf2 is marginally better on both benchmarks (r +0.9362 vs +0.9028 on
 # U(N,C), +0.9562 vs +0.9323 on (Ce,Nd)O2) but is LAST of the four on CV R2_cubic

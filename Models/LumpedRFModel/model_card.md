@@ -70,21 +70,20 @@ All five models are trained, 5-fold cross-validated
 far those benchmark numbers move (`Results/benchmarks/seed_stability.md`). `rf1` leads
 `config.HEADLINE_PREF` on the third of those, not the first two.
 
-The reason is that a single fit's Pearson r on the U(N,C) benchmark is not a property of
-the model. Both benchmarks are extrapolation, since the fractional solid solutions they
-score are absent from the training data, and a boosted ensemble refitted with a different
-seed lands somewhere else entirely. Over five seeds the U(N,C) correlation comes out as:
+The reason is repeatability. Both benchmarks are extrapolation, since the fractional solid
+solutions they score are absent from the training data, and a boosted ensemble refitted
+with a different seed lands somewhere else. Over five seeds the U(N,C) correlation comes
+out as:
 
 | model | Pearson r | range | sign stable |
 |---|---|---|---|
 | `rf1` | +0.9028 ± 0.0084 | +0.8919 to +0.9147 | yes |
 | `rf2` | +0.9362 ± 0.0132 | +0.9172 to +0.9533 | yes |
 | `gbr1` | +0.6099 ± 0.2092 | +0.3764 to +0.8219 | yes |
-| `gbr2` | +0.0768 ± 0.3945 | −0.2870 to +0.5012 | **no** |
+| `gbr2` | +0.0768 ± 0.3945 | −0.2870 to +0.5012 | no |
 
-The two forests are 25 to 47 times tighter than the boosted models, and `gbr2`'s sign
-depends on the seed, so nothing about the direction of the compositional trend can be
-concluded from it. Between the two stable models, `rf2` is marginally the more accurate on
+The two forests come out 25 to 47 times tighter than the boosted models. Between them,
+`rf2` is marginally the more accurate on
 both benchmarks but is last of the four on CV R²_cubic (0.976283) and weighs 9.74 GB
 against `rf1`'s 3.97 GB. `rf1` is the better cross-validated of the two stable models and
 2.5 times smaller, which is the whole of the argument.

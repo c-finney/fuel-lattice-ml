@@ -39,9 +39,9 @@ prediction are the full-dataset fits produced by `/lattice-train`.
    it wins cross-validation, which it does not: `gbr1` has the better `MAE_cubic` at
    0.113556 Å against 0.121701 Å. What separates them is the spread of the benchmark
    metrics across random seeds, where `rf1` sits at Pearson r +0.9028 ± 0.0084 on U(N,C)
-   against `gbr1`'s +0.6099 ± 0.2092 and `gbr2`'s +0.0768 ± 0.3945, whose sign is not even
-   stable. Do not call any model "most accurate" without saying on which axis, and do not
-   quote a single benchmark correlation without `Results/benchmarks/seed_stability.md`. Point to the plots written under
+   against `gbr1`'s +0.6099 ± 0.2092 and `gbr2`'s +0.0768 ± 0.3945. Do not call any model
+   "most accurate" without saying on which axis, and quote a benchmark correlation with
+   the seed it came from. See `Results/benchmarks/seed_stability.md`. Point to the plots written under
    `Results/figures/`, and to the per-entry predictions under
    `Results/metrics/cv_predictions/`.
 
