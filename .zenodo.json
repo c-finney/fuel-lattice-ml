@@ -1,0 +1,44 @@
+{
+  "title": "fuel-lattice-ml: ML prediction of nuclear fuel lattice parameters",
+  "description": "<p>Random forest and gradient boosting regression models that predict the lattice parameters a, b and c of solid-solution nuclear fuel compositions from composition-derived features, trained on 64,128 Materials Project DFT-relaxed structures described by 145 features.</p><p>This deposit is the archived version of record accompanying the manuscript &quot;Correlating the lattice parameters of nuclear fuels with fuel composition: A machine learning approach&quot;. It contains the full source tree and the five trained model binaries, which are too large for the Git host.</p><p>The project is retired and is not maintained. The source code is MIT licensed. The redistributed Materials Project dataset and the models derived from it remain under CC BY 4.0 and carry that attribution requirement. Produced under DOE SULI at Oak Ridge National Laboratory; see NOTICE. ORNL software release number ORNL-CODE-XXXXXX.</p>",
+  "upload_type": "software",
+  "license": "MIT",
+  "access_right": "open",
+  "version": "1.0.0",
+  "language": "eng",
+  "creators": [
+    {
+      "name": "Finney, Cade",
+      "affiliation": "University of Florida",
+      "orcid": "0009-0007-6335-1536"
+    }
+  ],
+  "keywords": [
+    "machine learning",
+    "nuclear fuel",
+    "lattice parameter",
+    "materials informatics",
+    "random forest",
+    "gradient boosting",
+    "Materials Project",
+    "accelerated fuel qualification"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/c-finney/fuel-lattice-ml",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://materialsproject.org",
+      "relation": "isDerivedFrom",
+      "scheme": "url"
+    }
+  ],
+  "grants": [
+    {
+      "id": "10.13039/100006151::SULI"
+    }
+  ],
+  "notes": "This work was supported in part by the U.S. Department of Energy, Office of Science, Office of Workforce Development for Teachers and Scientists (WDTS) under the Science Undergraduate Laboratory Internships Program (SULI) program at Oak Ridge National Laboratory, administered by the Oak Ridge Institute for Science and Education."
+}

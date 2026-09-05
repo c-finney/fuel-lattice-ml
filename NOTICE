@@ -1,7 +1,41 @@
-This work was supported in part by the U.S. Department of Energy, Office of Science, Office of Workforce Development for Teachers and Scientists (WDTS) under the Science Undergraduate Laboratory Internships Program (SULI) hosted at Oak Ridge National Laboratory (ORNL) and administered by the Oak Ridge Institute for Science and Education (ORISE). Any opinions, findings, conclusions or recommendations expressed in this publication are those of the author(s) and do not necessarily reflect the views of the Department of Energy, Office of Science, or Office of WDTS.
+# NOTICE
 
----
+## Funding acknowledgement
 
-This software makes use of data from the Materials Project (https://materialsproject.org),
-licensed under CC BY 4.0. The trained models in Models/ are derived works of that data
-and carry the same attribution requirement. See README.md for citation details.
+The following acknowledgement is reproduced verbatim from the ORISE Terms of
+Appointment governing the internship under which this software was written, and
+should not be reworded when the software is cited or redistributed:
+
+> This work was supported in part by the U.S. Department of Energy, Office of
+> Science, Office of Workforce Development for Teachers and Scientists (WDTS)
+> under the Science Undergraduate Laboratory Internships Program (SULI) program
+> at Oak Ridge National Laboratory, administered by the Oak Ridge Institute for
+> Science and Education.
+
+Any opinions, findings, conclusions or recommendations expressed in this
+publication are those of the author and do not necessarily reflect the views of
+the Department of Energy, Office of Science, or Office of WDTS.
+
+## Government rights
+
+Sections 1 and 3 of the ORISE Participant Data Agreement define technical data to
+include computer software, and grant the host facility, DOE, and the U.S.
+Government the right to use, duplicate, or disclose that software for any purpose
+and to permit others to do so. The MIT license in LICENSE is granted alongside
+those rights and does not displace them.
+
+## Materials Project data
+
+The dataset redistributed in Data/MP_Dataset_Original_Trimmed.csv was retrieved
+from the Materials Project (https://materialsproject.org) and is licensed CC BY
+4.0. The trained model binaries are derived works of that dataset and carry the
+same attribution requirement, which survives the MIT license on the source code.
+Anyone redistributing either the dataset or a model must retain the Materials
+Project attribution. Citation details are in README.md.
+
+## Acknowledgements
+
+Will Cureton assembled the U(N, C) literature values and the quadratic fit behind
+Figure 1 of the accompanying manuscript, which is the source of
+Data/benchmarks/UNUC.csv. Bekah Petrosky and Denise Adorno Lopes supervised the
+study and are co-authors on that manuscript.

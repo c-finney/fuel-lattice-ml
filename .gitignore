@@ -3,6 +3,9 @@
 .env.*
 !.env.example
 
+# ---- Local agent settings, per-machine and not part of the release --------
+.claude/settings.local.json
+
 # ---- Dataset/ is generated output only: track folder, ignore contents ----
 Dataset/*
 !Dataset/.gitkeep

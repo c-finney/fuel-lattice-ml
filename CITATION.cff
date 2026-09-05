@@ -6,14 +6,27 @@ authors:
   - family-names: Finney
     given-names: Cade
     orcid: "https://orcid.org/0009-0007-6335-1536"
-    affiliation: "Oak Ridge National Laboratory"
+    affiliation: "University of Florida"
+    email: cadefinney@outlook.com
+abstract: >-
+  Random forest and gradient boosting regression models that predict the lattice
+  parameters a, b and c of solid-solution nuclear fuel compositions from
+  composition-derived features, trained on Materials Project DFT-relaxed
+  structures. Retired: frozen at the version accompanying the manuscript, no
+  longer maintained.
+version: "1.0.0"
+date-released: "2026-09-04"
+license: MIT
 repository-code: "https://github.com/c-finney/fuel-lattice-ml"
+doi: "10.5281/zenodo.XXXXXXX"
+url: "https://doi.org/10.5281/zenodo.XXXXXXX"
 keywords:
   - machine learning
   - nuclear fuel
   - lattice parameter
   - materials informatics
   - random forest
+  - gradient boosting
 references:
   - type: dataset
     title: "The Materials Project"
@@ -21,3 +34,7 @@ references:
       - name: "The Materials Project"
     url: "https://materialsproject.org"
     license: "CC-BY-4.0"
+    notes: >-
+      Source of the training data redistributed as
+      Data/MP_Dataset_Original_Trimmed.csv. The trained models are derived works
+      and carry the same attribution requirement.
