@@ -1,4 +1,4 @@
-# fuel-lattice-ml — Python dependencies
+# fuel-lattice-ml: Python dependencies
 # Install into a Python 3.12 venv: uv venv --python 3.12 .venv
 
 # Materials Project
@@ -8,7 +8,7 @@ pymatgen>=2024.1.1
 # Matminer featurization
 matminer>=0.9.0
 
-# Machine learning — scikit-learn and joblib are PINNED, not just
+# Machine learning. scikit-learn and joblib are PINNED, not just
 # lower-bounded. The shipped model (Models/binaries/LumpedRFModel.joblib)
 # was pickled under scikit-learn 1.9.0. joblib's ndarray reconstruction uses
 # an in-place `array.shape = ...` assignment that NumPy >= 2.5 deprecated;
@@ -27,6 +27,11 @@ numpy
 # Progress + plotting
 tqdm
 matplotlib
+# seaborn is imported by FuelLatticeParameterModelPrediction.ipynb for the
+# feature-correlation bar chart, and by two of the exploratory notebooks. Nothing
+# in engine/ needs it, and scripts/feature_correlations.py deliberately avoids it
+# so the correlation values can be regenerated without it.
+seaborn
 
 # MCP server
 mcp>=1.2
@@ -34,8 +39,9 @@ mcp>=1.2
 # Environment
 python-dotenv
 
-# HuggingFace model fetch/upload (scripts/fetch_models.py, scripts/upload_models.py)
-huggingface_hub>=0.24
+# scripts/fetch_models.py and scripts/upload_models.py talk to Zenodo over plain
+# HTTPS with urllib from the standard library, so no client package is needed
+# here. huggingface_hub was required until the models moved to Zenodo.
 
 # Notebook output stripping (dev-time git filter, see .gitattributes)
 nbstripout

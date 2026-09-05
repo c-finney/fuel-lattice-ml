@@ -14,8 +14,8 @@ thin, narrated wrapper).
 
 ## Usage
 
-- `/lattice-build` — build if not already present (resumes from the committed seed).
-- `/lattice-build --force` — ignore the seed and re-query Materials Project from scratch.
+- `/lattice-build`: build if not already present (resumes from the committed seed).
+- `/lattice-build --force`: ignore the seed and re-query Materials Project from scratch.
 
 ## Procedure
 
@@ -25,7 +25,7 @@ thin, narrated wrapper).
    ```
    If `Data/MP_Dataset_Original_Trimmed.csv` is present (it is, in a normal clone),
    `build --resume` skips the Materials Project query entirely and only re-runs
-   featurization (~9 minutes). State this ETA plainly — it is **not** the old
+   featurization (~9 minutes). State this ETA plainly, since it is **not** the old
    multi-hour figure.
 
 2. **Only warn about a multi-hour job when `--force` is requested**, or when the
@@ -43,7 +43,7 @@ thin, narrated wrapper).
    #   optional: --thresh 20 overrides the build Å threshold
    ```
    (Activate the repo's `.venv` first if `python` doesn't already resolve to it.)
-   The job is resumable — if the query stage already completed, a re-run reuses the
+   The job is resumable, so if the query stage already completed a re-run reuses the
    trimmed dataset and only re-featurizes.
 
 4. **On completion**, report the final row count and the artifacts written

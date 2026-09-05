@@ -37,6 +37,44 @@ def write_manifest(d: dict) -> None:
     tmp.replace(config.BUILD_MANIFEST)
 
 
+# Distribution name per import name, where they differ. pymatgen ships as a
+# namespace package whose top-level module carries no __version__.
+_DIST_NAME = {"sklearn": "scikit-learn", "pymatgen": "pymatgen-core"}
+
+_TRACKED = ["sklearn", "xgboost", "numpy", "pandas", "joblib", "pymatgen", "matminer"]
+
+
+def package_versions() -> dict:
+    """
+    Versions of the packages that determine a fitted model's bytes.
+
+    Recorded at fit time by train(), because Models/MANIFEST.json's own
+    provenance block is written by scripts/write_model_manifest.py from whatever
+    interpreter happens to run it. Those are not the same environment: the
+    manifest committed in c6b1532 was regenerated weeks after the models it
+    describes were fitted, so its version numbers described the machine that ran
+    the script rather than the one that did the training.
+    """
+    import sys
+    from importlib.metadata import PackageNotFoundError, version
+
+    out = {"python": sys.version.split()[0]}
+    for name in _TRACKED:
+        v = None
+        try:
+            v = getattr(__import__(name), "__version__", None)
+        except ImportError:
+            out[name] = None
+            continue
+        if not v:
+            try:
+                v = version(_DIST_NAME.get(name, name))
+            except PackageNotFoundError:
+                v = "unknown"
+        out[name] = v
+    return out
+
+
 def mark_stage(stage: str, **meta: Any) -> None:
     """
     Record a completed stage in BUILD_MANIFEST.
@@ -73,7 +111,8 @@ def available_models() -> list[str]:
 # (`cli.py build --force`), which re-downloads the full MP snapshot.
 _BUILD_ETA_RESUME = "~9 minutes (featurization only; seed dataset already present)"
 _BUILD_ETA_FORCE  = "tens of minutes to ~2 hours (full MP re-download + ~50k SpacegroupAnalyzer + matminer featurization)"
-_TRAIN_ETA  = "~10 minutes (rf1 fast mode) or up to ~60 minutes (full suite)"
+_TRAIN_ETA  = ("~10 minutes (rf1 fast mode) or up to ~60 minutes (full suite), "
+               "and much longer without --n-jobs -1, which is not the default")
 
 
 def check_prereqs(stage: str) -> dict:

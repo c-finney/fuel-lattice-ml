@@ -172,6 +172,7 @@ def predict_one(
     composition: str,
     reference: str | None = None,
     models: list[str] | None = None,
+    include_baseline: bool = False,
 ) -> dict:
     """
     Predict lattice parameters for a single composition.
@@ -181,6 +182,11 @@ def predict_one(
     composition : solid-solution formula ("UN0.5C0.5", "U1 N0.5 C0.5", …)
     reference   : optional mp-id or formula to force the reference structure
     models      : optional list of model keys; default = all available REPORTABLE models
+    include_baseline : allow Linear Regression ('lin') to be returned. Off by
+                  default, because LR is a sanity baseline rather than a usable
+                  predictor, and its output should not be mistaken for one. The
+                  benchmark table in the accompanying manuscript reports it, so
+                  it must remain reachable.
 
     Returns
     -------
@@ -203,9 +209,16 @@ def predict_one(
 
     prereq_warnings = list(prereq.get("warnings", []))
 
+    # artifacts.available_models() reports only config.REPORTABLE, so the baseline
+    # has to be added back here rather than filtered out. Keeping it out of the
+    # default path is deliberate: Linear Regression is a sanity check, not a
+    # predictor, and it should never appear in ordinary output.
     av = prereq["available_models"]
+    if include_baseline:
+        av = av + [k for k in config.BASELINE
+                   if k not in av and config.model_exists(k)]
     if models:
-        av = [k for k in models if k in av and k != "lin"]
+        av = [k for k in models if k in av]
     if not av:
         return {
             "status":  "needs_build",
@@ -319,6 +332,7 @@ def predict_one(
 def predict_csv(
     path: str,
     models: list[str] | None = None,
+    include_baseline: bool = False,
     out_dir: str | Path | None = None,
 ) -> dict:
     """
@@ -341,7 +355,8 @@ def predict_csv(
         if pd.isna(ref):
             ref = None
 
-        pred = predict_one(comp_str, reference=str(ref) if ref else None, models=models)
+        pred = predict_one(comp_str, reference=str(ref) if ref else None,
+                           models=models, include_baseline=include_baseline)
 
         result_row = {"composition": comp_str}
         if "y" in row.index:
@@ -386,7 +401,7 @@ def predict_csv(
     if "a_true" in out_df.columns:
         from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-        for key in config.REPORTABLE:
+        for key in (config.SCOREABLE if include_baseline else config.REPORTABLE):
             col = f"a_pred_{key}"
             if col not in out_df.columns:
                 continue
@@ -447,12 +462,17 @@ def main(argv=None):
                         help="Directory for output CSV + plots")
     parser.add_argument("--json", action="store_true",
                         help="Print result as JSON (for MCP/script use)")
+    parser.add_argument("--include-baseline", action="store_true",
+                        help="Also report Linear Regression, which is a sanity baseline "
+                             "and is suppressed by default. Needed to reproduce the "
+                             "baseline row of the manuscript's benchmark table.")
     args = parser.parse_args(argv)
 
     model_list = [k.strip() for k in args.models.split(",")] if args.models else None
 
     if args.composition:
-        result = predict_one(args.composition, reference=args.reference, models=model_list)
+        result = predict_one(args.composition, reference=args.reference, models=model_list,
+                             include_baseline=args.include_baseline)
 
         if args.out_dir and result.get("status") == "ok":
             # Write a copy to out_dir
@@ -467,7 +487,8 @@ def main(argv=None):
         else:
             print(reporting.format_markdown(result))
     else:
-        result = predict_csv(args.csv, models=model_list, out_dir=args.out_dir)
+        result = predict_csv(args.csv, models=model_list, out_dir=args.out_dir,
+                             include_baseline=args.include_baseline)
         if args.json:
             # Remove non-serializable dataframe
             r = {k: v for k, v in result.items() if k != "dataframe"}

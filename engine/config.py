@@ -103,37 +103,48 @@ MODEL_FILES = {
     "lin":  ("LinearRegressionModel.joblib",    "Linear Regression"),
 }
 
-# Linear Regression is trained only under `train --full` and is never shown
-# in prediction output — it exists solely as a baseline sanity check.
+# Linear Regression is trained only under `train --full` and is never shown in
+# prediction output by default, existing solely as a baseline sanity check.
 REPORTABLE    = ["rf1", "rf2", "gbr1", "gbr2"]
 
-# EVIDENCE-BASED as of 2026-07-14. All four models are trained and 5-fold
-# cross-validated (Results/metrics/ModelMetrics_CrossVal.csv) AND run against both
-# solid-solution benchmarks (Results/benchmarks/basis_check.md). The previous ordering
-# — ["rf1", "rf2", "gbr2", "gbr1"] — carried the caveat "no comparative cross-validation
-# has been run". It has now been run, twice over, and the ordering below is derived from it.
+# The baseline is excluded from REPORTABLE on purpose, but the manuscript's
+# benchmark table reports it, so it has to be reproducible on request rather than
+# unreachable. `--include-baseline` on `cli.py predict` opts it back in, and
+# SCOREABLE is what the benchmark scoring paths iterate when it does.
+BASELINE      = ["lin"]
+SCOREABLE     = REPORTABLE + BASELINE
+
+# Ordering derived from three sources of evidence: 5-fold cross-validation
+# (Results/metrics/ModelMetrics_CrossVal.csv), the two solid-solution benchmarks
+# (Results/benchmarks/basis_check.md), and the spread of those benchmark metrics
+# across random seeds (Results/benchmarks/seed_stability.md).
 #
-# rf1 is FIRST because it is the only model with no weak axis. Across the 8 metrics
-# (CV MAE_cubic / R2_cubic, and per-benchmark Pearson r / de-biased scatter / MAE for
-# UNUC + CeO2Nd2O3) it ranks 2nd on six and is never worse than 3rd:
+# The seed spread is what decides it, because a single fit's Pearson r on the U(N,C)
+# benchmark is not a property of the model. Both benchmarks are extrapolation: the
+# fractional solid solutions they score are not in the Materials Project training
+# data, and a boosted ensemble refitted with a different seed lands somewhere else.
+# Over seeds 42-46 the U(N,C) correlation comes out as:
 #
-#   - gbr1 WINS cross-validation (MAE_cubic 0.113556 A vs rf1 0.121701) but then posts
-#     Pearson r = -0.0972 on the U(N,C) benchmark — it does not track the compositional
-#     trend AT ALL. Its respectable raw MAE there (0.039714 A) is proximity, not skill.
-#     Ranking it first on CV alone would ship a model that cannot interpolate U(N,C).
-#   - rf2 WINS both benchmarks (r = 0.9405 / 0.9706, best on both) but is LAST on
-#     CV R2_cubic (0.976283) and is 9,735,288,229 bytes — 2.5x rf1, 190x gbr1.
-#   - rf1's own two 3rd-places are benign: CV R2_cubic, where all four sit between
-#     0.976283 and 0.983007 (effectively tied); and CeO2 absolute MAE, which is the one
-#     metric CONTAMINATED by the DFT-vs-experiment label-basis offset (see basis_check.md)
-#     and therefore the least meaningful of the eight.
+#     rf1    +0.9028 +- 0.0084     (+0.8919 .. +0.9147)
+#     rf2    +0.9362 +- 0.0132     (+0.9172 .. +0.9533)
+#     gbr1   +0.6099 +- 0.2092     (+0.3764 .. +0.8219)
+#     gbr2   +0.0768 +- 0.3945     (-0.2870 .. +0.5012)   SIGN NOT STABLE
 #
-# gbr2 is LAST because gbr1 beats it on ALL EIGHT metrics. The old ordering had these two
-# inverted, placing the weakest model ahead of the stronger one.
+# The random forests are 25x to 47x tighter than the boosted models, and gbr2's sign
+# depends on the seed, so no statement about the direction of the compositional trend
+# can rest on it. That, and not any single benchmark score, is why the forests lead.
 #
-# CAUTION: a benchmark MAE is NOT pure model error — the models predict DFT geometry and
-# the benchmarks are experimental. Use Pearson r / slope (invariant to a constant offset)
-# when comparing models. See Results/benchmarks/basis_check.md.
+# rf1 over rf2: rf2 is marginally better on both benchmarks (r +0.9362 vs +0.9028 on
+# U(N,C), +0.9562 vs +0.9323 on (Ce,Nd)O2) but is LAST of the four on CV R2_cubic
+# (0.976283) and weighs 9.74 GB against rf1's 3.97 GB. Between two models that are
+# both stable, rf1 is the better cross-validated one and 2.5x smaller.
+#
+# gbr1 over gbr2: gbr1 is better on CV (MAE_cubic 0.113556 A vs 0.151228) and its
+# benchmark sign at least holds across seeds, which gbr2's does not.
+#
+# CAUTION: a benchmark MAE is NOT pure model error, since the models predict DFT
+# geometry and the benchmarks are experimental. Use Pearson r / slope, which a constant
+# offset cannot change, when comparing models. See Results/benchmarks/basis_check.md.
 HEADLINE_PREF = ["rf1", "rf2", "gbr1", "gbr2"]
 
 # ---------------------------------------------------------------------------
@@ -145,7 +156,7 @@ DATASET_TRAINING   = DATASETS / "Training_Dataset.csv"
 FEATURELABELS       = FEATURE_DIR / "FeatureLabels.joblib"
 ML_FEATURELABELS    = FEATURE_DIR / "ML_FeatureLabels.joblib"
 
-MODEL_URI_BASE = os.environ.get("LATTICE_MODEL_URI", "")   # e.g. hf://user/repo
+MODEL_URI_BASE = os.environ.get("LATTICE_MODEL_URI", "")   # e.g. zenodo://<record_id>
 
 
 def dataset_original() -> Path:

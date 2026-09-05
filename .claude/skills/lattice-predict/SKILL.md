@@ -13,12 +13,12 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
 
 ## Usage
 
-- `/lattice-predict UN0.5C0.5` — single composition (natural-language friendly).
-- `/lattice-predict "U1 N0.5 C0.5"` — spaced formula also accepted.
-- `/lattice-predict Data/benchmarks/UNUC.csv` — batch CSV
+- `/lattice-predict UN0.5C0.5`: single composition (natural-language friendly).
+- `/lattice-predict "U1 N0.5 C0.5"`: spaced formula also accepted.
+- `/lattice-predict Data/benchmarks/UNUC.csv`: batch CSV
   (`composition`[,`ref_mp-id`,`y`,`a_true`]).
-- `/lattice-predict Ce0.8343Nd0.1657O2 reference=mp-20194` — force the reference structure.
-- `/lattice-predict UC0.7N0.3 models=rf1,gbr1` — restrict to specific models.
+- `/lattice-predict Ce0.8343Nd0.1657O2 reference=mp-20194`: force the reference structure.
+- `/lattice-predict UC0.7N0.3 models=rf1,gbr1`: restrict to specific models.
 
 ## Procedure
 
@@ -30,20 +30,20 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
    python cli.py status --json
    ```
    Prediction needs `Models/feature_labels/ML_FeatureLabels.joblib` **and** at least one
-   non-LR trained model — it does **not** need the full featurized dataset, and it does
+   non-LR trained model. It does **not** need the full featurized dataset, and it does
    **not** need `MP_API_KEY` for any composition whose reference host is one of the 9
    curated end-members in `Data/reference_systems.json` (UN, UC, CeO2, UO2, PuO2, ThO2,
    ZrO2, Nd2O3, NdO2), by formula, mp-id, or automatic dominant-end-member resolution.
 
 3. **If prerequisites are missing → confirm before any heavy work (MANDATORY):**
    - State exactly what's missing and the **build** ETA from the status output. With the
-     committed seed dataset present, a normal build is ~9 minutes — only a forced
+     committed seed dataset present, a normal build is ~9 minutes, and only a forced
      re-query (`--force`) is a multi-hour job. Say which applies.
    - Ask the user **yes/no**. Do **not** start building without a "yes".
    - On **yes**, run in the **background** (`run_in_background: true`), narrating progress:
      - If the featurized dataset is missing: run the build first (`cli.py build --resume`),
        then a fast train.
-     - Fast train (Lumped RF only — fastest, and the model already shipped here):
+     - Fast train (Lumped RF only, the fastest option and the headline model):
        `cli.py train --fast`.
      - When the background job finishes, continue to step 4.
    - On **no**, stop and tell the user they can run `/lattice-build` then `/lattice-train`
@@ -73,7 +73,7 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
    - **Provenance line:** the resolved reference end-member, its `mp-id`, crystal system,
      spacegroup, the tie-break basis (`energy_above_hull` if it was a stoichiometric tie),
      and whether it came from the curated table, a runtime cache, or a live Materials
-     Project lookup — so the user can sanity-check the host.
+     Project lookup, so the user can sanity-check the host.
    - Surface any out-of-domain warning the engine emits (element absent from training).
 
 ## Numeric-reporting note

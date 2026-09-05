@@ -35,14 +35,22 @@ def headline_model(available: list[str], metrics: dict | None = None) -> str:
     """
     Return the key of the headline model.
 
-    Rule: rf1 if present; else first in HEADLINE_PREF order. rf1 is
-    currently the ONLY trained model shipped in this repository — this is
-    a fallback order, not a substantiated accuracy ranking (no comparative
-    cross-validation across rf1/rf2/gbr1/gbr2 has been run; see
-    Results/metrics/ModelMetrics_CrossVal.csv for rf1's own metrics).
+    First match in config.HEADLINE_PREF order, which is derived from the
+    cross-validation, benchmark and seed-stability evidence recorded there.
+
+    Nothing in HEADLINE_PREF is a baseline, so a caller that opted into Linear
+    Regression with include_baseline and restricted --models to it alone would
+    otherwise get an exception rather than the prediction it asked for. In that
+    case the single available model is the headline by default. Being reachable
+    only through an explicit opt-in is what keeps the baseline out of ordinary
+    output.
+
     If *metrics* is supplied, could in future use accuracy ordering.
     """
     for key in config.HEADLINE_PREF:
+        if key in available:
+            return key
+    for key in config.SCOREABLE:
         if key in available:
             return key
     raise ValueError(f"No headline model available from {available}")

@@ -8,7 +8,7 @@
     "nsites": 2,
     "energy_above_hull": 0.0,
     "formation_energy_per_atom": -1.5816823568749996,
-    "note": "rocksalt Fm-3m; verified mp-id (UNUC.csv). Symmetry confirmed from live MP 2026-06-25. Ties with UC on energy_above_hull (both 0.0 — each is a line compound on its own chemsys hull), so the U(N,C) 50/50 tie is broken on formation_energy_per_atom, where UN (-1.582) is far more stable than UC (-0.255)."
+    "note": "rocksalt Fm-3m; verified mp-id (UNUC.csv). Symmetry confirmed from live MP 2026-06-25. Ties with UC on energy_above_hull (both 0.0, since each is a line compound on its own chemsys hull), so the U(N,C) 50/50 tie is broken on formation_energy_per_atom, where UN (-1.582) is far more stable than UC (-0.255)."
   },
   "UC": {
     "mp_id": "mp-2489",
@@ -30,7 +30,7 @@
     "nsites": 3,
     "energy_above_hull": 0.0,
     "formation_energy_per_atom": -3.927176196666666,
-    "note": "fluorite Fm-3m; verified mp-id (CeO2Nd2O3Vals.csv). Symmetry confirmed from live MP 2026-06-25. Ce is the dominant cation on every row of that benchmark (min Ce fraction 0.6451), so CeO2 is the reference throughout — no tie arises."
+    "note": "fluorite Fm-3m; verified mp-id (CeO2Nd2O3Vals.csv). Symmetry confirmed from live MP 2026-06-25. Ce is the dominant cation on every row of that benchmark (min Ce fraction 0.6451), so CeO2 is the reference throughout and no tie arises."
   },
   "UO2": {
     "mp_id": "mp-1597",
@@ -41,7 +41,7 @@
     "nsites": 3,
     "energy_above_hull": 0.0,
     "formation_energy_per_atom": -3.75044424,
-    "note": "fluorite Fm-3m; lowest e_above_hull UO2 in MP. Confirmed from live MP 2026-06-25. mp-308 (hexagonal, sg=189) is an experimental polymorph but higher energy — do not use as default."
+    "note": "fluorite Fm-3m; lowest e_above_hull UO2 in MP. Confirmed from live MP 2026-06-25. mp-308 (hexagonal, sg=189) is an experimental polymorph but higher energy, so do not use as default."
   },
   "PuO2": {
     "mp_id": "mp-1959",

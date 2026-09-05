@@ -177,21 +177,56 @@ def train(
 
         est = estimators[key]
 
-        # Inject n_jobs where meaningful
+        # Push parallelism into the INNERMOST estimator, never into a meta-estimator
+        # wrapper. engine/evaluate_cv.py documents the same ordering at length.
+        #
+        #   MultiOutputRegressor(n_jobs=-1) fans the three outputs out to loky
+        #   PROCESSES, each fitting a complete 600-tree forest (~3.2 GB for rf2) and
+        #   pickling it back, so the parent holds all three while the workers still
+        #   hold their own copies. The inner RandomForestRegressor meanwhile stays at
+        #   n_jobs=1, so this pays maximum memory for minimum parallelism.
+        #
+        #   RandomForestRegressor(n_jobs=-1) instead parallelizes TREE BUILDING with
+        #   THREADS over one shared copy of X, for the same wall-clock win at a
+        #   fraction of the memory.
+        #
+        # Testing the wrapper first always matches for MultiOutputRegressor, which
+        # leaves the inner branch unreachable.
+        inner = getattr(est, "estimator", None)
         if n_jobs is not None:
-            if hasattr(est, "n_jobs"):
-                est.set_params(n_jobs=n_jobs)
-            elif hasattr(est, "estimator") and hasattr(est.estimator, "n_jobs"):
-                est.estimator.set_params(n_jobs=n_jobs)
+            if inner is not None and hasattr(inner, "n_jobs"):
+                inner.set_params(n_jobs=n_jobs)       # rf2, lin
+                if hasattr(est, "n_jobs"):
+                    est.set_params(n_jobs=1)          # keep the wrapper sequential
+            elif hasattr(est, "n_jobs"):
+                est.set_params(n_jobs=n_jobs)         # rf1, gbr1, gbr2
 
         est.fit(X, Y)
+
+        # Put n_jobs back before pickling. joblib writes the attribute into the
+        # artifact, so without this the saved binary records whatever --n-jobs the
+        # training machine happened to use, and two otherwise identical fits hash
+        # differently. Parallelism is a property of the machine that did the
+        # fitting, not of the model.
+        #
+        # This does NOT make a rebuild byte-identical to the binaries published in
+        # 2026-07. A rebuild here came out 32 bytes larger than the recorded size,
+        # and resetting n_jobs did not account for the difference; the cause was not
+        # tracked down. What was checked instead is that the rebuilt models reproduce
+        # the published metrics, which is in RELEASE.md.
+        if n_jobs is not None:
+            if inner is not None and hasattr(inner, "n_jobs"):
+                inner.set_params(n_jobs=None)
+            if hasattr(est, "n_jobs"):
+                est.set_params(n_jobs=None)
 
         out_path = config.model_path(key)
         config.MODELS_DIR.mkdir(parents=True, exist_ok=True)
         joblib.dump(est, out_path)
         progress(f"[train]   Saved {out_path.name}")
 
-        artifacts.mark_stage(f"train:{key}", features=len(filtered_labels), rows=len(df))
+        artifacts.mark_stage(f"train:{key}", features=len(filtered_labels),
+                             rows=len(df), packages=artifacts.package_versions())
         results[key] = str(out_path)
 
     return results
