@@ -1,12 +1,12 @@
-# Independent GBR — HistGBR (`gbr2`)
+# Independent GBR, HistGBR (`gbr2`)
 
 **Status: trained and 5-fold cross-validated.** Binary:
-`Models/binaries/ScikitLearnGBRModel.joblib` (22,965,965 bytes — the smallest reportable model).
+`Models/binaries/ScikitLearnGBRModel.joblib`, 22,965,965 bytes, the smallest reportable model.
 
 ## Description
 
 A `MultiOutputRegressor` wrapping one independent `HistGradientBoostingRegressor` per
-lattice parameter (a, b, c) — the gradient-boosted analogue of `rf2`'s "independent"
+lattice parameter (a, b, c), the gradient-boosted analogue of `rf2`'s "independent"
 design.
 
 ## Hyperparameters
@@ -16,7 +16,7 @@ See `params.json`: `max_iter=1800`, `learning_rate=0.05`, `max_depth=10`,
 
 Note: an earlier, unmaintained exploratory notebook
 (`exploratory/FuelLatticeParameterModelCreation_TrainTest.ipynb`) trains this same
-model with `max_iter=1500` instead of `1800` — a real discrepancy between that notebook
+model with `max_iter=1500` instead of `1800`, a real discrepancy between that notebook
 and this repository's canonical hyperparameters, never reconciled. `params.json` and
 `engine/train_models.py` are authoritative; the exploratory notebook is not.
 
@@ -40,27 +40,31 @@ filtered to a,b,c ≤ 10 Å, 145 features, 64,128 rows.
 
 ## Limitations
 
-- **It does not track the U(N,C) compositional trend — it inverts it.** On
-  `Data/benchmarks/UNUC.csv`, `gbr2` has a Pearson r of **−0.2696** and a slope of **−0.426**
-  against the experimental values: the predicted lattice parameter moves the *wrong way* with
-  composition. Its raw MAE (0.048023 Å) understates this badly — it is landing in the right
-  numeric neighbourhood while getting the physics backwards. **Do not use `gbr2` for U(N,C)
-  interpolation.** (`rf2`, by contrast, has r = 0.9405 there.) See
-  `Results/benchmarks/basis_check.md`.
-- **The training labels are DFT, the benchmarks are experimental — different quantities.**
+- **On U(N,C) it has no reproducible direction at all.** The shipped binary gives Pearson
+  r = **−0.2696**, which reads as an inverted compositional trend, but that sign does not
+  survive a change of random seed. Across seeds 42 to 46 the correlation comes out
+  −0.2696, −0.2870, +0.4927, +0.5012 and −0.0533: three negative, two positive, mean
+  +0.0768 with a standard deviation of 0.3945 that is five times the mean. `gbr2` is the
+  only model here whose benchmark sign is unstable, so **no claim about the direction of
+  the compositional trend can rest on it**, in either direction. `rf1` on the same
+  benchmark is +0.9028 ± 0.0084. **Do not use `gbr2` for U(N,C) interpolation.** See
+  `Results/benchmarks/seed_stability.md`.
+- **The training labels are DFT and the benchmarks are experimental. They are
+  different quantities.**
   Every training lattice parameter is Materials-Project DFT-relaxed geometry (MP's
   `theoretical: False` means the structure was *observed*, not that its lattice parameters were
-  *measured*). A benchmark MAE against experimental `a_true` therefore contains the
+  *measured*). A benchmark MAE against experimental `a_true` thus contains the
   DFT-vs-experiment discrepancy on top of model error. It is material-specific and changes
   sign: DFT − experiment is −0.006621 Å (UN), −0.022736 Å (UC), **+0.057365 Å** (CeO2). No
-  correction is shipped — only 3 of 9 curated hosts have an in-repo experimental value and the
+  correction is shipped, because only 3 of 9 curated hosts have an in-repo
+  experimental value and the
   sign flips across them. Compare models with the offset-invariant slope / Pearson r from
   `scripts/basis_check.py`.
 - **Validated primarily on cubic hosts.** R²_cubic (0.977992) far exceeds R²_all (0.886472).
   `predict_one()` warns on non-cubic hosts.
 - **Out-of-domain elements** absent from the training features degrade accuracy;
   `predict_one()` warns when detected.
-- **Pickle format risk.** Raw `joblib`/pickle artifact — see `Models/README.md`.
+- **Pickle format risk.** Raw `joblib`/pickle artifact, as `Models/README.md` explains.
 
 ## To retrain
 

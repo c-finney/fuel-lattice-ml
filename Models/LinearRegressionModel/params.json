@@ -4,7 +4,11 @@
   "wraps": "sklearn.linear_model.LinearRegression",
   "params": {},
   "multioutput": "wrapped",
-  "targets": ["a", "b", "c"],
-  "status": "not_trained",
+  "targets": [
+    "a",
+    "b",
+    "c"
+  ],
+  "status": "trained",
   "note": "Baseline sanity check only. Trained only under `cli.py train --full`; never shown in prediction output (see engine/config.py REPORTABLE)."
 }

@@ -11,6 +11,10 @@
     "random_state": 42
   },
   "multioutput": "native",
-  "targets": ["a", "b", "c"],
-  "status": "not_trained"
+  "targets": [
+    "a",
+    "b",
+    "c"
+  ],
+  "status": "trained"
 }

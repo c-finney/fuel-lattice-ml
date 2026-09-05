@@ -1,4 +1,4 @@
-# Lumped GBR — XGBoost (`gbr1`)
+# Lumped GBR, XGBoost (`gbr1`)
 
 **Status: trained and 5-fold cross-validated.** Binary: `Models/binaries/XGBoostGBRModel.joblib`
 (51,341,788 bytes).
@@ -7,7 +7,7 @@
 
 An `XGBRegressor` using `multi_strategy="multi_output_tree"`, i.e. a single native
 multi-output gradient-boosted forest where each tree predicts all three lattice
-parameters (a, b, c) jointly — analogous to `rf1`'s "lumped" design, but gradient
+parameters (a, b, c) jointly, analogous to `rf1`'s "lumped" design but gradient
 boosted rather than bagged.
 
 ## Hyperparameters
@@ -30,43 +30,48 @@ Materials Project structures filtered to a,b,c ≤ 10 Å, 145 features, 64,128 r
 | b | 0.113306 | 0.983016 | 0.309928 | 0.893973 |
 | c | 0.123666 | 0.980368 | 0.384835 | 0.862923 |
 
-**`gbr1` is the most accurate model in the repository on cross-validation** — it wins 11 of
+**`gbr1` is the most accurate model in the repository on cross-validation**, winning 11 of
 the 12 metric×parameter cells against `rf1`/`rf2`/`gbr2`. Its only loss is `MAE_all` for
-parameter c (`rf1` 0.381954 vs 0.384835 Å), on the all-systems set. On `MAE_cubic` — the
-regime relevant to fluorite/rocksalt fuels — it leads `rf1` 0.113556 vs 0.121701 Å **while
+parameter c (`rf1` 0.381954 vs 0.384835 Å), on the all-systems set. On `MAE_cubic`, the
+regime relevant to fluorite and rocksalt fuels, it leads `rf1` 0.113556 vs 0.121701 Å **while
 being 77× smaller** (51 MB vs 3.97 GB).
 
 > [!warning] **Do not read that as "gbr1 is the best model."** It wins cross-validation and
-> then fails the U(N,C) benchmark outright (Pearson r = **−0.0972** — see Limitations). CV
-> accuracy and compositional-trend fidelity are different properties, and `gbr1` has only the
-> first. `rf1` is the headline model in `config.HEADLINE_PREF` because it is strong on **both**;
-> `gbr1` sits 3rd, ahead of `gbr2` (which it beats on all 8 combined metrics) but behind
-> `rf1` and `rf2`.
+> then gives an unstable answer on the U(N,C) benchmark: across seeds 42 to 46 its Pearson r
+> there spans **+0.3764 to +0.8219**, a standard deviation of 0.2092 against `rf1`'s 0.0084
+> on the same benchmark. CV accuracy and stability on out-of-domain compositions are
+> different properties, and `gbr1` has only the first. `rf1` leads `config.HEADLINE_PREF`
+> for that reason; `gbr1` sits 3rd, ahead of `gbr2`, whose sign does not survive a change of
+> seed at all. See `Results/benchmarks/seed_stability.md`.
 
 ## Limitations
 
-- **Cross-validation accuracy does not carry over to the solid-solution benchmarks.** On
-  `Data/benchmarks/UNUC.csv`, `gbr1` has a Pearson r of **−0.0972** and a slope of **−0.164**
-  against the experimental values — i.e. it shows **essentially no correlation with the
-  compositional trend**, despite a middling raw MAE of 0.039714 Å. Its error is dominated by
-  three outliers in the N-rich corner (at y = 0.95 it predicts 5.0631 Å against a true
-  4.8940 Å). Its low MAE there is proximity, not skill. `rf2` (r = 0.9405) tracks that trend;
-  `gbr1` does not. Do not use `gbr1` for U(N,C) interpolation on the strength of its CV score.
-  See `Results/benchmarks/basis_check.md`.
-- **The training labels are DFT, the benchmarks are experimental — different quantities.**
+- **Cross-validation accuracy does not carry over to the solid-solution benchmarks, and
+  what it does there is not repeatable.** The shipped binary scores Pearson r = +0.8219 on
+  `Data/benchmarks/UNUC.csv`, but that number is a property of this particular fit rather
+  than of the model: refitting at seeds 43 to 46 gives +0.4209, +0.8092, +0.6209 and
+  +0.3764, a mean of +0.6099 with a standard deviation of 0.2092. `rf1` on the same benchmark sits at +0.9028 ± 0.0084, which
+  is 25 times tighter. The benchmark is extrapolation, since these fractional solid solutions
+  are absent from the training data, and a 1800-round depth-10 ensemble has wide variance
+  there. Do not quote a single `gbr1` benchmark correlation, and do not use `gbr1` for U(N,C)
+  interpolation on the strength of its CV score. See
+  `Results/benchmarks/seed_stability.md`.
+- **The training labels are DFT and the benchmarks are experimental. They are
+  different quantities.**
   Every training lattice parameter is Materials-Project DFT-relaxed geometry (MP's
   `theoretical: False` means the structure was *observed*, not that its lattice parameters were
-  *measured*). A benchmark MAE against experimental `a_true` therefore contains the
+  *measured*). A benchmark MAE against experimental `a_true` thus contains the
   DFT-vs-experiment discrepancy on top of model error. It is material-specific and changes
   sign: DFT − experiment is −0.006621 Å (UN), −0.022736 Å (UC), **+0.057365 Å** (CeO2). No
-  correction is shipped — only 3 of 9 curated hosts have an in-repo experimental value and the
+  correction is shipped, because only 3 of 9 curated hosts have an in-repo
+  experimental value and the
   sign flips across them. Compare models with the offset-invariant slope / Pearson r from
   `scripts/basis_check.py`.
 - **Validated primarily on cubic hosts.** R²_cubic (0.983007) is far above R²_all (0.903586);
   non-cubic predictions carry materially more uncertainty. `predict_one()` warns on non-cubic hosts.
 - **Out-of-domain elements** absent from the training features degrade accuracy;
   `predict_one()` warns when detected.
-- **Pickle format risk.** Raw `joblib`/pickle artifact — see `Models/README.md`.
+- **Pickle format risk.** Raw `joblib`/pickle artifact, as `Models/README.md` explains.
 
 ## To retrain
 

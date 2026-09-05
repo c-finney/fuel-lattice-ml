@@ -13,7 +13,7 @@
       "numpy": "2.5.1",
       "pandas": "2.3.3",
       "joblib": "1.5.3",
-      "pymatgen": "unknown",
+      "pymatgen": "2026.8.30",
       "matminer": "0.10.1"
     },
     "training_rows": 64128,
@@ -25,24 +25,24 @@
     "rf1": {
       "file": "LumpedRFModel.joblib",
       "compressed": false,
-      "bytes": 3966648193,
-      "sha256": "806e57d9c857cfe3233741a5627eebb93d9d0261f67b2f9f15a93227d14a1373",
-      "uri": "hf://c-finney/fuel-lattice-ml/LumpedRFModel.joblib",
+      "bytes": 3966648225,
+      "sha256": "ad4f7f6bc215f5a50436f66f9084dcd4567d2084e361451222772763c588debf",
+      "uri": null,
       "status": "trained"
     },
     "rf2": {
       "file": "IndependentRFModel.joblib",
       "compressed": false,
-      "bytes": 9735288229,
-      "sha256": "15c21119c71d4d64697efae110a5f95c22b9bbbf3852fc6b48eaf3f4d4881b5b",
+      "bytes": 9735267941,
+      "sha256": "5b38ed6409bc181f1589b0efa6257dbca06fd55900b10b27fa3ea898c20aec1a",
       "uri": null,
       "status": "trained"
     },
     "gbr1": {
       "file": "XGBoostGBRModel.joblib",
       "compressed": false,
-      "bytes": 51341788,
-      "sha256": "4a4db5cce30feba66313f772f58de351541582cf22f9e57b1c223c1542e17905",
+      "bytes": 51229521,
+      "sha256": "a93a484164cdc74ebd3f0f9f259aab1a1b8337e53af983d76628960aff3e0c2c",
       "uri": null,
       "status": "trained"
     },
@@ -50,15 +50,15 @@
       "file": "ScikitLearnGBRModel.joblib",
       "compressed": false,
       "bytes": 22965965,
-      "sha256": "27f6a0d68c8cd266bb0a4feb5601e7fb12148f3495243b0c9269700ddfd0f3d5",
+      "sha256": "e4bd12cb8ed859ca2157d5a3365ce567656076435b382930608eeb5cece84eee",
       "uri": null,
       "status": "trained"
     },
     "lin": {
       "file": "LinearRegressionModel.joblib",
       "compressed": false,
-      "bytes": 17442,
-      "sha256": "450649ba2d27d68543d5f157bb769e18fbe3dd75f964a33a915e5c113adbcb06",
+      "bytes": 17153,
+      "sha256": "ef6ba5f4a605cbe4cb763e47c3e737b96b3b634d9b375a6d849ece1c71347974",
       "uri": null,
       "status": "trained"
     }
