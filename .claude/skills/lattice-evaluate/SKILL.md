@@ -35,15 +35,16 @@ prediction are the full-dataset fits produced by `/lattice-train`.
    MAE/MSE/R² for a, b, c, both overall and cubic-only. Quote the **cubic-only**
    numbers as the headline accuracy figures, because the models were validated
    primarily on cubic hosts and the all-systems numbers are materially worse. Lumped
-   RF (`rf1`) is the headline model on stability rather than accuracy, and **not** because
-   it wins cross-validation, which it does not: `gbr1` has the better `MAE_cubic` at
-   0.113556 Å against 0.121701 Å. What separates them is the spread of the benchmark
-   metrics across random seeds, where `rf1` sits at Pearson r +0.9028 ± 0.0084 on U(N,C)
-   against `gbr1`'s +0.6099 ± 0.2092 and `gbr2`'s +0.0768 ± 0.3945. Do not call any model
-   "most accurate" without saying on which axis, and quote a benchmark correlation with
-   the seed it came from. See `Results/benchmarks/seed_stability.md`. Point to the plots written under
-   `Results/figures/`, and to the per-entry predictions under
-   `Results/metrics/cv_predictions/`.
+   RF (`rf1`) is the headline model on fidelity to the compositional trend rather than
+   accuracy, and **not** because it wins cross-validation, which it does not: `gbr1` has
+   the better `MAE_cubic` at 0.113556 Å against 0.121701 Å. What separates them is that on
+   the U(N,C) benchmark `rf1` gives Pearson r +0.9012 while both boosted models invert the
+   trend, at −0.0972 (`gbr1`) and −0.2696 (`gbr2`). Do not call any model "most accurate"
+   without saying on which axis. See `Results/benchmarks/basis_check.md`, and
+   `Results/benchmarks/seed_stability.md` for how far a change of seed moves each model.
+   Point to the plots written under `Results/figures/`, and to the per-entry predictions
+   under `Results/metrics/cv_predictions/`, whose provenance caveat is in
+   `Results/README.md`.
 
 ## Notes
 

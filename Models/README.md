@@ -33,12 +33,18 @@ systems.
 `rf1` is the headline model in `config.HEADLINE_PREF`, and the reason is worth stating
 plainly because it is not the obvious one. `gbr1` beats it on cross-validation, at
 `MAE_cubic` 0.113556 Å against 0.121701 Å while being 77 times smaller. What separates them
-is repeatability on the benchmarks: refitted across seeds 42 to 46, `rf1` holds a U(N,C)
-Pearson r of +0.9028 ± 0.0084 while `gbr1` ranges over +0.3764 to +0.8219 and `gbr2` over
-−0.2870 to +0.5012. `rf2` is marginally the more accurate forest but is last on CV
-R²_cubic while weighing 9.74 GB. `rf1` wins no single metric and is the smaller of the two
-models whose benchmark figures move least between fits. See
-`Results/benchmarks/seed_stability.md`.
+is the *direction* of the compositional dependence: on U(N,C) the two forests give Pearson
+r of +0.9012 (`rf1`) and +0.9405 (`rf2`), while both boosted models invert it, at −0.0972
+(`gbr1`) and −0.2696 (`gbr2`). A model that predicts the lattice parameter to fall as
+carbon substitutes for nitrogen cannot screen compositions, however good its mean error.
+`rf2` is marginally the more accurate forest but is last on CV R²_cubic while weighing
+9.74 GB, so `rf1` is the better cross-validated and much smaller of the two models that get
+the sign right. See `Results/benchmarks/basis_check.md`.
+
+These figures describe the deposited binaries at `random_state=42`, which are the artifacts
+`scripts/fetch_models.py` downloads and the ones the manuscript reports.
+`Results/benchmarks/seed_stability.md` bounds how far a change of seed moves each model on
+these benchmarks, both of which are extrapolation.
 
 ## Fetching the binary
 

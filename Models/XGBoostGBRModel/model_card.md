@@ -37,24 +37,26 @@ regime relevant to fluorite and rocksalt fuels, it leads `rf1` 0.113556 vs 0.121
 being 77× smaller** (51 MB vs 3.97 GB).
 
 > [!warning] **Do not read that as "gbr1 is the best model."** Cross-validation accuracy
-> and repeatability on out-of-domain compositions are different properties. On the U(N,C)
-> benchmark `gbr1`'s Pearson r spans **+0.3764 to +0.8219** across seeds 42 to 46, a
-> standard deviation of 0.2092 against `rf1`'s 0.0084 on the same benchmark, so a single
-> figure for it carries a wide margin. `rf1` leads `config.HEADLINE_PREF` on that
-> repeatability; `gbr1` sits 3rd. See `Results/benchmarks/seed_stability.md`.
+> and fidelity to the compositional trend are different properties. On the U(N,C)
+> benchmark this model returns **Pearson r = −0.0972 with a slope of −0.164**, i.e. it
+> predicts the lattice parameter to *fall* as carbon substitutes for nitrogen, which it
+> does not. A model that inverts the sign of the composition dependence cannot screen
+> compositions however small its mean error. `rf1` leads `config.HEADLINE_PREF` on that
+> ground; `gbr1` sits 3rd. See `Results/benchmarks/basis_check.md`.
 
 ## Limitations
 
-- **Cross-validation accuracy does not carry over to the solid-solution benchmarks.** At
-  the shipped seed of 42 this model scores Pearson r = +0.8219 on
-  `Data/benchmarks/UNUC.csv`, against a cross-validated `MAE_cubic` that leads every other
-  model here. Refitting at seeds 43 to 46 gives +0.4209, +0.8092, +0.6209 and +0.3764, a
-  mean of +0.6099 with a standard deviation of 0.2092, where `rf1` on the same benchmark
-  sits at +0.9028 ± 0.0084 and is 25 times tighter. The benchmark is extrapolation, since
-  these fractional solid solutions are absent from the training data, and an 1800-round
-  depth-10 ensemble varies more there than a bagged forest does. Quote a `gbr1` benchmark
-  correlation with the seed it came from, and do not choose `gbr1` for U(N,C) interpolation
-  on the strength of its CV score. See `Results/benchmarks/seed_stability.md`.
+- **Cross-validation accuracy does not carry over to the solid-solution benchmarks.** This
+  model has the best cross-validated `MAE_cubic` in the repository and still inverts the
+  U(N,C) trend, at Pearson r = −0.0972 and slope −0.164, where `rf1` sits at +0.9012 and
+  slope +1.240. The benchmark is extrapolation, since these fractional solid solutions are
+  absent from the training data, and an 1800-round depth-10 ensemble does not extrapolate
+  the way a bagged forest does. Do not choose `gbr1` for U(N,C) interpolation on the
+  strength of its CV score. See `Results/benchmarks/basis_check.md`.
+- **Seed sensitivity.** Refitting at seeds 43 to 46 moves the boosted models much further
+  than the forests, so a `gbr1` benchmark correlation should be quoted with the seed it
+  came from. Everything reported here is the deposited binary at `random_state=42`.
+  `Results/benchmarks/seed_stability.md` has the table.
 - **The training labels are DFT and the benchmarks are experimental. They are
   different quantities.**
   Every training lattice parameter is Materials-Project DFT-relaxed geometry (MP's

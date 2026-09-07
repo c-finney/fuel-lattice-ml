@@ -65,33 +65,36 @@ Limitations. Full metrics
 ### Why `rf1` is the headline model
 
 All five models are trained, 5-fold cross-validated
-(`Results/metrics/ModelMetrics_CrossVal.csv`), run against both solid-solution benchmarks
-(`Results/benchmarks/basis_check.md`), and refitted across seeds 42 to 46 to measure how
-far those benchmark numbers move (`Results/benchmarks/seed_stability.md`). `rf1` leads
-`config.HEADLINE_PREF` on the third of those, not the first two.
+(`Results/metrics/ModelMetrics_CrossVal.csv`) and run against both solid-solution benchmarks
+(`Results/benchmarks/basis_check.md`). `rf1` leads `config.HEADLINE_PREF` on the second of
+those, not the first.
 
-The reason is repeatability. Both benchmarks are extrapolation, since the fractional solid
-solutions they score are absent from the training data, and a boosted ensemble refitted
-with a different seed lands somewhere else. Over five seeds the U(N,C) correlation comes
-out as:
+The reason is the *direction* of the compositional dependence. On U(N,C), scored against the
+deposited binaries at `random_state=42`:
 
-| model | Pearson r | range | sign stable |
+| model | Pearson r | slope | reproduces the trend |
 |---|---|---|---|
-| `rf1` | +0.9028 ± 0.0084 | +0.8919 to +0.9147 | yes |
-| `rf2` | +0.9362 ± 0.0132 | +0.9172 to +0.9533 | yes |
-| `gbr1` | +0.6099 ± 0.2092 | +0.3764 to +0.8219 | yes |
-| `gbr2` | +0.0768 ± 0.3945 | −0.2870 to +0.5012 | no |
+| `rf1` | +0.9012 | +1.240 | yes |
+| `rf2` | +0.9405 | +1.217 | yes |
+| `gbr1` | −0.0972 | −0.164 | **no, inverted** |
+| `gbr2` | −0.2696 | −0.426 | **no, inverted** |
 
-The two forests come out 25 to 47 times tighter than the boosted models. Between them,
-`rf2` is marginally the more accurate on
-both benchmarks but is last of the four on CV R²_cubic (0.976283) and weighs 9.74 GB
-against `rf1`'s 3.97 GB. `rf1` is the better cross-validated of the two stable models and
-2.5 times smaller, which is the whole of the argument.
+Only the two forests get the sign right. Both boosted models predict the lattice parameter
+to fall as carbon substitutes for nitrogen, which it does not, and a model that inverts the
+composition dependence cannot screen compositions however small its mean error. Between the
+two forests, `rf2` is marginally the more accurate on both benchmarks but is last of the four
+on CV R²_cubic (0.976283) and weighs 9.74 GB against `rf1`'s 3.97 GB. `rf1` is the better
+cross-validated of the two models that get the sign right and 2.5 times smaller, which is the
+whole of the argument.
 
 This is a weaker claim than "most accurate" and it is the one the evidence supports.
 `gbr1` beats `rf1` on cross-validation, at `MAE_cubic` 0.113556 Å against 0.121701 Å while
-being 77 times smaller, and it is the better choice wherever a stable answer on
-out-of-domain compositions does not matter.
+being 77 times smaller.
+
+One further property reinforces the choice rather than establishing it: refitting across
+seeds 42 to 46 moves the boosted models much further than the forests, `rf1` holding
++0.9028 ± 0.0084 on U(N,C) where `gbr1` and `gbr2` range far more widely.
+`Results/benchmarks/seed_stability.md` has the table.
 
 ## Limitations
 

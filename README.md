@@ -110,25 +110,32 @@ project; the notebooks and the agent tooling stay in sync because they are the s
 
 ## The five models
 
-| Key | Name | Binary | CV MAE, cubic (Å) | U(N,C) Pearson r, 5 seeds |
+| Key | Name | Binary | CV MAE, cubic (Å) | U(N,C) Pearson r |
 |---|---|---|---|---|
-| `rf1` | Lumped RF | 3.97 GB | 0.121701 | +0.9028 ± 0.0084 |
-| `rf2` | Independent RF | 9.74 GB | 0.125516 | +0.9362 ± 0.0132 |
-| `gbr1` | Lumped GBR (XGBoost) | 51 MB | 0.113556 | +0.6099 ± 0.2092 |
-| `gbr2` | Independent GBR (HistGBR) | 23 MB | 0.151228 | +0.0768 ± 0.3945 |
+| `rf1` | Lumped RF | 3.97 GB | 0.121701 | +0.9012 |
+| `rf2` | Independent RF | 9.74 GB | 0.125516 | +0.9405 |
+| `gbr1` | Lumped GBR (XGBoost) | 51 MB | 0.113556 | −0.0972 |
+| `gbr2` | Independent GBR (HistGBR) | 23 MB | 0.151228 | −0.2696 |
 | `lin` | Linear Regression | 17 KB | 1.046069 | −0.9629 |
 
-The benchmark column is the mean and standard deviation over seeds 42 to 46 rather than a
-single fit. Both benchmarks are extrapolation, since the fractional solid solutions they
-score are absent from the training data, so the spread there is wide for some models. The
-two random forests come out 25 to 47 times tighter than the boosted models, and `gbr2`'s
-sign varies with the seed. Everything shipped here is fitted at `random_state=42`.
+Both columns describe **the deposited binaries**, which are the ones the manuscript reports
+and the ones `scripts/fetch_models.py` downloads. All five were fitted at `random_state=42`
+on 2026-07-13.
 
-`rf1` leads on that stability rather than on accuracy. `gbr1` is the better cross-validated
-model, at 0.113556 Å against 0.121701 Å while being 77 times smaller, and is the right choice
-wherever a repeatable answer on out-of-domain compositions is not needed. `rf2` is marginally
-the more accurate of the two forests but is last on cross-validated R² over the cubic subset
-and weighs 9.74 GB. See `Results/benchmarks/seed_stability.md`.
+`rf1` is the headline model, and it leads on repeatability rather than on accuracy. `gbr1`
+is the better cross-validated model, at 0.113556 Å against 0.121701 Å while being 77 times
+smaller, but it returns a negative correlation on the U(N,C) benchmark, predicting the
+lattice parameter to fall as carbon substitutes for nitrogen. A model that gets the *sign*
+of the composition dependence wrong is not usable for screening, however small its mean
+error. `rf2` is marginally the more accurate of the two forests but is last on
+cross-validated R² over the cubic subset and weighs 9.74 GB.
+
+One caveat applies to every number above. Both benchmarks are extrapolation, since the
+fractional solid solutions they score are absent from the training data, and a boosted
+ensemble refitted at a different seed lands somewhere else. Refitting at seeds 43 to 46
+moves the boosted models much further than the forests;
+`Results/benchmarks/seed_stability.md` has the table. Quote a benchmark correlation with
+the seed it came from.
 
 Linear Regression is suppressed from prediction output unless `--include-baseline` is
 passed, because a model this far off should not be mistaken for a usable prediction.
