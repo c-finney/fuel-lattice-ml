@@ -37,10 +37,24 @@ in `Models/binaries/`.
 
 ## `metrics/cv_predictions/` : the values behind the figures
 
-One file per model, each holding the out-of-fold prediction for all 64,128 training entries,
-written by the same `cli.py evaluate` run. Every aggregate in `ModelMetrics_CrossVal.csv` is
-a reduction of these, so the table can be recomputed without refitting. `DATA_DICTIONARY.md`
-describes the columns.
+One file per model, each holding the out-of-fold prediction for all 64,128 training entries.
+`DATA_DICTIONARY.md` describes the columns.
+
+> **These files do not reduce exactly to `ModelMetrics_CrossVal.csv`.** Recomputing
+> `MSE_cubic` from the points and comparing against the table gives:
+>
+> | model | disagreement on `MSE_cubic` |
+> |---|---|
+> | `lin`, `gbr2` (a, b) | exact to machine precision |
+> | `rf2` | 3.5e-6 |
+> | `rf1` | 1.7e-5 |
+> | `gbr2` (c) | 3.1e-4 |
+> | **`gbr1`** | **2.2e-3** |
+>
+> For every model but `gbr1` that is far below the precision anything is reported to, and the
+> figures drawn from these points are the figures the table describes. For `gbr1` it is not.
+> **`ModelMetrics_CrossVal.csv` is the citable source**; use these files for the point-level
+> scatter behind the figures, not to recompute a `gbr1` aggregate.
 
 ## `benchmarks/seed_stability.csv` and `.md`
 
@@ -52,6 +66,12 @@ Read this before quoting any single benchmark correlation. The benchmark sets ar
 7 compositions and both are extrapolation, so the spread across seeds is thus wide for some
 models. Where `sign_stable` is false, the sign of that model's correlation varies between
 fits, and a figure quoted from one fit should name the seed it came from.
+
+> **This file measures refits, not the deposited binaries.** Its rows come from estimators
+> refitted for this measurement, so for `gbr1` the seed-42 row does not agree with the
+> `gbr1` figures in `basis_check.md`, the model cards or the manuscript, all of which
+> describe the deposited artifact. Cite `basis_check.md` for a model's benchmark figures
+> and this file only for the spread across seeds.
 
 ## `metrics/feature_spearman_cubic.csv`
 
