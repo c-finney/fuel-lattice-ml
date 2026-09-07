@@ -21,10 +21,18 @@ Zenodo deposit is published. RELEASE.md lists every placeholder in the repositor
 >
 > License: MIT
 
-The Zenodo deposit holds the source tree together with the five trained model
+The Zenodo deposit holds the source tree together with all five trained model
 binaries, which total roughly 14 GB and exceed what the Git host accepts. The
 project is retired and is not maintained; the archived version is the one the
 results in this article were produced with.
+
+**Reproducibility of the deposited models.** The deposited binaries are the
+artifacts fitted on 2026-07-13, and they reproduce every model figure reported in
+this article. The featurization inputs rebuild byte-identically from the
+redistributed source table on any machine, and `Models/MANIFEST.json` records the
+size and SHA-256 of each binary so a download can be verified before use.
+`RELEASE.md` records what the deposit reproduces and the limitations that were
+documented rather than resolved.
 
 ## Data Availability
 

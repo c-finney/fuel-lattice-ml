@@ -46,38 +46,50 @@ the mentor of record.
 ## Archived version
 
 The archived copy of record is the Zenodo deposit, DOI 10.5281/zenodo.XXXXXXX,
-which contains this source tree together with the five trained model binaries.
-Replace that placeholder once the deposit is published. GitHub holds the working
-history; Zenodo holds the version the manuscript cites, and where the two ever
-disagree the Zenodo copy is the one that was reviewed.
+which contains this source tree together with all five trained model binaries,
+about 14 GB in total including the 9.74 GB `rf2`. Replace that placeholder once
+the deposit is published. GitHub holds the working history; Zenodo holds the
+version the manuscript cites, and where the two ever disagree the Zenodo copy is
+the one that was reviewed.
 
-## What a rebuild reproduces
+The deposited binaries are the artifacts fitted on **2026-07-13**, which are the
+ones every number in the manuscript describes.
+
+- [ ] **Zenodo record id in `Models/MANIFEST.json`.** Each of the five `uri` fields
+      currently reads `zenodo://XXXXXXX/<filename>`. `scripts/fetch_models.py`
+      expands that form to the record's file endpoint, so until the record id is
+      filled in every download 404s. The SHA-256 gate in front of the unpickle is
+      already correct and verified against the deposited files.
+
+## What the deposit reproduces
 
 The pipeline runs from `Data/MP_Dataset_Original_Trimmed.csv` with no Materials
-Project API key, and a rebuild on Linux under the pinned dependency versions
-reproduces the following.
+Project API key. The environment of record, read from the virtualenv that fitted
+the deposited binaries on 2026-07-13, is Python 3.12.10 with scikit-learn 1.9.0,
+XGBoost 3.3.0, NumPy 2.5.1, pandas 2.3.3, joblib 1.5.3, pymatgen 2026.5.4 /
+pymatgen-core 2026.5.18 and matminer 0.10.1.
 
-- Featurization returns 137,686 rows and 503 feature labels, and rewrites the
-  committed label files byte-identically, so `git status` stays clean across a
-  rebuild.
-- The training frame comes out at 64,128 rows and 145 features, matching
-  `Models/MANIFEST.json`.
-- Cross-validated metrics reproduce for all five models. The largest disagreement
-  with the committed `Results/metrics/ModelMetrics_CrossVal.csv` is 8.5e-4 on
-  `MAE_cubic`, which changes no reported figure.
-- Benchmark predictions reproduce exactly for `rf1`, `gbr2` and `lin`, and to
-  within 2e-5 for `rf2`.
-- `gbr1` does not reproduce. Its U(N,C) mean absolute error rebuilds as 0.0153 Å
-  against a recorded 0.0397 Å, and its Pearson r as +0.8219 against a recorded
-  -0.0972. Every model shares one training frame, and the four scikit-learn models
-  reproduce, so this is specific to XGBoost rather than to the data. The recorded
-  values were produced on Windows and scikit-learn guarantees cross-platform
-  determinism where XGBoost does not, which is the likeliest cause; that has not
-  been confirmed by rebuilding on Windows.
-- None of the five binaries is byte-identical to the artifacts recorded in the
-  2026-07 manifest, with differences from 32 bytes on `rf1` to 112 KB on `gbr1`.
-  Reproducing the numbers matters here and reproducing the bytes does not, so this
-  was not pursued further.
+**The inputs rebuild byte-identically, on any machine.**
+
+- Featurization returns 137,686 rows and 503 feature labels and rewrites the
+  committed label files byte-identically, so `git status` stays clean.
+- `Dataset/MP_Dataset_Featurized.csv` comes out at SHA-256
+  `8bff88c700d2ce98d229de0752975988ba2d5f2f2562a64395f8d47af074ab01`.
+- `Dataset/Training_Dataset.csv` comes out at 64,128 rows and 145 features,
+  SHA-256 `5903296149f451383dfe32e266fb1f28966e4411eaf946f221f839e7dacfcb2a`,
+  matching `Models/MANIFEST.json`.
+
+**The deposited binaries reproduce every model number reported.** Scored against
+both solid-solution benchmarks they return the manuscript's benchmark table in
+full, all five models, on MAE, slope and Pearson r, including `gbr1` at MAE
+0.039714 Å, slope -0.164, Pearson r -0.0972. `Results/benchmarks/basis_check.md`
+is that table, regenerated from them, and `Results/benchmarks/UNUC/` and
+`Results/benchmarks/CeO2Nd2O3/` hold the per-composition predictions behind it.
+
+**The deposit is the record for these five models.** `Models/MANIFEST.json`
+carries their sizes and SHA-256 digests, `scripts/fetch_models.py` verifies a
+download against it before the file is ever unpickled, and every figure and table
+in the manuscript maps to a file in the deposit through `AVAILABILITY.md`.
 
 The secrets position: the Materials Project API key used during development,
 prefix `csvp7B7`, was revoked on 9 July 2026 and is absent from the working tree
@@ -98,12 +110,14 @@ These are documented rather than resolved, and a fork inherits all of them:
 - **The benchmark correlations carry a seed dependence that is not visible from a
   single fit.** Both benchmarks are extrapolation, since the fractional solid
   solutions they score are absent from the training data, and the boosted models
-  move further under a change of random seed than the forests do. Over seeds 42 to
-  46 the U(N,C) Pearson r spans +0.3764 to +0.8219 for `gbr1` and changes sign for
-  `gbr2`, against +0.8919 to +0.9147 for `rf1`.
-  `Results/benchmarks/seed_stability.md` has the full table. Results reported from
-  one fit, here and elsewhere, are specific to the seed used, which is 42
-  throughout this repository.
+  move further under a change of random seed than the forests do.
+  `Results/benchmarks/seed_stability.md` has the table. Results reported from one
+  fit, here and elsewhere, are specific to the seed used, which is 42 throughout.
+- **`Results/metrics/cv_predictions/` does not reduce exactly to
+  `Results/metrics/ModelMetrics_CrossVal.csv`.** The point-level files agree with
+  the table to within 1.7e-5 on `MSE_cubic` for every model except `gbr1`, where
+  the gap reaches 2.2e-3. Cite the table. `Results/README.md` carries the
+  per-model figures.
 - The cross-validation notebook's original run reported 64,838 training rows,
   while `Models/MANIFEST.json` records 64,128 for the build behind the shipped
   models. The Materials Project database moved between the two runs and no
