@@ -106,8 +106,8 @@ removing that bias, i.e. how well the model tracks the trend once the offset is 
 | model | MAE vs exp (Å) | bias (Å) | scatter (Å) | slope | Pearson r |
 |---|---|---|---|---|---|
 | Lumped RF (`rf1`) | 0.019434 | -0.019217 | 0.014994 | 1.240 | 0.9012 |
-| Independent RF (`rf2`) | 0.011665 | -0.009569 | 0.011439 | 1.217 | 0.9405 |
-| Lumped GBR (XGBoost) (`gbr1`) | 0.015329 | +0.006014 | 0.020389 | 1.220 | 0.8219 |
+| Independent RF (`rf2`) | 0.011661 | -0.009565 | 0.011433 | 1.217 | 0.9405 |
+| Lumped GBR (XGBoost) (`gbr1`) | 0.039714 | +0.039196 | 0.047603 | -0.164 | -0.0972 |
 | Independent GBR (HistGBR) (`gbr2`) | 0.048023 | -0.028282 | 0.048652 | -0.426 | -0.2696 |
 | Linear Regression (`lin`) | 0.472301 | +0.472301 | 0.048269 | -1.048 | -0.9629 |
 
@@ -116,8 +116,8 @@ removing that bias, i.e. how well the model tracks the trend once the offset is 
 | model | MAE vs exp (Å) | bias (Å) | scatter (Å) | slope | Pearson r |
 |---|---|---|---|---|---|
 | Lumped RF (`rf1`) | 0.132906 | +0.132906 | 0.009048 | 0.776 | 0.9451 |
-| Independent RF (`rf2`) | 0.149363 | +0.149363 | 0.006927 | 0.830 | 0.9704 |
-| Lumped GBR (XGBoost) (`gbr1`) | 0.111706 | +0.111706 | 0.035434 | 2.329 | 0.9902 |
+| Independent RF (`rf2`) | 0.149348 | +0.149348 | 0.006921 | 0.829 | 0.9706 |
+| Lumped GBR (XGBoost) (`gbr1`) | 0.086420 | +0.086420 | 0.036206 | 2.086 | 0.9210 |
 | Independent GBR (HistGBR) (`gbr2`) | 0.113491 | +0.113491 | 0.036960 | 1.606 | 0.7789 |
 | Linear Regression (`lin`) | 0.907920 | +0.907920 | 0.017105 | 1.030 | 0.8418 |
 
