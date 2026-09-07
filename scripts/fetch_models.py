@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -83,7 +84,16 @@ def _resolve_uri(uri: str) -> str | None:
 def _download(url: str, dest: Path) -> None:
     """Stream *url* to *dest*, hashing nothing; verification happens afterwards."""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    tmp = Path(tempfile.mkstemp(dir=dest.parent, prefix=".download-")[1])
+    # mkstemp hands back an OPEN os-level descriptor. Closing it immediately is
+    # required, not tidiness: Windows refuses to unlink a file that still has an
+    # open handle, so leaving it open makes the cleanup below raise
+    # PermissionError (WinError 32) and bury whatever actually went wrong --
+    # a 404 from an unpublished deposit, most likely -- under a traceback about
+    # a temp file. POSIX allows unlinking an open file, so this never surfaces
+    # on Linux.
+    fd, tmp_name = tempfile.mkstemp(dir=dest.parent, prefix=".download-")
+    os.close(fd)
+    tmp = Path(tmp_name)
     try:
         with urllib.request.urlopen(url) as response, open(tmp, "wb") as out:
             total = response.headers.get("Content-Length")
