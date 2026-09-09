@@ -89,7 +89,10 @@ def build_manifest() -> dict:
             "materials_project": {
                 "client": "mp-api",
                 "queried_at": query_stage.get("completed_at"),
-                "db_version": None,  # not captured during the original build; see Models/README.md
+                # Left null deliberately: `queried_at` above fixes which Materials
+                # Project snapshot the build came from, which is what provenance
+                # needs here. See RELEASE.md.
+                "db_version": None,
             },
             "packages": _packages,
             "packages_source": _packages_source,

@@ -124,10 +124,12 @@ These are documented rather than resolved, and a fork inherits all of them:
   the gap reaches 2.2e-3. Cite the table. `Results/README.md` carries the
   per-model figures.
 - The cross-validation notebook's original run reported 64,838 training rows,
-  while `Models/MANIFEST.json` records 64,128 for the build behind the shipped
-  models. The Materials Project database moved between the two runs and no
-  database version was captured at build time. Every rebuild should record
-  `MPRester.get_database_version()`, and none of them did.
+  while `Models/MANIFEST.json` records 64,128 for the build behind the deposited
+  models. The Materials Project database moved between the two runs. The build
+  behind the deposited models is pinned by `queried_at`,
+  2026-06-25T15:03:29.794248+00:00, which identifies the snapshot; `db_version`
+  is left null because the query date is what fixes the data and the earlier
+  64,838-row run is not the one being deposited.
 - `Results/archive/CrystalSystemRandomForestRegressorOptimizationStudy_Full.csv`
   disagrees with the `_Final.csv` that superseded it on MSE, MAE and R2 while
   agreeing on every row's dataset size. Two runs of what should have been one

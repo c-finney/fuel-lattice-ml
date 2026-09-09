@@ -37,11 +37,11 @@ trees), which is why the binary is 3.97 GB.
 - Licensed CC BY 4.0 by the Materials Project, so this model is a derived work and any
   reuse must retain that attribution (see root `README.md`).
 
-Reproducibility gap: the original CrossVal notebook run printed `Dataset Size: 64838` rows,
-while `Models/MANIFEST.json`'s recorded build captured `training_rows: 64128`. The Materials
-Project database shifted between those two runs and no MP database version was captured at
-build time. A future rebuild should record `MPRester.get_database_version()` in
-`Models/MANIFEST.json`; check that the method exists in the installed `mp-api` first.
+The original CrossVal notebook run printed `Dataset Size: 64838` rows, while
+`Models/MANIFEST.json`'s recorded build captured `training_rows: 64128`. The Materials
+Project database shifted between those two runs. The build behind the deposited binaries is
+the 64,128-row one, pinned by the manifest's `queried_at` of
+2026-06-25T15:03:29.794248+00:00; the earlier run is not what is deposited.
 
 ## Metrics
 
