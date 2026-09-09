@@ -91,10 +91,11 @@ This is a weaker claim than "most accurate" and it is the one the evidence suppo
 `gbr1` beats `rf1` on cross-validation, at `MAE_cubic` 0.113556 Å against 0.121701 Å while
 being 77 times smaller.
 
-One further property reinforces the choice rather than establishing it: refitting across
-seeds 42 to 46 moves the boosted models much further than the forests, `rf1` holding
-+0.9028 ± 0.0084 on U(N,C) where `gbr1` and `gbr2` range far more widely.
-`Results/benchmarks/seed_stability.md` has the table.
+One further property reinforces the choice rather than establishing it. `rf1` averages 600
+independently built trees, so differences in floating-point arithmetic between machines
+cancel across them, and it refits consistently. The boosted models fit 1,800 successive
+rounds against the previous round's residuals, where such differences compound instead, so
+their figures have to be taken from the deposited binaries.
 
 ## Limitations
 

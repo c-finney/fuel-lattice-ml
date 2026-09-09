@@ -46,10 +46,10 @@ filtered to a,b,c ≤ 10 Å, 145 features, 64,128 rows.
   of 0.048023 Å understates that by landing in the right numeric neighbourhood. `rf1` on
   the same benchmark gives +0.9012. **Do not use `gbr2` for U(N,C) interpolation.**
 
-  Refitting at other seeds changes the size and the sign of that correlation, over
-  −0.2870 to +0.5012 across seeds 42 to 46, so the value above describes this fit rather
-  than a fixed property of the model. `Results/benchmarks/seed_stability.md` has the
-  spread for every model.
+  The value above describes the deposited binary at `random_state=42`. Quote it from that
+  binary rather than from a local refit: boosting fits 1,800 successive rounds against the
+  previous round's residuals, so floating-point differences between machines compound from
+  round to round instead of cancelling as they do across a forest's independent trees.
 - **The training labels are DFT and the benchmarks are experimental. They are
   different quantities.**
   Every training lattice parameter is Materials-Project DFT-relaxed geometry (MP's

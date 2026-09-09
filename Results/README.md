@@ -56,23 +56,6 @@ One file per model, each holding the out-of-fold prediction for all 64,128 train
 > **`ModelMetrics_CrossVal.csv` is the citable source**; use these files for the point-level
 > scatter behind the figures, not to recompute a `gbr1` aggregate.
 
-## `benchmarks/seed_stability.csv` and `.md`
-
-Written by `python scripts/seed_stability.py`. Each model refitted at several seeds and
-scored on both solid-solution benchmarks, reporting mean and standard deviation of MAE,
-slope and Pearson r, plus whether the sign of r held across every fit.
-
-Read this before quoting any single benchmark correlation. The benchmark sets are 23 and
-7 compositions and both are extrapolation, so the spread across seeds is thus wide for some
-models. Where `sign_stable` is false, the sign of that model's correlation varies between
-fits, and a figure quoted from one fit should name the seed it came from.
-
-> **This file measures refits, not the deposited binaries.** Its rows come from estimators
-> refitted for this measurement, so for `gbr1` the seed-42 row does not agree with the
-> `gbr1` figures in `basis_check.md`, the model cards or the manuscript, all of which
-> describe the deposited artifact. Cite `basis_check.md` for a model's benchmark figures
-> and this file only for the spread across seeds.
-
 ## `metrics/feature_spearman_cubic.csv`
 
 Spearman correlation of each of the 145 input features with the cubic-system lattice

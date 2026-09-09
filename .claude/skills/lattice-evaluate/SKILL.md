@@ -40,11 +40,11 @@ prediction are the full-dataset fits produced by `/lattice-train`.
    the better `MAE_cubic` at 0.113556 Å against 0.121701 Å. What separates them is that on
    the U(N,C) benchmark `rf1` gives Pearson r +0.9012 while both boosted models invert the
    trend, at −0.0972 (`gbr1`) and −0.2696 (`gbr2`). Do not call any model "most accurate"
-   without saying on which axis. See `Results/benchmarks/basis_check.md`, and
-   `Results/benchmarks/seed_stability.md` for how far a change of seed moves each model.
-   Point to the plots written under `Results/figures/`, and to the per-entry predictions
-   under `Results/metrics/cv_predictions/`, whose provenance caveat is in
-   `Results/README.md`.
+   without saying on which axis. See `Results/benchmarks/basis_check.md`. Point to the
+   plots written under `Results/figures/`, and to the per-entry predictions under
+   `Results/metrics/cv_predictions/`, whose caveat is in `Results/README.md`. If the user
+   has refitted the boosted models locally, say that their benchmark figures come from the
+   deposited binaries and a refit may not match.
 
 ## Notes
 

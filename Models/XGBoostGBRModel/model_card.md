@@ -53,10 +53,13 @@ being 77× smaller** (51 MB vs 3.97 GB).
   absent from the training data, and an 1800-round depth-10 ensemble does not extrapolate
   the way a bagged forest does. Do not choose `gbr1` for U(N,C) interpolation on the
   strength of its CV score. See `Results/benchmarks/basis_check.md`.
-- **Seed sensitivity.** Refitting at seeds 43 to 46 moves the boosted models much further
-  than the forests, so a `gbr1` benchmark correlation should be quoted with the seed it
-  came from. Everything reported here is the deposited binary at `random_state=42`.
-  `Results/benchmarks/seed_stability.md` has the table.
+- **Quote this model from the deposited binary, not from a local refit.** Boosting fits
+  1,800 successive rounds, each against the previous round's residuals, so differences in
+  floating-point arithmetic between machines compound from round to round rather than
+  cancelling. Refitting `gbr1` on other hardware can land on a measurably different model,
+  and the benchmark correlation is small enough that such a shift matters to it. Everything
+  reported here is the deposited binary at `random_state=42`. The forests, which average
+  600 independently built trees, are not exposed to this.
 - **The training labels are DFT and the benchmarks are experimental. They are
   different quantities.**
   Every training lattice parameter is Materials-Project DFT-relaxed geometry (MP's

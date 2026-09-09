@@ -130,22 +130,6 @@ empty on any given row.
 | `slope` | Metric rows only: slope of predicted against measured. Unaffected by a constant offset. |
 | `pearson_r` | Metric rows only: correlation of predicted against measured. Also unaffected by a constant offset, and thus the defensible way to compare models across the basis mismatch. |
 
-## Results/benchmarks/seed_stability.csv
-
-One row per model, seed and benchmark: the raw measurements the summary table in
-`seed_stability.md` is aggregated from.
-
-| Column | Meaning |
-|---|---|
-| `model_key`, `model_name` | Which model was refitted. |
-| `benchmark`, `system` | Which validation set the row scores. |
-| `seed` | The `random_state` used for this fit, or empty for an estimator that has none. |
-| `seeded` | Whether the estimator has a `random_state` at all. Linear Regression does not, so it is fitted once and contributes a single row per benchmark. |
-| `n` | Compositions scored, after dropping rows with no experimental value. |
-| `MAE` | Mean absolute error against the experimental value, Å. |
-| `slope` | Slope of predicted against measured, unaffected by a constant offset. |
-| `pearson_r` | Correlation of predicted against measured, also offset-invariant. Its spread across seeds is the reason this file exists. |
-
 ## Results/CrystalSystemRandomForestRegressorOptimizationStudy_Final.csv
 
 The per-crystal-system accuracy sweep for the Lumped RF model. Note that `MSE`,

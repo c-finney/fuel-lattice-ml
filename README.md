@@ -92,7 +92,7 @@ Models/         model cards, hyperparameters, metrics; binaries fetched separate
 Results/        the optimization study, cross-validation metrics, figures, benchmarks
 exploratory/    unmaintained notebooks
 scripts/        fetch_models, upload_models, write_model_manifest, basis_check,
-                feature_correlations, seed_stability
+                feature_correlations
 tests/          pytest suite, including the hyperparameter-parity and seed-resume guards
 ```
 
@@ -130,12 +130,16 @@ of the composition dependence wrong is not usable for screening, however small i
 error. `rf2` is marginally the more accurate of the two forests but is last on
 cross-validated R² over the cubic subset and weighs 9.74 GB.
 
-One caveat applies to every number above. Both benchmarks are extrapolation, since the
-fractional solid solutions they score are absent from the training data, and a boosted
-ensemble refitted at a different seed lands somewhere else. Refitting at seeds 43 to 46
-moves the boosted models much further than the forests;
-`Results/benchmarks/seed_stability.md` has the table. Quote a benchmark correlation with
-the seed it came from.
+**Use the deposited binaries for any number you intend to quote.** The gradient-boosting
+models fit 1,800 successive rounds, each one against the previous round's residuals, so
+small differences in floating-point arithmetic between machines compound from round to
+round. Refitting `gbr1` on different hardware can therefore land on a measurably different
+model. The random forests average 600 independently built trees, which cancels those
+differences rather than accumulating them, and they refit consistently.
+
+Both benchmarks are also extrapolation, since the fractional solid solutions they score
+are absent from the training data, so the figures above are specific to the fit that
+produced them.
 
 Linear Regression is suppressed from prediction output unless `--include-baseline` is
 passed, because a model this far off should not be mistaken for a usable prediction.

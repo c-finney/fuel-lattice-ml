@@ -143,10 +143,12 @@ SCOREABLE     = REPORTABLE + BASELINE
 # geometry and the benchmarks are experimental. Use Pearson r / slope, which a constant
 # offset cannot change, when comparing models. See Results/benchmarks/basis_check.md.
 #
-# CAUTION 2: these figures describe the deposited binaries at random_state=42. Both
-# benchmarks are extrapolation, and a boosted ensemble refitted at another seed lands
-# somewhere else, so quote a benchmark correlation with the seed it came from. See
-# Results/benchmarks/seed_stability.md.
+# CAUTION 2: these figures describe the deposited binaries at random_state=42, and the
+# boosted models have to be quoted from those binaries rather than from a local refit.
+# Boosting fits 1800 successive rounds against the previous round's residuals, so
+# floating-point differences between machines compound from round to round; a forest
+# averages 600 independent trees and cancels them. Both benchmarks are also
+# extrapolation, so any figure here is specific to the fit that produced it.
 HEADLINE_PREF = ["rf1", "rf2", "gbr1", "gbr2"]
 
 # ---------------------------------------------------------------------------

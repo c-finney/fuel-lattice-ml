@@ -60,9 +60,8 @@ documented rather than resolved.
 > The same deposit contains the model cards, exact hyperparameters and
 > cross-validation metrics for all five models, the per-crystal-system
 > optimization study, the label-basis analysis reconciling DFT training labels
-> against experimental validation values, the seed-stability analysis quantifying
-> how far each model's benchmark correlation moves under a change of random seed,
-> and the four notebooks that reproduce the study end to end.
+> against experimental validation values, and the four notebooks that reproduce
+> the study end to end.
 >
 > **Data not shared**
 >

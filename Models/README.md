@@ -42,9 +42,11 @@ carbon substitutes for nitrogen cannot screen compositions, however good its mea
 the sign right. See `Results/benchmarks/basis_check.md`.
 
 These figures describe the deposited binaries at `random_state=42`, which are the artifacts
-`scripts/fetch_models.py` downloads and the ones the manuscript reports.
-`Results/benchmarks/seed_stability.md` bounds how far a change of seed moves each model on
-these benchmarks, both of which are extrapolation.
+`scripts/fetch_models.py` downloads and the ones the manuscript reports. Quote them from the
+deposit rather than from a local refit: the gradient-boosting models fit 1,800 successive
+rounds against the previous round's residuals, so floating-point differences between
+machines compound from round to round and `gbr1` can refit to a measurably different model.
+The forests average 600 independently built trees and do not accumulate that.
 
 ## Fetching the binary
 

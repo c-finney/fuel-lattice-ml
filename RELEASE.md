@@ -107,12 +107,17 @@ likely to catch a packaging mistake and the obvious gap in this record.
 
 These are documented rather than resolved, and a fork inherits all of them:
 
-- **The benchmark correlations carry a seed dependence that is not visible from a
-  single fit.** Both benchmarks are extrapolation, since the fractional solid
-  solutions they score are absent from the training data, and the boosted models
-  move further under a change of random seed than the forests do.
-  `Results/benchmarks/seed_stability.md` has the table. Results reported from one
-  fit, here and elsewhere, are specific to the seed used, which is 42 throughout.
+- **The gradient-boosting models have to be taken from the deposited binaries
+  rather than refitted.** Boosting fits 1,800 successive rounds, each against the
+  previous round's residuals, so differences in floating-point arithmetic between
+  machines compound from round to round instead of cancelling. Refitting `gbr1`
+  elsewhere can produce a measurably different model. A random forest averages 600
+  independently built trees and is not exposed to this, which is part of why the
+  headline model is `rf1`.
+- **Both benchmarks are extrapolation**, since the fractional solid solutions they
+  score are absent from the training data, and they are 23 and 7 compositions
+  respectively. Figures from them are specific to the fit that produced them, and
+  everything here is fitted at `random_state=42`.
 - **`Results/metrics/cv_predictions/` does not reduce exactly to
   `Results/metrics/ModelMetrics_CrossVal.csv`.** The point-level files agree with
   the table to within 1.7e-5 on `MSE_cubic` for every model except `gbr1`, where
