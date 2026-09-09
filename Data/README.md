@@ -30,30 +30,30 @@ the prediction notebook and as regression-test fixtures:
 - `UNUC.csv`, the U(N,C) system (23 rows), based on an experimental fit.
 - `CeO2Nd2O3Vals.csv`, the (Ce,Nd)O2 system (7 rows).
 
-> ### ⚠ Label-basis mismatch: read before quoting any benchmark MAE
+> ### Label-basis mismatch: read before quoting any benchmark MAE
 >
-> **The models are trained on DFT lattice parameters. These benchmarks are experimental
-> measurements. They are not the same quantity.** A benchmark MAE is thus *not* pure
+> The models are trained on DFT lattice parameters and these benchmarks are experimental
+> measurements, which are not the same quantity. A benchmark MAE is therefore not pure
 > model error, because it contains the DFT-vs-experiment discrepancy inherited through the
 > training labels.
 >
-> `MP_Dataset_Original_Trimmed.csv` comes from the Materials Project, where **every lattice
-> parameter is DFT-relaxed**. Note that MP's `theoretical: False` flag means the structure
-> has been *observed*, **not** that its lattice parameters were *measured*. For
-> instance `mp-1865` (UN) is flagged `theoretical: False` and still carries a
-> computed a = 4.877379 Å, against an experimental 4.884 Å.
+> `MP_Dataset_Original_Trimmed.csv` comes from the Materials Project, where every lattice
+> parameter is DFT-relaxed. MP's `theoretical: False` flag means the structure has been
+> observed, not that its lattice parameters were measured: `mp-1865` (UN) is flagged
+> `theoretical: False` and still carries a computed a = 4.877379 Å against an experimental
+> 4.884 Å.
 >
-> The effect is real and material-dependent. For CeO2 (`mp-20194`) the DFT value exceeds the
-> experimental one by **+0.057365 Å**, which accounts for essentially all of the uniform
-> over-prediction every model shows on the (Ce,Nd)O2 benchmark.
+> The effect is material-dependent. For CeO2 (`mp-20194`) the DFT value exceeds the
+> experimental one by +0.057365 Å, which accounts for most of the uniform over-prediction
+> every model shows on the (Ce,Nd)O2 benchmark.
 >
-> **No DFT→experiment correction is shipped**, because this repo cannot justify one: only 3 of
-> the 9 curated hosts have an experimental value here at all, and the delta's *sign flips*
-> across those 3 (UN −0.006621, UC −0.022736, CeO2 +0.057365 Å).
+> No DFT→experiment correction is shipped, because this repository cannot justify one: only
+> 3 of the 9 curated hosts have an experimental value here at all, and the sign of the delta
+> flips across those 3 (UN −0.006621, UC −0.022736, CeO2 +0.057365 Å).
 >
-> Run **`python scripts/basis_check.py`** to regenerate `Results/benchmarks/basis_check.md`
-> for the full anchor table, and for the **slope / Pearson r** metrics, which are invariant to
-> a constant offset and are thus the defensible way to compare models here.
+> Run `python scripts/basis_check.py` to regenerate `Results/benchmarks/basis_check.md` for
+> the full anchor table and for the slope and Pearson r metrics, which are invariant to a
+> constant offset and are the way to compare models here.
 
 ### The `ref_mp-id` column
 

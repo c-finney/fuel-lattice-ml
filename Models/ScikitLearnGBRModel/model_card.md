@@ -1,6 +1,6 @@
 # Independent GBR, HistGBR (`gbr2`)
 
-**Status: trained and 5-fold cross-validated.** Binary:
+Status: trained and 5-fold cross-validated. Binary:
 `Models/binaries/ScikitLearnGBRModel.joblib`, 22,965,965 bytes, the smallest reportable model.
 
 ## Description
@@ -35,23 +35,24 @@ filtered to a,b,c ≤ 10 Å, 145 features, 64,128 rows.
 | b | 0.152303 | 0.977945 | 0.380820 | 0.873556 |
 | c | 0.174036 | 0.972340 | 0.485335 | 0.823700 |
 
-`gbr2` has the **worst MAE_cubic of the four reportable models** (0.151228 Å, vs `gbr1`
-0.113556). It is compact (23 MB) but not accurate.
+`gbr2` has the highest MAE_cubic of the four reportable models, 0.151228 Å against `gbr1`'s
+0.113556. It is compact at 23 MB but not accurate.
 
 ## Limitations
 
-- **It does not follow the U(N,C) compositional trend.** At the shipped seed of 42 it
-  gives Pearson r = **−0.2696** and a slope of **−0.426** against the experimental values,
-  so the predicted lattice parameter moves the wrong way with composition, and its raw MAE
-  of 0.048023 Å understates that by landing in the right numeric neighbourhood. `rf1` on
-  the same benchmark gives +0.9012. **Do not use `gbr2` for U(N,C) interpolation.**
+- **It does not follow the U(N,C) compositional trend.** At `random_state=42` it gives
+  Pearson r = −0.2696 and a slope of −0.426 against the experimental values, so the
+  predicted lattice parameter moves the wrong way with composition. Its raw MAE of
+  0.048023 Å understates that, because it lands in the right numeric range while tracking
+  nothing. `rf1` on the same benchmark gives +0.9012. Do not use `gbr2` for U(N,C)
+  interpolation.
 
-  The value above describes the deposited binary at `random_state=42`. Quote it from that
-  binary rather than from a local refit: boosting fits 1,800 successive rounds against the
-  previous round's residuals, so floating-point differences between machines compound from
-  round to round instead of cancelling as they do across a forest's independent trees.
-- **The training labels are DFT and the benchmarks are experimental. They are
-  different quantities.**
+  Those values describe the deposited binary. Take them from that binary rather than from a
+  local refit: boosting fits 1,800 successive rounds against the previous round's residuals,
+  so floating-point differences between machines compound from round to round instead of
+  cancelling as they do across a forest's independent trees.
+- **The training labels are DFT and the benchmarks are experimental, which are different
+  quantities.**
   Every training lattice parameter is Materials-Project DFT-relaxed geometry (MP's
   `theoretical: False` means the structure was *observed*, not that its lattice parameters were
   *measured*). A benchmark MAE against experimental `a_true` thus contains the

@@ -69,7 +69,7 @@ the deposited binaries on 2026-07-13, is Python 3.12.10 with scikit-learn 1.9.0,
 XGBoost 3.3.0, NumPy 2.5.1, pandas 2.3.3, joblib 1.5.3, pymatgen 2026.5.4 /
 pymatgen-core 2026.5.18 and matminer 0.10.1.
 
-**The inputs rebuild byte-identically, on any machine.**
+The inputs rebuild byte-identically on any machine:
 
 - Featurization returns 137,686 rows and 503 feature labels and rewrites the
   committed label files byte-identically, so `git status` stays clean.
@@ -79,17 +79,17 @@ pymatgen-core 2026.5.18 and matminer 0.10.1.
   SHA-256 `5903296149f451383dfe32e266fb1f28966e4411eaf946f221f839e7dacfcb2a`,
   matching `Models/MANIFEST.json`.
 
-**The deposited binaries reproduce every model number reported.** Scored against
-both solid-solution benchmarks they return the manuscript's benchmark table in
-full, all five models, on MAE, slope and Pearson r, including `gbr1` at MAE
-0.039714 Å, slope -0.164, Pearson r -0.0972. `Results/benchmarks/basis_check.md`
-is that table, regenerated from them, and `Results/benchmarks/UNUC/` and
+The deposited binaries reproduce every model number reported. Scored against both
+solid-solution benchmarks they return the manuscript's benchmark table in full,
+all five models, on MAE, slope and Pearson r, including `gbr1` at MAE 0.039714 Å,
+slope -0.164, Pearson r -0.0972. `Results/benchmarks/basis_check.md` is that
+table, regenerated from them, and `Results/benchmarks/UNUC/` and
 `Results/benchmarks/CeO2Nd2O3/` hold the per-composition predictions behind it.
 
-**The deposit is the record for these five models.** `Models/MANIFEST.json`
-carries their sizes and SHA-256 digests, `scripts/fetch_models.py` verifies a
-download against it before the file is ever unpickled, and every figure and table
-in the manuscript maps to a file in the deposit through `AVAILABILITY.md`.
+`Models/MANIFEST.json` carries the size and SHA-256 digest of each binary,
+`scripts/fetch_models.py` verifies a download against it before the file is
+unpickled, and `AVAILABILITY.md` maps every figure and table in the manuscript to
+a file in the deposit.
 
 The secrets position: the Materials Project API key used during development,
 prefix `csvp7B7`, was revoked on 9 July 2026 and is absent from the working tree
@@ -101,7 +101,7 @@ occurrence in a tracked file is an error-message template in `engine/config.py`.
 
 The 51-test suite passes under Python 3.12.10 with the pinned versions. It has
 never been run on a clean clone from a fresh checkout, which is the check most
-likely to catch a packaging mistake and the obvious gap in this record.
+likely to catch a packaging mistake and the gap in this record.
 
 ## Known problems that were not fixed
 

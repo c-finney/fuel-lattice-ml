@@ -25,16 +25,15 @@ from dotenv import load_dotenv
 load_dotenv(REPO_ROOT / ".env")
 
 # Home for the big regenerable artifacts (model binary + generated datasets).
-# Defaults to REPO_ROOT, so a fresh clone is fully self-contained. Only a
-# consumer that wants to avoid a second multi-GB copy on disk (e.g. the
-# fuel-agent MCP submodule, which points this back at the primary checkout)
-# overrides it.
+# Defaults to REPO_ROOT, so a fresh clone is self-contained. Override it only to
+# avoid a second multi-GB copy on disk, e.g. when this checkout is vendored into
+# a larger project that already holds the binaries.
 #
-# `or REPO_ROOT` is load-bearing, NOT redundant: some launchers pass
+# `or REPO_ROOT` is not redundant. Some launchers pass
 # env = {"LATTICE_DATA_ROOT": "${LATTICE_DATA_ROOT}"}, and an unset variable
-# expands to "". os.environ.get(k, default) returns "" (not the default) for
-# a set-but-empty var, and Path("") == Path("."), which would silently
-# redirect every artifact to the process's current working directory.
+# expands to "". os.environ.get(k, default) returns "" rather than the default
+# for a set-but-empty var, and Path("") == Path("."), which would redirect every
+# artifact to the process's current working directory.
 DATA_ROOT = Path(os.environ.get("LATTICE_DATA_ROOT") or REPO_ROOT)
 
 DATA_DIR    = REPO_ROOT / "Data"                         # committed inputs
