@@ -18,6 +18,11 @@ matminer>=0.9.0
 # still loads and predicts identically.
 scikit-learn==1.9.*
 joblib==1.5.*
+# xgboost is lower-bounded rather than pinned. The deposited gbr1 was fitted and
+# pickled under 3.3.0; it has been loaded and scored under 3.4.1 and returns the
+# recorded benchmark values exactly, so the artifact reads across that gap. If a
+# future release stops loading it, pin to 3.3.* — the version each binary was
+# written under is in Models/MANIFEST.json.
 xgboost>=2.0
 
 # Data + utilities

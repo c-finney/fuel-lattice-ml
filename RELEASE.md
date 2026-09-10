@@ -99,9 +99,17 @@ three quoting the prefix in prose and one the `REVOKED_KEY` sentinel that
 will flag those four. `.env` has never been tracked, and the only `MP_API_KEY=`
 occurrence in a tracked file is an error-message template in `engine/config.py`.
 
-The 51-test suite passes under Python 3.12.10 with the pinned versions. It has
-never been run on a clean clone from a fresh checkout, which is the check most
-likely to catch a packaging mistake and the gap in this record.
+The 51-test suite passes under Python 3.12.10 with the pinned versions, and it
+passes from a clean clone into an empty directory with a fresh virtualenv built
+from `requirements.txt` alone, with no model binaries present.
+
+That clean install resolves to XGBoost 3.4.1 and NumPy 2.5.3 rather than the
+3.3.0 and 2.5.1 the binaries were fitted under, because `requirements.txt`
+lower-bounds XGBoost rather than pinning it. The deposited `gbr1` was loaded and
+scored under 3.4.1 and returns MAE 0.039714 Å and MSE 0.003802 Å² on U(N,C),
+matching the values in `Results/benchmarks/basis_check.md` exactly, so the
+artifact is readable across that gap. A future XGBoost release could change
+that; `Models/MANIFEST.json` records the version the pickles were written under.
 
 ## Known problems that were not fixed
 
