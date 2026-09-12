@@ -21,10 +21,11 @@ and the reason the license is MIT rather than something with conditions attached
 Cade Finney, cadefinney@outlook.com, ORCID 0009-0007-6335-1536. Email about the
 manuscript will be answered, and email asking for a fix to the code will not be.
 
-## Outstanding before the repository goes public
+## Release approval
 
-Two items remain, both of which turn on how ORISE and ORAU read the appointment
-terms rather than on anything in this repository:
+Nothing is outstanding. These are recorded because a reader may reasonably wonder
+how a repository written under a DOE-sponsored appointment came to be published
+under MIT:
 
 - [x] **Manuscript review: complete.** The accompanying article was reviewed and released
       through ORNL's internal process by the ORNL co-authors; the editorial comments
@@ -34,9 +35,11 @@ terms rather than on anything in this repository:
       Agreement are recorded in NOTICE under "Government rights", and LICENSE
       points at it; those rights sit alongside the MIT grant rather than
       displacing it.
-- [ ] **Confirmation of the NOTICE text.** The funding acknowledgement is quoted
-      verbatim from the Terms of Appointment. IPO may supply different or
-      additional boilerplate, and their text wins.
+- [x] **NOTICE text: settled.** The funding acknowledgement is quoted verbatim
+      from the appointment letter, which introduces it as an acknowledgement
+      "such as the following" and so permits the wording as given. NOTICE also
+      records the Government's rights under the Participant Data Agreement and
+      the Materials Project attribution and disclaimer.
 
 The first point of contact is Denise Adorno Lopes, adornolopesd@ornl.gov, who was
 the mentor of record.
