@@ -32,10 +32,28 @@ Innovation and Partnerships Office and are placeholders until they arrive:
       requires in README.md. Currently written as `ORNL-CODE-XXXXXX` in README.md
       and in .zenodo.json, and both occurrences must be replaced together.
 - [ ] **Confirmation of the copyright line in LICENSE.** It currently reads
-      `Copyright (c) 2025 Cade Finney`, on the reading that section 4 of the
+      `Copyright (c) 2025 Cade Finney`, on the reading that item 4 of the
       Participant Data Agreement waives ORISE and ORAU invention rights under
-      35 U.S.C. 212. That reading has not been confirmed by anyone at ORNL, and
-      IPO's interpretation governs rather than this file's.
+      35 U.S.C. 212. Reading the appointment documents closely, that clause is
+      narrower than the copyright line assumes: it waives *inventions*, which is
+      patent, and it waives them for *ORISE and ORAU only*, naming neither DOE,
+      ORNL, nor UT-Battelle. The word "copyright" appears nowhere in either the
+      appointment letter or the terms, so ownership of copyright in this source
+      is simply not addressed by them. IPO's interpretation governs rather than
+      this file's.
+- [ ] **Confirmation that no ORNL software release number is required, if that is
+      the conclusion.** Neither the appointment letter nor the ORISE terms mentions
+      a release number, DOE CODE, or OSTI. They are silent on the mechanism but not
+      neutral on the duty: the terms require that "any publications, presentations,
+      posters or other release of information related to the appointment must be
+      made in accordance with the regulations, policies, procedures, or other
+      requirements of DOE, sponsoring agency, or the host facility", and the
+      Participant Data Agreement defines "Technical Data" to include "computer
+      software (including computer programs, computer software databases, and
+      computer software documentation)". Publishing this repository is therefore a
+      release of Technical Data related to the appointment, governed by ORNL's own
+      policy, which these documents make binding without describing. Silence in the
+      appointment paperwork is not an exemption; ORNL has to answer it.
 - [ ] **Confirmation of the NOTICE text.** The funding acknowledgement is quoted
       verbatim from the Terms of Appointment. IPO may supply different or
       additional boilerplate, and their text wins.
