@@ -29,16 +29,16 @@ terms rather than on anything in this repository:
 - [x] **Manuscript review: complete.** The accompanying article was reviewed and released
       through ORNL's internal process by the ORNL co-authors; the editorial comments
       carried in the manuscript file came from that review.
-- [ ] **Confirmation of the copyright line in LICENSE.** It currently reads
-      `Copyright (c) 2025 Cade Finney`, on the reading that item 4 of the
-      Participant Data Agreement waives ORISE and ORAU invention rights under
-      35 U.S.C. 212. Reading the appointment documents closely, that clause is
-      narrower than the copyright line assumes: it waives *inventions*, which is
-      patent, and it waives them for *ORISE and ORAU only*, naming neither DOE,
-      ORNL, nor UT-Battelle. The word "copyright" appears nowhere in either the
-      appointment letter or the terms, so ownership of copyright in this source
-      is simply not addressed by them. IPO's interpretation governs rather than
-      this file's.
+- [ ] **Confirmation of the copyright line in LICENSE.** It reads
+      `Copyright (c) 2026 Cade Finney`. Item 4 of the Participant Data Agreement
+      waives *inventions*, which is patent, and waives them for *ORISE and ORAU
+      only*, naming neither DOE, ORNL, nor UT-Battelle; the word "copyright"
+      appears nowhere in the appointment letter or the terms, so ownership of
+      copyright in this source is not addressed by them. The rights the
+      Government does hold, under items 1 and 3 of the same agreement, are
+      recorded in NOTICE under "Government rights", and LICENSE points at it.
+      ORISE and ORAU are the counterparty to that agreement, so confirmation
+      would come from them rather than from ORNL.
 - [ ] **Confirmation of the NOTICE text.** The funding acknowledgement is quoted
       verbatim from the Terms of Appointment. IPO may supply different or
       additional boilerplate, and their text wins.

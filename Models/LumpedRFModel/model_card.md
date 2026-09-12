@@ -34,8 +34,9 @@ trees), which is why the binary is 3.97 GB.
 - 145 features (`Models/feature_labels/ML_FeatureLabels.json`): Magpie composition
   statistics, element fractions, valence-orbital averages, stoichiometry, scalar
   space-group number, symmetry flags, and `nsites`.
-- Licensed CC BY 4.0 by the Materials Project, so this model is a derived work and any
-  reuse must retain that attribution (see root `README.md`).
+- The training data are licensed CC BY 4.0 by the Materials Project, and redistributing
+  that dataset carries the attribution requirement. This model binary is MIT licensed;
+  see LICENSE.
 
 The original CrossVal notebook run printed `Dataset Size: 64838` rows, while
 `Models/MANIFEST.json`'s recorded build captured `training_rows: 64128`. The Materials

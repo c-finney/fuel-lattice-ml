@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 Cade Finney
+Copyright (c) 2026 Cade Finney
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,8 @@ SOFTWARE.
 
 ---
 
-The MIT License above covers the source code in this repository. It does not
-cover the Materials Project data redistributed in Data/, or the trained model
-binaries derived from that data, both of which remain under CC BY 4.0. See
-NOTICE.
+The MIT License above covers the source code in this repository and the trained
+model binaries distributed with it. It does not cover the Materials Project data
+redistributed in Data/, which remains under CC BY 4.0. See NOTICE, which also
+records the rights the U.S. Government holds in this software independently of
+this license.

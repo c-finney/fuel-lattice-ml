@@ -13,8 +13,7 @@ requests are not monitored. Dependency versions will drift out from under this c
 it if you need it to keep working.
 
 MIT licensed, archived at [doi:10.5281/zenodo.22727667](https://doi.org/10.5281/zenodo.22727667).
-The Materials Project data redistributed here, and the models derived from it, stay under
-CC BY 4.0; see NOTICE.
+The Materials Project data redistributed in `Data/` stays under CC BY 4.0; see NOTICE.
 
 ---
 
@@ -165,9 +164,10 @@ also explains why loading uses `mmap_mode="r"` and why the binaries must stay un
 ## Attribution
 
 Trained on data from the [Materials Project](https://materialsproject.org), licensed
-CC BY 4.0. Both the seed dataset and the trained models are derived works and carry the
-same attribution requirement on reuse. `NOTICE` carries the funding acknowledgement, which
-is quoted verbatim from the appointment terms and should not be reworded.
+CC BY 4.0. Redistributing the seed dataset carries that attribution requirement. `NOTICE`
+carries the funding acknowledgement, which is quoted verbatim from the appointment terms
+and should not be reworded, and records the rights the U.S. Government holds in this
+software.
 
 ## Citation
 
@@ -176,6 +176,6 @@ version that the manuscript's results were produced with.
 
 ## License
 
-MIT, in LICENSE, and it covers the source code only. The Materials Project data in `Data/`
-and the five models derived from it remain CC BY 4.0, so attribution travels with them
-even though the code around them does not require it.
+MIT, in LICENSE, covering the source code and the five trained model binaries. The
+Materials Project data in `Data/` remains CC BY 4.0, so attribution travels with that
+dataset even though the code and models around it do not require it.

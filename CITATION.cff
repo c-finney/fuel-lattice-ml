@@ -36,5 +36,5 @@ references:
     license: "CC-BY-4.0"
     notes: >-
       Source of the training data redistributed as
-      Data/MP_Dataset_Original_Trimmed.csv. The trained models are derived works
-      and carry the same attribution requirement.
+      Data/MP_Dataset_Original_Trimmed.csv, which carries that attribution
+      requirement. The trained models are MIT licensed, as is the source code.
