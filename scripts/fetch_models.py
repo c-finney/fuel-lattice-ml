@@ -31,6 +31,7 @@ import os
 import shutil
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -81,8 +82,26 @@ def _resolve_uri(uri: str) -> str | None:
     return None
 
 
+_MAX_ATTEMPTS = 6
+_BACKOFF = 5  # seconds, multiplied by the attempt number
+
+
 def _download(url: str, dest: Path) -> None:
-    """Stream *url* to *dest*, hashing nothing; verification happens afterwards."""
+    """
+    Stream *url* to *dest*, resuming on a dropped connection.
+
+    A multi-gigabyte transfer over one TLS connection does not reliably survive.
+    The failure seen in practice is an SSL EOF part way through, which arrives as
+    URLError rather than as a short read, so a plain single-shot download of rf1
+    (3.97 GB) or rf2 (9.74 GB) can fail repeatedly on an otherwise healthy link.
+
+    Each attempt therefore resumes from the bytes already on disk using a Range
+    request, so a drop at 3 GB costs the remainder rather than the whole file. A
+    server that ignores Range answers 200 instead of 206, which is handled by
+    restarting the file rather than appending to it and corrupting it silently.
+    Integrity is not assumed from any of this: fetch() verifies SHA-256 against
+    the manifest afterwards, and that check is what actually gates the unpickle.
+    """
     dest.parent.mkdir(parents=True, exist_ok=True)
     # mkstemp hands back an OPEN os-level descriptor. Closing it immediately is
     # required, not tidiness: Windows refuses to unlink a file that still has an
@@ -94,22 +113,53 @@ def _download(url: str, dest: Path) -> None:
     fd, tmp_name = tempfile.mkstemp(dir=dest.parent, prefix=".download-")
     os.close(fd)
     tmp = Path(tmp_name)
+    total = None
     try:
-        with urllib.request.urlopen(url) as response, open(tmp, "wb") as out:
-            total = response.headers.get("Content-Length")
-            total = int(total) if total else None
-            seen = 0
-            while True:
-                chunk = response.read(_CHUNK)
-                if not chunk:
-                    break
-                out.write(chunk)
-                seen += len(chunk)
+        for attempt in range(1, _MAX_ATTEMPTS + 1):
+            have = tmp.stat().st_size if tmp.exists() else 0
+            req = urllib.request.Request(url)
+            if have:
+                req.add_header("Range", f"bytes={have}-")
+            try:
+                with urllib.request.urlopen(req) as response:
+                    # 206 means the server honoured the Range and we append;
+                    # 200 means it sent the whole file, so start over.
+                    resuming = response.status == 206
+                    if have and not resuming:
+                        have = 0
+                    if total is None:
+                        length = response.headers.get("Content-Length")
+                        crange = response.headers.get("Content-Range")
+                        if crange and "/" in crange:
+                            total = int(crange.rsplit("/", 1)[1])
+                        elif length:
+                            total = int(length) + have
+                    seen = have
+                    with open(tmp, "ab" if resuming and have else "wb") as out:
+                        while True:
+                            chunk = response.read(_CHUNK)
+                            if not chunk:
+                                break
+                            out.write(chunk)
+                            seen += len(chunk)
+                            if total:
+                                print(f"\r[fetch_models]   {seen / 1e9:6.2f} / "
+                                      f"{total / 1e9:.2f} GB", end="", flush=True)
                 if total:
-                    print(f"\r[fetch_models]   {seen / 1e9:6.2f} / {total / 1e9:.2f} GB",
-                          end="", flush=True)
-            if total:
-                print()
+                    print()
+                if total is None or tmp.stat().st_size >= total:
+                    break
+                raise urllib.error.URLError(
+                    f"short read: {tmp.stat().st_size} of {total} bytes")
+            except urllib.error.HTTPError:
+                raise                      # 404 and friends are not retryable
+            except (urllib.error.URLError, OSError, EOFError) as exc:
+                if attempt == _MAX_ATTEMPTS:
+                    raise
+                got = tmp.stat().st_size if tmp.exists() else 0
+                print(f"\n[fetch_models]   attempt {attempt} failed ({exc}); "
+                      f"resuming from {got / 1e9:.2f} GB in {_BACKOFF * attempt}s")
+                time.sleep(_BACKOFF * attempt)
         shutil.move(str(tmp), str(dest))
     finally:
         if tmp.exists():
