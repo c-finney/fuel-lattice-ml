@@ -28,9 +28,12 @@ appointment to go through the host facility's process, separately from the
 question of who owns the copyright. Three items thus come from ORNL's
 Innovation and Partnerships Office and are placeholders until they arrive:
 
-- [ ] **ORNL software release number**, format `ORNL-CODE-XXXXXX`, which ORNL
-      requires in README.md. Currently written as `ORNL-CODE-XXXXXX` in README.md
-      and in .zenodo.json, and both occurrences must be replaced together.
+- [x] **ORNL software release number: not required.** ORNL software control, contacted
+      through Denise Adorno Lopes, cleared this repository for public release without a
+      release number, on the basis that the project is retired and unmaintained, which
+      also avoided a QA review. The retirement is stated at the top of README.md and in
+      this file, and that statement is a condition of the clearance rather than a
+      stylistic choice: it should not be removed or softened.
 - [ ] **Confirmation of the copyright line in LICENSE.** It currently reads
       `Copyright (c) 2025 Cade Finney`, on the reading that item 4 of the
       Participant Data Agreement waives ORISE and ORAU invention rights under

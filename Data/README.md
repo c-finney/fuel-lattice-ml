@@ -27,7 +27,16 @@ Materials Project API calls. Also sourced from the Materials Project (CC BY 4.0)
 Experimental validation data with known lattice parameters (`a_true` column), used by
 the prediction notebook and as regression-test fixtures:
 
-- `UNUC.csv`, the U(N,C) system (23 rows), based on an experimental fit.
+- `UNUC.csv`, the U(N,C) system (23 rows). Nineteen rows, at y = 0.05 to 0.95 in steps of
+  0.05, are sampled from the quadratic fit to the literature values that Figure 1 of the
+  manuscript plots. Recovering that fit from those rows gives
+
+      a(y) = -0.0139749 y^2 - 0.0573515 y + 4.9612879   (y = N fraction, a in angstrom)
+
+  to within 1.9e-4 angstrom, so the curve is fully reproducible from this file. The
+  remaining four rows are measured values rather than fit samples: the UN and UC
+  end-members from Wyckoff, and two U(N,C) compositions at y = 0.98412 and y = 0.94510.
+  The individual literature measurements behind the fit are in the cited sources.
 - `CeO2Nd2O3Vals.csv`, the (Ce,Nd)O2 system (7 rows).
 
 > ### Label-basis mismatch: read before quoting any benchmark MAE

@@ -88,6 +88,7 @@ documented rather than resolved.
 | Table 1, cross-validation metrics for five models | `Results/metrics/ModelMetrics_CrossVal.csv` | `cli.py evaluate` |
 | Table 2, MAE, slope and Pearson r on both systems | `Results/benchmarks/basis_check.csv` | `scripts/basis_check.py` |
 | Table 3, model hyperparameters | `Models/<ModelName>/params.json` | Written by `cli.py train` |
+| Discussion, per-crystal-system accuracy (the "up to 360 %" MAE increase) | `Results/CrystalSystemRandomForestRegressorOptimizationStudy_Final.csv` | `FuelLatticeParameterModelOptimization.ipynb` |
 
 Every aggregate in Tables 1 and 2 can be recomputed from the point-level files in
 the same table, which is the reason the per-entry cross-validation predictions
