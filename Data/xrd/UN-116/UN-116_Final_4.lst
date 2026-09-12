@@ -1,0 +1,192 @@
+********************************************************************************
+   General Structure Analysis System-II Crystal Structure Refinement
+              by Robert B. Von Dreele & Brian H. Toby
+                Argonne National Laboratory(C), 2010
+ This product includes software developed by the UChicago Argonne, LLC,
+            as Operator of Argonne National Laboratory.
+                          Please cite:
+   B.H. Toby & R.B. Von Dreele, J. Appl. Cryst. 46, 544-549 (2013)
+********************************************************************************
+ Least squares controls:
+ Refinement type: analytic Hessian
+ Maximum number of cycles: 5
+ Regularize hydrogens (if any): False
+ Initial shift factor: 1.000
+
+ Phases:
+
+ Phase name: UN
+=======================================================================================================================================
+
+ X-ray scattering factors:
+   Symbol     fa                                      fb                                      fc
+---------------------------------------------------------------------------------------------------
+ U         36.02280  23.41280  14.94910   4.18800   0.52930   3.32530  16.09270 100.61300  13.39660
+ N         12.21260   3.13220   2.01250   1.16630   0.00570   9.89330  28.99750   0.58260 -11.52900
+
+ Electron scattering factors:
+   Symbol     fa                                                fb
+---------------------------------------------------------------------------------------------------
+ U          0.64100   2.26430   4.87130   5.92870   5.39350   0.10970   1.06440   5.79070  25.02610 101.38990
+ N          0.02670   0.13280   0.53010   1.10200   0.42150   0.05410   0.51650   2.82070  10.62970  34.37640
+
+ Neutron scattering factors:
+   Symbol   isotope       mass       b       resonant terms
+---------------------------------------------------------------------------------------------------
+ U       Nat. Abund.    238.029    0.842
+ N       Nat. Abund.     14.007    0.936
+
+ Space Group: F m -3 m
+ The lattice is centrosymmetric F-centered cubic
+ The Laue symmetry is m3m
+ The lattice point group is m3m
+ Multiplicity of a general site is 192
+ The inversion center is located at 0,0,0
+ 
+ The equivalent positions are:
+
+ (0,0,0; 0,1/2,1/2; 1/2,0,1/2; 1/2,1/2,0)+
+
+ ( 1)     X,     Y,     Z 
+ ( 2)     Z,     X,     Y 
+ ( 3)     Y,     Z,     X 
+ ( 4)     X,     Y,    -Z 
+ ( 5)    -Z,     X,     Y 
+ ( 6)     Y,    -Z,     X 
+ ( 7)    -Z,     X,    -Y 
+ ( 8)    -Y,    -Z,     X 
+ ( 9)     Y,    -Z,    -X 
+ (10)    -X,     Y,    -Z 
+ (11)    -Z,    -X,     Y 
+ (12)     X,    -Y,    -Z 
+ (13)     Y,     X,     Z 
+ (14)     Z,     Y,     X 
+ (15)     X,     Z,     Y 
+ (16)     Y,     X,    -Z 
+ (17)    -Z,     Y,     X 
+ (18)     X,    -Z,     Y 
+ (19)    -Z,     Y,    -X 
+ (20)    -X,    -Z,     Y 
+ (21)     X,    -Z,    -Y 
+ (22)    -Y,     X,    -Z 
+ (23)    -Z,    -Y,     X 
+ (24)     Y,    -X,    -Z 
+
+ Atoms:
+   name    type  refine?   x         y         z      frac site sym  mult I/A   Uiso     U11     U22     U33     U12     U13     U23
+---------------------------------------------------------------------------------------------------------------------------------------
+      U      U      U   0.00000   0.00000   0.00000   1.000    m3m    4    I 0.01676                                                
+      N      N      U   0.50000   0.50000   0.50000   1.000    m3m    4    I 0.01676                                                
+
+ Unit cell: a = 4.88919 b = 4.88919 c = 4.88919 alpha = 90.000 beta = 90.000 gamma = 90.000 volume = 116.872 Refine? True
+
+ Phase: UN in histogram: PWDR 24-116-XRD-UN-MiniFuel-20-92-5s-02i_exported.txt
+=======================================================================================================================================
+ Phase fraction  :          1 Refine? False
+ Extinction coeff:     0.0000 Refine? False
+ March-Dollase PO:     1.0000 Refine? False Axis: 0 0 1
+
+ Size model    : isotropic equatorial:       0.272 Refine? True
+	 LG mixing coeff.:       1.0000 Refine? False
+
+ Mustrain model: isotropic equatorial:      3209.7 Refine? True
+	 LG mixing coeff.:      1.0000 Refine? False
+
+ Hydrostatic/elastic strain:
+ names :         D11          eA
+ values:           0           0
+ refine:       False       False
+ Layer Displacement:      0.000 Refine? False
+
+ Histogram: PWDR 24-116-XRD-UN-MiniFuel-20-92-5s-02i_exported.txt histogram Id: 0
+=======================================================================================================================================
+ Instrument type: Bragg-Brentano
+ Histogram limits:    20.00 deg to    92.01 deg
+
+ Sample Parameters:
+ Goniometer omega = 0.00, chi = 0.00, phi = 0.00
+ name  :         Scale         Shift  Transparency    SurfRoughA    SurfRoughB
+ value :        0.0111       14.2328        0.0000        0.0000        0.0000
+ refine:          True          True         False         False         False
+
+ Instrument Parameters:
+ name  :     Azimuth I(L2)/I(L1)        Lam1        Lam2    Polariz.        SH/L           U           V           W
+ value :    0.000000    0.500000    1.540500    1.544300    0.700000    0.002000    2.000000   -2.000000    5.000000
+ refine:                   False                               False       False       False       False       False
+
+ name  :           X           Y           Z        Zero
+ value :    0.000000    0.000000    0.000000    0.000000
+ refine:       False       False       False       False
+
+ Background function: chebyschev-1 Refine? True
+ Coefficients:      0.335    -0.112     0.002    -0.042    -0.005     0.020     0.010    -0.008     0.005
+ Fixed background file: ; mult: 1.000  Refine? False
+
+ Refinement results:
+---------------------------------------------------------------------------------------------------------------------------------------
+ Number of function calls: 3 No. of observations: 3561 No. of parameters: 15 User rejected: 0 Sp. gp. extinct: 0
+ Refinement time =    0.609s,    0.609s/cycle, for 1 cycles
+ wR =    9.14%, chi**2 =      10.7241, GOF =   0.05
+----------------------------------------------------------------------------------------------------------------------------------
+Parameters generated by constraints
+
+ name  :     0::AUiso:0          0::A0
+ value :        0.01676        0.04183
+ sig   :        0.00032        0.00000 
+
+ Phases:
+ Result for phase: UN
+=======================================================================================================================================
+ Reciprocal metric tensor: 
+  names :            A11            A22            A33            A12            A13            A23
+  values:    0.041833676    0.041833676    0.041833676    0.000000000    0.000000000    0.000000000
+  esds  :    0.000000976                                                                           
+ New unit cell:
+  names :           a           b           c       alpha        beta       gamma      Volume
+  values:    4.889191    4.889191    4.889191     90.0000     90.0000     90.0000     116.872
+  esds  :    0.000057                                                                   0.004
+
+ Atoms:
+   name      x         y         z      frac   Uiso     U11     U22     U33     U12     U13     U23
+---------------------------------------------------------------------------------------------------------------------------------------
+      U      U:
+ values:   0.00000   0.00000   0.00000   1.000 0.01676
+ sig   :                                       0.00032 
+      N      N:
+ values:   0.50000   0.50000   0.50000   1.000 0.01676
+ sig   :                                       (.00032)
+
+ Density: 14.3239 g/cm**3
+
+ Phase: UN in histogram: PWDR 24-116-XRD-UN-MiniFuel-20-92-5s-02i_exported.txt
+=======================================================================================================================================
+ Final refinement RF, RF^2 = 3.25%, 7.93% on 8 reflections
+ Durbin-Watson statistic = 0.465
+ Bragg intensity sum = 1.69e+03
+
+ Size model:     isotropic equatorial:     0.27259, sig:  0.0136 LG mix coeff.:      1.0000
+
+ Mustrain model: isotropic
+ equatorial:      3215.8, sig:    80.6 LG mix coeff.:      1.0000
+
+ Histogram: PWDR 24-116-XRD-UN-MiniFuel-20-92-5s-02i_exported.txt histogram Id: 0
+=======================================================================================================================================
+ PWDR histogram weight factor = 1.000
+ Final refinement wR = 9.14% on 3561 observations in this histogram
+ Other residuals: R = 6.77%, R-bkg = 7.90%, wR-bkg = 9.14% wRmin = 100.00%
+ Instrument type: Bragg-Brentano
+
+ Resonant form factors:(ref: D.T. Cromer & D.A. Liberman (1981), Acta Cryst. A37, 267-268.)
+ Element:        U        N
+ f'     :   -4.339    0.031
+ f"     :   13.403    0.018
+
+ Sample Parameters:
+ names :         Scale         Shift  Transparency    SurfRoughA    SurfRoughB
+ values:        0.0111       14.3329        0.0000        0.0000        0.0000
+ sig   :        0.0000        0.6676                                          
+
+ Background function: chebyschev-1
+ value :     0.3345   -0.1124  0.001742  -0.04158 -0.004532   0.01968   0.01043  -0.00808   0.00517
+ sig   :   0.001278  0.002174     0.002  0.001873  0.001844  0.001712  0.001749   0.00156  0.001551
+ Background sums: empirical 1.19e+03, Debye 0, peaks 0, Total 1.19e+03

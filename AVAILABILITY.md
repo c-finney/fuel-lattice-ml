@@ -67,7 +67,8 @@ documented rather than resolved.
 >
 > The raw X-ray diffraction patterns and GSAS-II refinement projects for the six
 > Nd-doped CeO2 samples were generated at Oak Ridge National Laboratory and are
-> held there. The refined lattice parameters extracted from them, which are the
+> held there. The equivalent files for the two UN specimens are deposited, under
+> `Data/xrd/`. The refined lattice parameters extracted from them, which are the
 > values this article reports and plots, are included in the deposit as
 > `Data/benchmarks/CeO2Nd2O3Vals.csv`. Requests for the underlying patterns should
 > be directed to the corresponding author.

@@ -54,6 +54,35 @@ this study, plus pure CeO2 from literature.
 | `ref_mp-id` | Reference host, `mp-20194` (CeO2) on every row, since Ce is dominant throughout. |
 | `a_true` | Lattice parameter, Å, from Rietveld refinement of the measured pattern in GSAS-II. The patterns themselves are held at ORNL; see AVAILABILITY.md. |
 
+## Data/xrd/UN-*/UN-*_Final_4_Histogram.csv
+
+The final Rietveld fit evaluated at every measured point, 3,561 rows per specimen.
+
+| Column | Meaning |
+|---|---|
+| `x` | Scattering angle 2-theta, degrees. |
+| `y_obs` | Observed intensity, counts, as measured. |
+| `weight` | Weight applied to this point in the least-squares refinement. |
+| `y_calc` | Intensity calculated from the refined model at this point. |
+| `y_bkg` | Refined background contribution at this point. The difference curve is `y_obs` minus `y_calc`. |
+| `Q` | Scattering vector magnitude, 1/Å, the angle-independent equivalent of `x`. |
+
+## Data/xrd/UN-*/UN-*_Final_4_ReflectionList*.csv
+
+One row per symmetry-allowed reflection in the fitted range.
+
+| Column | Meaning |
+|---|---|
+| `h`, `k`, `l` | Miller indices of the reflection. |
+| `d-sp` | d-spacing, Å. |
+| `2-theta` | Calculated reflection position, degrees. |
+| `F_obs`, `F_calc` | Observed and calculated structure factors. Their agreement is what the refinement minimises. |
+| `phase`, `phase_name` | Index and name of the phase the reflection belongs to; UN throughout. |
+| `mult` | Multiplicity of the reflection. |
+| `sig`, `gam` | Gaussian and Lorentzian peak-shape parameters. |
+| `FWHM` | Full width at half maximum of the fitted peak, degrees. |
+| `Prfo` | Preferred-orientation correction applied; 1 means none. |
+
 ## Results/metrics/ModelMetrics_CrossVal.csv
 
 Five-fold cross-validation aggregates, one row per model and lattice parameter,
