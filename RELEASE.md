@@ -126,11 +126,6 @@ These are documented rather than resolved, and a fork inherits all of them:
   score are absent from the training data, and they are 23 and 7 compositions
   respectively. Figures from them are specific to the fit that produced them, and
   everything here is fitted at `random_state=42`.
-- **`Results/metrics/cv_predictions/` does not reduce exactly to
-  `Results/metrics/ModelMetrics_CrossVal.csv`.** The point-level files agree with
-  the table to within 1.7e-5 on `MSE_cubic` for every model except `gbr1`, where
-  the gap reaches 2.2e-3. Cite the table. `Results/README.md` carries the
-  per-model figures.
 - The cross-validation notebook's original run reported 64,838 training rows,
   while `Models/MANIFEST.json` records 64,128 for the build behind the deposited
   models. The Materials Project database moved between the two runs. The build

@@ -112,17 +112,17 @@ project; the notebooks and the agent tooling stay in sync because they are the s
 
 | Key | Name | Binary | CV MAE, cubic (Å) | U(N,C) Pearson r |
 |---|---|---|---|---|
-| `rf1` | Lumped RF | 3.97 GB | 0.121701 | +0.9012 |
+| `rf1` | Lumped RF | 3.97 GB | 0.121717 | +0.9012 |
 | `rf2` | Independent RF | 9.74 GB | 0.125516 | +0.9405 |
-| `gbr1` | Lumped GBR (XGBoost) | 51 MB | 0.113556 | −0.0972 |
+| `gbr1` | Lumped GBR (XGBoost) | 51 MB | 0.113433 | −0.0972 |
 | `gbr2` | Independent GBR (HistGBR) | 23 MB | 0.151228 | −0.2696 |
 | `lin` | Linear Regression | 17 KB | 1.046069 | −0.9629 |
 
 Both columns describe the deposited binaries, which `scripts/fetch_models.py` downloads and
 which the manuscript reports. All five were fitted at `random_state=42` on 2026-07-13.
 
-`rf1` is the headline model. `gbr1` has the better cross-validated MAE, 0.113556 Å against
-0.121701 Å, and is 77 times smaller, but it returns a negative correlation on the U(N,C)
+`rf1` is the headline model. `gbr1` has the better cross-validated MAE, 0.113433 Å against
+0.121717 Å, and is 77 times smaller, but it returns a negative correlation on the U(N,C)
 benchmark: it predicts the lattice parameter to fall as carbon substitutes for nitrogen,
 which is the wrong direction. Screening compositions requires the sign to be right. `rf2`
 is marginally more accurate than `rf1` on both benchmarks but is last on cross-validated R²

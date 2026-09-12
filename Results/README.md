@@ -40,21 +40,10 @@ in `Models/binaries/`.
 One file per model, each holding the out-of-fold prediction for all 64,128 training entries.
 `DATA_DICTIONARY.md` describes the columns.
 
-These files do not reduce exactly to `ModelMetrics_CrossVal.csv`. Recomputing `MSE_cubic`
-from the points and comparing against the table gives:
-
-| model | disagreement on `MSE_cubic` |
-|---|---|
-| `lin`, `gbr2` (a, b) | exact to machine precision |
-| `rf2` | 3.5e-6 |
-| `rf1` | 1.7e-5 |
-| `gbr2` (c) | 3.1e-4 |
-| `gbr1` | 2.2e-3 |
-
-For every model but `gbr1` that is below the precision anything is reported to, and the
-figures drawn from these points are the figures the table describes. For `gbr1` it is not.
-Cite `ModelMetrics_CrossVal.csv`, and use these files for the point-level scatter behind
-the figures rather than to recompute a `gbr1` aggregate.
+Every aggregate in `ModelMetrics_CrossVal.csv` is a reduction of these points, and both
+files come from the same `cli.py evaluate` run, so recomputing a metric from the points
+reproduces the table to within floating-point noise (largest observed disagreement on
+`MSE_cubic` is 7.5e-10).
 
 ## `metrics/feature_spearman_cubic.csv`
 

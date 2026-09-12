@@ -129,14 +129,14 @@ SCOREABLE     = REPORTABLE + BASELINE
 # parameter to FALL as carbon substitutes for nitrogen, which it does not, and a model
 # that inverts the composition dependence cannot screen compositions however small its
 # mean absolute error. That is what puts the forests first here, and gbr1's better
-# cross-validated MAE_cubic (0.113556 A vs rf1's 0.121701) does not override it.
+# cross-validated MAE_cubic (0.113433 A vs rf1's 0.121717) does not override it.
 #
 # rf1 over rf2: rf2 is marginally better on both benchmarks (r +0.9405 vs +0.9012 on
 # U(N,C), +0.9706 vs +0.9451 on (Ce,Nd)O2) but is LAST of the four on CV R2_cubic
 # (0.976283) and weighs 9.74 GB against rf1's 3.97 GB. Between two models that both get
 # the sign right, rf1 is the better cross-validated one and 2.5x smaller.
 #
-# gbr1 over gbr2: gbr1 is better on CV (MAE_cubic 0.113556 A vs 0.151228).
+# gbr1 over gbr2: gbr1 is better on CV (MAE_cubic 0.113433 A vs 0.151228).
 #
 # CAUTION 1: a benchmark MAE is NOT pure model error, since the models predict DFT
 # geometry and the benchmarks are experimental. Use Pearson r / slope, which a constant

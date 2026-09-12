@@ -31,7 +31,7 @@ filtered to a,b,c ≤ 10 Å, 145 features, 64,128 rows.
 | c | 0.126418 | 0.974801 | 0.403132 | 0.843363 |
 
 On cross-validation `rf2` is the lowest of the four reportable models by R²_cubic (0.976283,
-against `gbr1`'s 0.983007) while being the largest. Independent per-output forests gain
+against `gbr1`'s 0.982628) while being the largest. Independent per-output forests gain
 nothing over `rf1`'s joint trees here, at 2.5× the size.
 
 ## Benchmark performance

@@ -65,8 +65,8 @@ Cite the cubic-subset numbers, for the reasons under Limitations. Full metrics
 All five models are trained, 5-fold cross-validated
 (`Results/metrics/ModelMetrics_CrossVal.csv`) and run against both solid-solution benchmarks
 (`Results/benchmarks/basis_check.md`). `rf1` leads `config.HEADLINE_PREF` on the benchmarks,
-not on cross-validation, where `gbr1` has the better `MAE_cubic`, 0.113556 Å against
-0.121701 Å, at 1/77 the size.
+not on cross-validation, where `gbr1` has the better `MAE_cubic`, 0.113433 Å against
+0.121717 Å, at 1/77 the size.
 
 The forests are preferred because they reproduce the direction of the compositional
 dependence. On U(N,C), scored against the deposited binaries at `random_state=42`:

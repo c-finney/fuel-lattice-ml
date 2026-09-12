@@ -31,7 +31,7 @@ for cross-validation and `Results/benchmarks/basis_check.csv` for the two solid-
 systems.
 
 `rf1` is the headline model in `config.HEADLINE_PREF`. `gbr1` has the better
-cross-validated `MAE_cubic`, 0.113556 Å against 0.121701 Å, and is 77 times smaller.
+cross-validated `MAE_cubic`, 0.113433 Å against 0.121717 Å, and is 77 times smaller.
 
 The forests are preferred because they reproduce the direction of the compositional
 dependence on U(N,C). Pearson r is +0.9012 (`rf1`) and +0.9405 (`rf2`); both boosted models

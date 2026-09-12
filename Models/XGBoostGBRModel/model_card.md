@@ -26,15 +26,15 @@ Materials Project structures filtered to a,b,c ≤ 10 Å, 145 features, 64,128 r
 
 | param | MAE_cubic (Å) | R²_cubic | MAE_all (Å) | R²_all |
 |---|---|---|---|---|
-| a | 0.113556 | 0.983007 | 0.300814 | 0.903586 |
-| b | 0.113306 | 0.983016 | 0.309928 | 0.893973 |
-| c | 0.123666 | 0.980368 | 0.384835 | 0.862923 |
+| a | 0.113433 | 0.982628 | 0.300566 | 0.903575 |
+| b | 0.113509 | 0.982597 | 0.309441 | 0.893924 |
+| c | 0.123930 | 0.979913 | 0.385168 | 0.862495 |
 
-`gbr1` has the best cross-validation scores in the repository, taking 11 of the 12
-metric×parameter cells against `rf1`, `rf2` and `gbr2`. Its one loss is `MAE_all` for
-parameter c, where `rf1` gives 0.381954 Å against 0.384835 Å. On `MAE_cubic`, the regime
-relevant to fluorite and rocksalt fuels, it leads `rf1` 0.113556 against 0.121701 Å at 51 MB
-against 3.97 GB.
+`gbr1` has the best cross-validation scores in the repository, taking 10 of the 12
+metric×parameter cells against `rf1`, `rf2` and `gbr2`. Both losses are for parameter c,
+where `rf1` gives `MAE_all` 0.381947 Å against 0.385168 Å and `MAE_cubic` 0.123894 Å against
+0.123930 Å. On `MAE_cubic` for parameter a, the regime relevant to fluorite and rocksalt
+fuels, it leads `rf1` 0.113433 against 0.121717 Å at 51 MB against 3.97 GB.
 
 That does not make it the model to use. On the U(N,C) benchmark it returns Pearson r
 = −0.0972 with a slope of −0.164, predicting the lattice parameter to fall as carbon
@@ -66,8 +66,8 @@ third. See `Results/benchmarks/basis_check.md`.
   correction is shipped, because only 3 of 9 curated hosts have an in-repo experimental
   value and the sign flips across them. Compare models with the offset-invariant slope and
   Pearson r from `scripts/basis_check.py`.
-- **Validated primarily on cubic hosts.** R²_cubic (0.983007) is well above R²_all
-  (0.903586); non-cubic predictions carry more uncertainty. `predict_one()` warns on
+- **Validated primarily on cubic hosts.** R²_cubic (0.982628) is well above R²_all
+  (0.903575); non-cubic predictions carry more uncertainty. `predict_one()` warns on
   non-cubic hosts.
 - **Out-of-domain elements** absent from the training features degrade accuracy;
   `predict_one()` warns when detected.

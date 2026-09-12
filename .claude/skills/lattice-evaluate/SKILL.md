@@ -37,7 +37,7 @@ prediction are the full-dataset fits produced by `/lattice-train`.
    primarily on cubic hosts and the all-systems numbers are materially worse. Lumped
    RF (`rf1`) is the headline model on fidelity to the compositional trend rather than
    accuracy, and **not** because it wins cross-validation, which it does not: `gbr1` has
-   the better `MAE_cubic` at 0.113556 Å against 0.121701 Å. What separates them is that on
+   the better `MAE_cubic` at 0.113433 Å against 0.121717 Å. What separates them is that on
    the U(N,C) benchmark `rf1` gives Pearson r +0.9012 while both boosted models invert the
    trend, at −0.0972 (`gbr1`) and −0.2696 (`gbr2`). Do not call any model "most accurate"
    without saying on which axis. See `Results/benchmarks/basis_check.md`. Point to the
