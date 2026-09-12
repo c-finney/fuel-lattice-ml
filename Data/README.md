@@ -41,33 +41,20 @@ the prediction notebook and as regression-test fixtures:
 
 ## `xrd/`
 
-Laboratory X-ray diffraction for two UN MiniFuel specimens, with the final Rietveld
-refinement of each. Cu anode, coupled TwoTheta/Theta, 20 to 92 degrees 2-theta in 0.02
-degree steps at 5 s per step, 3,561 points per pattern.
+Raw laboratory X-ray diffractograms for the two UN specimens that appear in `UNUC.csv`
+as measured points rather than as samples of the literature fit. Cu anode, coupled
+TwoTheta/Theta, 20 to 92 degrees 2-theta in 0.02 degree steps at 5 s per step.
 
-| Folder | Lab specimen id | Refined a (Å) | wR |
-|---|---|---|---|
-| `UN-116/` | 35-p-24-093 | 4.88919 | 9.14 % |
-| `UN-143/` | 35-P-24-167 | 4.89493 | 9.90 % |
+| Folder | Lab specimen id | Composition in `UNUC.csv` |
+|---|---|---|
+| `UN-116/` | 35-p-24-093 | U N0.98412 C0.0158786 |
+| `UN-143/` | 35-P-24-167 | U N0.94510 C0.054891 |
 
-Both refinements start from the same UN structure model, `UN_Wyckoff.cif`, which is COD
-entry 9008757 — the same entry discussed in `Results/benchmarks/basis_check.md`, where its
-missing measurement temperature and missing uncertainty are set out.
+Each folder holds one file, `*_exported.txt`: a single header line carrying the specimen
+id, anode and scan type, then 3,561 rows of 2-theta and intensity, space separated.
 
-Each folder holds the raw pattern, the refinement plot, the starting model and the final
-refinement only. The four earlier refinement stages (background, lattice parameter and
-sample displacement, Uiso, domain size and microstrain) and GSAS-II's `.bak` autosaves are
-not included.
-
-| File | What it is |
-|---|---|
-| `*_exported.txt` | Raw diffractogram. One header line carrying the specimen id, anode and scan type, then 3,561 rows of 2-theta and intensity, space separated. |
-| `UN-*.png` | Plot of the final refinement: observed, calculated, background and difference. |
-| `UN_Wyckoff.cif` | Starting structure model, COD 9008757. Identical in both folders. |
-| `UN-*_Final_4.gpx` | GSAS-II project file for the final refinement. Opens in GSAS-II. |
-| `UN-*_Final_4.lst` | Refinement log: refined cell, agreement factors, parameter table. |
-| `UN-*_Final_4_Histogram.csv` | Point-level fit, one row per measured point. |
-| `UN-*_Final_4_ReflectionList*.csv` | Reflection table for the fitted phase. |
+The patterns are the measurements themselves, which is what the lattice parameters in
+`UNUC.csv` were refined from. The GSAS-II refinement projects are not included.
 
 > ### Label-basis mismatch: read before quoting any benchmark MAE
 >

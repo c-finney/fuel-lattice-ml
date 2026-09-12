@@ -54,34 +54,19 @@ this study, plus pure CeO2 from literature.
 | `ref_mp-id` | Reference host, `mp-20194` (CeO2) on every row, since Ce is dominant throughout. |
 | `a_true` | Lattice parameter, Å, from Rietveld refinement of the measured pattern in GSAS-II. The patterns themselves are held at ORNL; see AVAILABILITY.md. |
 
-## Data/xrd/UN-*/UN-*_Final_4_Histogram.csv
+## Data/xrd/UN-*/\*_exported.txt
 
-The final Rietveld fit evaluated at every measured point, 3,561 rows per specimen.
+A raw diffractogram as written by the diffractometer. Not comma separated and not a table
+with named columns, so it is described here rather than as a column list.
 
-| Column | Meaning |
+| Part | Meaning |
 |---|---|
-| `x` | Scattering angle 2-theta, degrees. |
-| `y_obs` | Observed intensity, counts, as measured. |
-| `weight` | Weight applied to this point in the least-squares refinement. |
-| `y_calc` | Intensity calculated from the refined model at this point. |
-| `y_bkg` | Refined background contribution at this point. The difference curve is `y_obs` minus `y_calc`. |
-| `Q` | Scattering vector magnitude, 1/Å, the angle-independent equivalent of `x`. |
+| Line 1 | Header, single-quoted: `Id` is the lab specimen identifier, then `Comment`, `Operator`, `Anode` (Cu) and `Scantype` (coupled TwoTheta/Theta). |
+| Lines 2 onward | 3,561 rows, two space-separated values each: scattering angle 2-theta in degrees, then measured intensity. |
 
-## Data/xrd/UN-*/UN-*_Final_4_ReflectionList*.csv
-
-One row per symmetry-allowed reflection in the fitted range.
-
-| Column | Meaning |
-|---|---|
-| `h`, `k`, `l` | Miller indices of the reflection. |
-| `d-sp` | d-spacing, Å. |
-| `2-theta` | Calculated reflection position, degrees. |
-| `F_obs`, `F_calc` | Observed and calculated structure factors. Their agreement is what the refinement minimises. |
-| `phase`, `phase_name` | Index and name of the phase the reflection belongs to; UN throughout. |
-| `mult` | Multiplicity of the reflection. |
-| `sig`, `gam` | Gaussian and Lorentzian peak-shape parameters. |
-| `FWHM` | Full width at half maximum of the fitted peak, degrees. |
-| `Prfo` | Preferred-orientation correction applied; 1 means none. |
+Intensity is as recorded by the instrument and is not normalised, so absolute values are
+not comparable between the two specimens; peak positions are what the lattice parameter is
+refined from.
 
 ## Results/metrics/ModelMetrics_CrossVal.csv
 
