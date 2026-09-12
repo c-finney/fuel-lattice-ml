@@ -34,6 +34,21 @@ Innovation and Partnerships Office and are placeholders until they arrive:
       also avoided a QA review. The retirement is stated at the top of README.md and in
       this file, and that statement is a condition of the clearance rather than a
       stylistic choice: it should not be removed or softened.
+
+      For the record, the `ORNL-CODE-XXXXXX` placeholder this repository carried was never
+      a live requirement. It traces to one page of ORNL software-catalog guidance that is
+      an unedited copy of Lawrence Livermore's, still showing the literal placeholder and
+      last substantively edited in September 2022; the NOTICE template on that same page
+      names Lawrence Livermore and contract DE-AC52-07NA27344 rather than UT-Battelle and
+      DE-AC05-00OR22725. No repository in ORNL's GitHub organisation carries such an
+      identifier. The NOTICE file in this repository is not derived from that template.
+- [x] **DOE CODE announcement: not required.** SULI appointments do not carry a DOE CODE
+      announcement obligation. Had one been needed it would have been ORNL's to file
+      rather than the participant's, and the Zenodo DOI would have been supplied as the
+      persistent identifier so that OSTI did not mint a second one.
+- [x] **Manuscript review: complete.** The accompanying article was reviewed and released
+      through ORNL's internal process by the ORNL co-authors; the editorial comments
+      carried in the manuscript file came from that review.
 - [ ] **Confirmation of the copyright line in LICENSE.** It currently reads
       `Copyright (c) 2025 Cade Finney`, on the reading that item 4 of the
       Participant Data Agreement waives ORISE and ORAU invention rights under
