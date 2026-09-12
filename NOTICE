@@ -28,10 +28,26 @@ those rights and does not displace them.
 
 The dataset redistributed in Data/MP_Dataset_Original_Trimmed.csv was retrieved
 from the Materials Project (https://materialsproject.org) and is licensed CC BY
-4.0. Anyone redistributing that dataset must retain the Materials Project
-attribution. The trained model binaries are distributed under the MIT license in
-LICENSE, the same terms as the source code. Citing the Materials Project when
-using them is asked for as good practice rather than as a license condition.
+4.0 (https://creativecommons.org/licenses/by/4.0/). Anyone redistributing that
+dataset must retain this attribution, the reference to that license, and the
+disclaimer below.
+
+The five trained model binaries were produced from that dataset, which was
+filtered, de-duplicated, featurized and then used to fit them, so they are a
+modified product of it. They are distributed under the MIT license in LICENSE.
+CC BY 4.0 carries no ShareAlike condition, so the license on the models is not
+required to match the license on the data; section 3(a)(4) of CC BY 4.0 asks only
+that the adapter's license not prevent recipients from complying with CC BY 4.0,
+and MIT does not. The Materials Project attribution above travels with the models
+whichever way that question is read, and anyone redistributing a model should
+retain it.
+
+Materials Project terms of use state that the data are computed and may not be
+accurate enough for a given application, and that the developers, contributors
+and hosts of the Materials Project are not to be held liable for inaccuracies in
+the data or consequences thereof. That disclaimer travels with both the dataset
+and the models.
+
 Citation details are in README.md.
 
 ## Acknowledgements
