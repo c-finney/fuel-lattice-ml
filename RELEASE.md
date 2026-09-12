@@ -63,7 +63,7 @@ the mentor of record.
 
 ## Archived version
 
-The archived copy of record is the Zenodo deposit, DOI 10.5281/zenodo.XXXXXXX,
+The archived copy of record is the Zenodo deposit, DOI 10.5281/zenodo.22727667,
 which contains this source tree together with all five trained model binaries,
 about 14 GB in total including the 9.74 GB `rf2`. Replace that placeholder once
 the deposit is published. GitHub holds the working history; Zenodo holds the
@@ -74,7 +74,7 @@ The deposited binaries are the artifacts fitted on **2026-07-13**, which are the
 ones every number in the manuscript describes.
 
 - [ ] **Zenodo record id in `Models/MANIFEST.json`.** Each of the five `uri` fields
-      currently reads `zenodo://XXXXXXX/<filename>`. `scripts/fetch_models.py`
+      currently reads `zenodo://22727667/<filename>`. `scripts/fetch_models.py`
       expands that form to the record's file endpoint, so until the record id is
       filled in every download 404s. The SHA-256 gate in front of the unpickle is
       already correct and verified against the deposited files.

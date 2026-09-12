@@ -6,8 +6,8 @@ underlying values. The statements are kept here rather than only in the
 manuscript so that the repository and the article cannot drift apart, and so that
 the file paths quoted in the article can be checked against a real tree.
 
-Both statements contain placeholders, written as `XXXXXXX`, that resolve when the
-Zenodo deposit is published. RELEASE.md lists every placeholder in the repository.
+The Zenodo DOI below is reserved on the draft deposit and resolves once that deposit
+is published. RELEASE.md lists every remaining placeholder in the repository.
 
 ## Software and Code Availability
 
@@ -16,7 +16,7 @@ Zenodo deposit is published. RELEASE.md lists every placeholder in the repositor
 > Source code available from: https://github.com/c-finney/fuel-lattice-ml
 >
 > Archived source code at time of publication:
-> https://doi.org/10.5281/zenodo.XXXXXXX (Finney C. fuel-lattice-ml: ML
+> https://doi.org/10.5281/zenodo.22727667 (Finney C. fuel-lattice-ml: ML
 > prediction of nuclear fuel lattice parameters. Zenodo; 2026.)
 >
 > License: MIT
@@ -39,7 +39,7 @@ documented rather than resolved.
 > **Source data**
 >
 > The training data were retrieved from the Materials Project
-> (https://materialsproject.org) in August 2025 through the `mp-api` client, and
+> (https://materialsproject.org) on 25 June 2026 through the `mp-api` client, and
 > are licensed CC BY 4.0. The retrieved table of 154,192 entries is redistributed
 > in the software archive as `Data/MP_Dataset_Original_Trimmed.csv`, so that every
 > result can be reproduced from the same starting point without a Materials
@@ -49,7 +49,7 @@ documented rather than resolved.
 > **Underlying data**
 >
 > Zenodo: fuel-lattice-ml: ML prediction of nuclear fuel lattice parameters.
-> https://doi.org/10.5281/zenodo.XXXXXXX
+> https://doi.org/10.5281/zenodo.22727667
 >
 > This deposit contains the values behind every figure and table in this article,
 > listed file by file in `AVAILABILITY.md`, together with a description of every

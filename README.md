@@ -14,7 +14,7 @@ it if you need it to keep working.
 
 ORNL software release number ORNL-CODE-XXXXXX. See RELEASE.md.
 
-MIT licensed, archived at [doi:10.5281/zenodo.XXXXXXX](https://doi.org/10.5281/zenodo.XXXXXXX).
+MIT licensed, archived at [doi:10.5281/zenodo.22727667](https://doi.org/10.5281/zenodo.22727667).
 The Materials Project data redistributed here, and the models derived from it, stay under
 CC BY 4.0; see NOTICE.
 

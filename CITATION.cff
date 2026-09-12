@@ -18,8 +18,8 @@ version: "1.0.0"
 date-released: "2026-09-04"
 license: MIT
 repository-code: "https://github.com/c-finney/fuel-lattice-ml"
-doi: "10.5281/zenodo.XXXXXXX"
-url: "https://doi.org/10.5281/zenodo.XXXXXXX"
+doi: "10.5281/zenodo.22727667"
+url: "https://doi.org/10.5281/zenodo.22727667"
 keywords:
   - machine learning
   - nuclear fuel

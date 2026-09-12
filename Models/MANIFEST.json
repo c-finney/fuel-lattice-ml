@@ -29,7 +29,7 @@
       "compressed": false,
       "bytes": 3966648193,
       "sha256": "806e57d9c857cfe3233741a5627eebb93d9d0261f67b2f9f15a93227d14a1373",
-      "uri": "zenodo://XXXXXXX/LumpedRFModel.joblib",
+      "uri": "zenodo://22727667/LumpedRFModel.joblib",
       "status": "trained"
     },
     "rf2": {
@@ -37,7 +37,7 @@
       "compressed": false,
       "bytes": 9735288229,
       "sha256": "15c21119c71d4d64697efae110a5f95c22b9bbbf3852fc6b48eaf3f4d4881b5b",
-      "uri": "zenodo://XXXXXXX/IndependentRFModel.joblib",
+      "uri": "zenodo://22727667/IndependentRFModel.joblib",
       "status": "trained"
     },
     "gbr1": {
@@ -45,7 +45,7 @@
       "compressed": false,
       "bytes": 51341788,
       "sha256": "4a4db5cce30feba66313f772f58de351541582cf22f9e57b1c223c1542e17905",
-      "uri": "zenodo://XXXXXXX/XGBoostGBRModel.joblib",
+      "uri": "zenodo://22727667/XGBoostGBRModel.joblib",
       "status": "trained"
     },
     "gbr2": {
@@ -53,7 +53,7 @@
       "compressed": false,
       "bytes": 22965965,
       "sha256": "27f6a0d68c8cd266bb0a4feb5601e7fb12148f3495243b0c9269700ddfd0f3d5",
-      "uri": "zenodo://XXXXXXX/ScikitLearnGBRModel.joblib",
+      "uri": "zenodo://22727667/ScikitLearnGBRModel.joblib",
       "status": "trained"
     },
     "lin": {
@@ -61,7 +61,7 @@
       "compressed": false,
       "bytes": 17442,
       "sha256": "450649ba2d27d68543d5f157bb769e18fbe3dd75f964a33a915e5c113adbcb06",
-      "uri": "zenodo://XXXXXXX/LinearRegressionModel.joblib",
+      "uri": "zenodo://22727667/LinearRegressionModel.joblib",
       "status": "trained"
     }
   }
