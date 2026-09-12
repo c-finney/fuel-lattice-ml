@@ -53,9 +53,9 @@ fitted binary shipped in `Models/binaries/`.
 
 | Parameter | MAE (all systems) | R² (all systems) | MAE (cubic only) | R² (cubic only) |
 |---|---|---|---|---|
-| a | 0.3098 Å | 0.890 | 0.1217 Å | 0.977 |
+| a | 0.3097 Å | 0.890 | 0.1217 Å | 0.977 |
 | b | 0.3162 Å | 0.883 | 0.1217 Å | 0.977 |
-| c | 0.3820 Å | 0.855 | 0.1239 Å | 0.976 |
+| c | 0.3819 Å | 0.855 | 0.1239 Å | 0.976 |
 
 Cite the cubic-subset numbers, for the reasons under Limitations. Full metrics
 (including MSE) are in the CSV. Predicted-vs-actual scatter:
@@ -80,8 +80,11 @@ dependence. On U(N,C), scored against the deposited binaries at `random_state=42
 | `gbr2` | −0.2696 | −0.426 | inverted |
 
 Both boosted models put the lattice parameter falling as carbon substitutes for nitrogen.
-Between the two forests, `rf2` is marginally more accurate on both benchmarks but is last of
-the four on CV R²_cubic (0.976283) and weighs 9.74 GB against `rf1`'s 3.97 GB.
+Between the two forests, `rf2` tracks the measured trend marginally more closely on both
+benchmarks, at Pearson r +0.9405 against +0.9012 on U(N,C) and +0.9706 against +0.9451 on
+(Ce,Nd)O2, with lower scatter in each. On raw MAE the two split: `rf2` is better on U(N,C),
+0.011661 against 0.019434, and worse on (Ce,Nd)O2, 0.149348 against 0.132906. It is also
+last of the four on CV R²_cubic (0.976283) and weighs 9.74 GB against `rf1`'s 3.97 GB.
 
 `rf1` also refits consistently, because it averages 600 independently built trees and
 floating-point differences between machines cancel across them. The boosted models fit
