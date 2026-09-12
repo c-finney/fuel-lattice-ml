@@ -130,6 +130,64 @@ empty on any given row.
 | `slope` | Metric rows only: slope of predicted against measured. Unaffected by a constant offset. |
 | `pearson_r` | Metric rows only: correlation of predicted against measured. Also unaffected by a constant offset, and thus the defensible way to compare models across the basis mismatch. |
 
+## Data/reference_systems.json
+
+Curated symmetry and stability data for the nine end-member host structures the
+predictor can resolve without a Materials Project API call. A JSON object keyed by
+formula (`UN`, `UC`, `CeO2`, `UO2`, `PuO2`, `ThO2`, `ZrO2`, `Nd2O3`, `NdO2`), each
+value an object with the fields below. Sourced from the Materials Project, CC BY 4.0.
+
+| Field | Meaning |
+|---|---|
+| `mp_id` | Materials Project identifier for the host structure. |
+| `crystal_system` | Crystal system of the host, e.g. `cubic`. Drives the collapse of a, b, c to a single reported `a`. |
+| `spacegroup_num` | International space-group number, 1-230. Fed to the model as a scalar feature. |
+| `is_centrosymmetric` | Whether the space group contains an inversion centre. Model feature. |
+| `n_symmetry_ops` | Number of symmetry operations in the space group. Model feature. |
+| `nsites` | Sites in the conventional cell. Model feature and dedup key. |
+| `energy_above_hull` | eV/atom above the convex hull. Used only to break reference ties. |
+| `formation_energy_per_atom` | eV/atom. The second tie-break, used when `energy_above_hull` cannot decide. |
+| `note` | Free text recording how the entry was verified and any tie-break reasoning. Not consumed by code. |
+
+## Results/benchmarks/benchmark_metrics.csv
+
+Absolute-error summary for each model on each solid-solution benchmark. This file
+reports error only; `basis_check.csv` carries the same models with the
+offset-invariant slope and Pearson r alongside, and is what the manuscript's
+benchmark table cites.
+
+| Column | Meaning |
+|---|---|
+| `benchmark` | Benchmark key, `UNUC` or `CeO2Nd2O3`. |
+| `system` | Human-readable system name, e.g. `U(N,C)`. |
+| `n_rows` | Compositions scored, after dropping rows with no experimental value. |
+| `model_key`, `model_name` | Which model the row describes. |
+| `MAE_a_angstrom` | Mean absolute error of predicted `a` against the experimental value, Å. Contains the DFT-vs-experiment basis mismatch and is not pure model error. |
+| `MSE_a_angstrom2` | Mean squared error of predicted `a`, Å². Same caveat. |
+
+## Results/archive/*.csv
+
+Three superseded optimization studies, retained for the record and **not for
+citation**; `Results/README.md` explains what supersedes each. All three share the
+quirk that `MSE`, `MAE` and `R2` hold a three-element array for a, b and c written
+by numpy as a string, so parsing them takes more than a plain CSV read.
+
+`CrystalSystemRandomForestRegressorOptimizationStudy.csv` and
+`CrystalSystemRandomForestRegressorOptimizationStudy_Full.csv`:
+
+| Column | Meaning |
+|---|---|
+| `lattice_parameter_threshold` | Å cut-off applied to a, b and c before fitting. |
+| `OHE_method` | Which one-hot encoding was used, `sg` (space group) or `cs` (crystal system). |
+| `crystal_system` | Crystal system the row's metrics are computed over. |
+| `MSE`, `MAE`, `R2` | Three-element `[a b c]` arrays, as strings. |
+| `dataset_size` | Rows surviving the threshold and dedup for that configuration. |
+
+`RandomForestRegressorOptimizationStudy.csv` uses an earlier schema: an unnamed
+integer index column, title-cased headers (`Lattice Parameter Threshold`,
+`OHE Method`, `Dataset Size`), bracketed metric names (`MSE [a, b, c]`), and a
+`cubic_only` boolean in place of the later `crystal_system` column.
+
 ## Results/CrystalSystemRandomForestRegressorOptimizationStudy_Final.csv
 
 The per-crystal-system accuracy sweep for the Lumped RF model. Note that `MSE`,
