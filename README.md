@@ -12,9 +12,6 @@ can be checked and reused. There is no maintenance and no support, and issues an
 requests are not monitored. Dependency versions will drift out from under this code. Fork
 it if you need it to keep working.
 
-Cleared for public release by ORNL software control on the basis that the project is
-retired and unmaintained; no software release number was required. See RELEASE.md.
-
 MIT licensed, archived at [doi:10.5281/zenodo.22727667](https://doi.org/10.5281/zenodo.22727667).
 The Materials Project data redistributed here, and the models derived from it, stay under
 CC BY 4.0; see NOTICE.

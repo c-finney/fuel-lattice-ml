@@ -23,29 +23,9 @@ manuscript will be answered, and email asking for a fix to the code will not be.
 
 ## Outstanding before the repository goes public
 
-The ORISE Terms of Appointment require any release of information arising from the
-appointment to go through the host facility's process, separately from the
-question of who owns the copyright. Three items thus come from ORNL's
-Innovation and Partnerships Office and are placeholders until they arrive:
+Two items remain, both of which turn on how ORISE and ORAU read the appointment
+terms rather than on anything in this repository:
 
-- [x] **ORNL software release number: not required.** ORNL software control, contacted
-      through Denise Adorno Lopes, cleared this repository for public release without a
-      release number, on the basis that the project is retired and unmaintained, which
-      also avoided a QA review. The retirement is stated at the top of README.md and in
-      this file, and that statement is a condition of the clearance rather than a
-      stylistic choice: it should not be removed or softened.
-
-      For the record, the `ORNL-CODE-XXXXXX` placeholder this repository carried was never
-      a live requirement. It traces to one page of ORNL software-catalog guidance that is
-      an unedited copy of Lawrence Livermore's, still showing the literal placeholder and
-      last substantively edited in September 2022; the NOTICE template on that same page
-      names Lawrence Livermore and contract DE-AC52-07NA27344 rather than UT-Battelle and
-      DE-AC05-00OR22725. No repository in ORNL's GitHub organisation carries such an
-      identifier. The NOTICE file in this repository is not derived from that template.
-- [x] **DOE CODE announcement: not required.** SULI appointments do not carry a DOE CODE
-      announcement obligation. Had one been needed it would have been ORNL's to file
-      rather than the participant's, and the Zenodo DOI would have been supplied as the
-      persistent identifier so that OSTI did not mint a second one.
 - [x] **Manuscript review: complete.** The accompanying article was reviewed and released
       through ORNL's internal process by the ORNL co-authors; the editorial comments
       carried in the manuscript file came from that review.
@@ -59,19 +39,6 @@ Innovation and Partnerships Office and are placeholders until they arrive:
       appointment letter or the terms, so ownership of copyright in this source
       is simply not addressed by them. IPO's interpretation governs rather than
       this file's.
-- [ ] **Confirmation that no ORNL software release number is required, if that is
-      the conclusion.** Neither the appointment letter nor the ORISE terms mentions
-      a release number, DOE CODE, or OSTI. They are silent on the mechanism but not
-      neutral on the duty: the terms require that "any publications, presentations,
-      posters or other release of information related to the appointment must be
-      made in accordance with the regulations, policies, procedures, or other
-      requirements of DOE, sponsoring agency, or the host facility", and the
-      Participant Data Agreement defines "Technical Data" to include "computer
-      software (including computer programs, computer software databases, and
-      computer software documentation)". Publishing this repository is therefore a
-      release of Technical Data related to the appointment, governed by ORNL's own
-      policy, which these documents make binding without describing. Silence in the
-      appointment paperwork is not an exemption; ORNL has to answer it.
 - [ ] **Confirmation of the NOTICE text.** The funding acknowledgement is quoted
       verbatim from the Terms of Appointment. IPO may supply different or
       additional boilerplate, and their text wins.
