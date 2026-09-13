@@ -11,8 +11,8 @@ entries, before matminer featurization. This is thus the artifact that lets
 clone, as described in `engine/build_dataset.py` and the root `README.md`'s Quickstart.
 
 **Sourced from the Materials Project** (https://materialsproject.org), licensed
-**CC BY 4.0**. Any redistribution of this file, or of models trained from it
-(`Models/binaries/LumpedRFModel.joblib`), must retain that attribution.
+**CC BY 4.0**. Any redistribution of this file must retain that attribution. The
+models trained from it are MIT licensed; see LICENSE.
 
 ## `reference_systems.json`
 
@@ -27,33 +27,59 @@ Materials Project API calls. Also sourced from the Materials Project (CC BY 4.0)
 Experimental validation data with known lattice parameters (`a_true` column), used by
 the prediction notebook and as regression-test fixtures:
 
-- `UNUC.csv`, the U(N,C) system (23 rows), based on an experimental fit.
+- `UNUC.csv`, the U(N,C) system (23 rows). Nineteen rows, at y = 0.05 to 0.95 in steps of
+  0.05, are sampled from the quadratic fit to the literature values that Figure 1 of the
+  manuscript plots. Recovering that fit from those rows gives
+
+      a(y) = -0.0139749 y^2 - 0.0573515 y + 4.9612879   (y = N fraction, a in angstrom)
+
+  to within 1.9e-4 angstrom, so the curve is fully reproducible from this file. The
+  remaining four rows are measured values rather than fit samples: the UN and UC
+  end-members from Wyckoff, and two U(N,C) compositions at y = 0.98412 and y = 0.94510.
+  The individual literature measurements behind the fit are in the cited sources.
 - `CeO2Nd2O3Vals.csv`, the (Ce,Nd)O2 system (7 rows).
 
-> ### ⚠ Label-basis mismatch: read before quoting any benchmark MAE
+## `xrd/`
+
+Raw laboratory X-ray diffractograms for the two UN specimens that appear in `UNUC.csv`
+as measured points rather than as samples of the literature fit. Cu anode, coupled
+TwoTheta/Theta, 20 to 92 degrees 2-theta in 0.02 degree steps at 5 s per step.
+
+| Folder | Lab specimen id | Composition in `UNUC.csv` |
+|---|---|---|
+| `UN-116/` | 35-p-24-093 | U N0.98412 C0.0158786 |
+| `UN-143/` | 35-P-24-167 | U N0.94510 C0.054891 |
+
+Each folder holds one file, `*_exported.txt`: a single header line carrying the specimen
+id, anode and scan type, then 3,561 rows of 2-theta and intensity, space separated.
+
+The patterns are the measurements themselves, which is what the lattice parameters in
+`UNUC.csv` were refined from. The GSAS-II refinement projects are not included.
+
+> ### Label-basis mismatch: read before quoting any benchmark MAE
 >
-> **The models are trained on DFT lattice parameters. These benchmarks are experimental
-> measurements. They are not the same quantity.** A benchmark MAE is thus *not* pure
+> The models are trained on DFT lattice parameters and these benchmarks are experimental
+> measurements, which are not the same quantity. A benchmark MAE is therefore not pure
 > model error, because it contains the DFT-vs-experiment discrepancy inherited through the
 > training labels.
 >
-> `MP_Dataset_Original_Trimmed.csv` comes from the Materials Project, where **every lattice
-> parameter is DFT-relaxed**. Note that MP's `theoretical: False` flag means the structure
-> has been *observed*, **not** that its lattice parameters were *measured*. For
-> instance `mp-1865` (UN) is flagged `theoretical: False` and still carries a
-> computed a = 4.877379 Å, against an experimental 4.884 Å.
+> `MP_Dataset_Original_Trimmed.csv` comes from the Materials Project, where every lattice
+> parameter is DFT-relaxed. MP's `theoretical: False` flag means the structure has been
+> observed, not that its lattice parameters were measured: `mp-1865` (UN) is flagged
+> `theoretical: False` and still carries a computed a = 4.877379 Å against an experimental
+> 4.884 Å.
 >
-> The effect is real and material-dependent. For CeO2 (`mp-20194`) the DFT value exceeds the
-> experimental one by **+0.057365 Å**, which accounts for essentially all of the uniform
-> over-prediction every model shows on the (Ce,Nd)O2 benchmark.
+> The effect is material-dependent. For CeO2 (`mp-20194`) the DFT value exceeds the
+> experimental one by +0.057365 Å, which accounts for most of the uniform over-prediction
+> every model shows on the (Ce,Nd)O2 benchmark.
 >
-> **No DFT→experiment correction is shipped**, because this repo cannot justify one: only 3 of
-> the 9 curated hosts have an experimental value here at all, and the delta's *sign flips*
-> across those 3 (UN −0.006621, UC −0.022736, CeO2 +0.057365 Å).
+> No DFT→experiment correction is shipped, because this repository cannot justify one: only
+> 3 of the 9 curated hosts have an experimental value here at all, and the sign of the delta
+> flips across those 3 (UN −0.006621, UC −0.022736, CeO2 +0.057365 Å).
 >
-> Run **`python scripts/basis_check.py`** to regenerate `Results/benchmarks/basis_check.md`
-> for the full anchor table, and for the **slope / Pearson r** metrics, which are invariant to
-> a constant offset and are thus the defensible way to compare models here.
+> Run `python scripts/basis_check.py` to regenerate `Results/benchmarks/basis_check.md` for
+> the full anchor table and for the slope and Pearson r metrics, which are invariant to a
+> constant offset and are the way to compare models here.
 
 ### The `ref_mp-id` column
 

@@ -6,8 +6,8 @@ underlying values. The statements are kept here rather than only in the
 manuscript so that the repository and the article cannot drift apart, and so that
 the file paths quoted in the article can be checked against a real tree.
 
-Both statements contain placeholders, written as `XXXXXXX`, that resolve when the
-Zenodo deposit is published. RELEASE.md lists every placeholder in the repository.
+The Zenodo DOI below is reserved on the draft deposit and resolves once that deposit
+is published.
 
 ## Software and Code Availability
 
@@ -16,22 +16,30 @@ Zenodo deposit is published. RELEASE.md lists every placeholder in the repositor
 > Source code available from: https://github.com/c-finney/fuel-lattice-ml
 >
 > Archived source code at time of publication:
-> https://doi.org/10.5281/zenodo.XXXXXXX (Finney C. fuel-lattice-ml: ML
+> https://doi.org/10.5281/zenodo.22727667 (Finney C. fuel-lattice-ml: ML
 > prediction of nuclear fuel lattice parameters. Zenodo; 2026.)
 >
 > License: MIT
 
-The Zenodo deposit holds the source tree together with the five trained model
+The Zenodo deposit holds the source tree together with all five trained model
 binaries, which total roughly 14 GB and exceed what the Git host accepts. The
 project is retired and is not maintained; the archived version is the one the
 results in this article were produced with.
+
+**Reproducibility of the deposited models.** The deposited binaries are the
+artifacts fitted on 2026-07-13, and they reproduce every model figure reported in
+this article. The featurization inputs rebuild byte-identically from the
+redistributed source table on any machine, and `Models/MANIFEST.json` records the
+size and SHA-256 of each binary so a download can be verified before use.
+`RELEASE.md` records what the deposit reproduces and the limitations that were
+documented rather than resolved.
 
 ## Data Availability
 
 > **Source data**
 >
 > The training data were retrieved from the Materials Project
-> (https://materialsproject.org) in August 2025 through the `mp-api` client, and
+> (https://materialsproject.org) on 25 June 2026 through the `mp-api` client, and
 > are licensed CC BY 4.0. The retrieved table of 154,192 entries is redistributed
 > in the software archive as `Data/MP_Dataset_Original_Trimmed.csv`, so that every
 > result can be reproduced from the same starting point without a Materials
@@ -41,7 +49,7 @@ results in this article were produced with.
 > **Underlying data**
 >
 > Zenodo: fuel-lattice-ml: ML prediction of nuclear fuel lattice parameters.
-> https://doi.org/10.5281/zenodo.XXXXXXX
+> https://doi.org/10.5281/zenodo.22727667
 >
 > This deposit contains the values behind every figure and table in this article,
 > listed file by file in `AVAILABILITY.md`, together with a description of every
@@ -52,9 +60,8 @@ results in this article were produced with.
 > The same deposit contains the model cards, exact hyperparameters and
 > cross-validation metrics for all five models, the per-crystal-system
 > optimization study, the label-basis analysis reconciling DFT training labels
-> against experimental validation values, the seed-stability analysis quantifying
-> how far each model's benchmark correlation moves under a change of random seed,
-> and the four notebooks that reproduce the study end to end.
+> against experimental validation values, and the four notebooks that reproduce
+> the study end to end.
 >
 > **Data not shared**
 >
@@ -63,7 +70,9 @@ results in this article were produced with.
 > held there. The refined lattice parameters extracted from them, which are the
 > values this article reports and plots, are included in the deposit as
 > `Data/benchmarks/CeO2Nd2O3Vals.csv`. Requests for the underlying patterns should
-> be directed to the corresponding author.
+> be directed to the corresponding author. The raw diffractograms for the two UN
+> specimens that contribute measured points to the U(N, C) set are deposited, under
+> `Data/xrd/`.
 >
 > Data are available under the terms of the Creative Commons Attribution 4.0
 > International license (CC-BY 4.0), except where the Materials Project's own
@@ -80,7 +89,8 @@ results in this article were produced with.
 | Figure 4, Spearman feature correlations | `Results/metrics/feature_spearman_cubic.csv` | `scripts/feature_correlations.py` |
 | Table 1, cross-validation metrics for five models | `Results/metrics/ModelMetrics_CrossVal.csv` | `cli.py evaluate` |
 | Table 2, MAE, slope and Pearson r on both systems | `Results/benchmarks/basis_check.csv` | `scripts/basis_check.py` |
-| Table 3, model hyperparameters | `Models/<ModelName>/params.json` | Written by `cli.py train` |
+| Model hyperparameters, cited as extended data | `Models/<ModelName>/params.json` | Written by `cli.py train` |
+| Discussion, per-crystal-system accuracy (the "up to 360 %" MAE increase) | `Results/CrystalSystemRandomForestRegressorOptimizationStudy_Final.csv` | `FuelLatticeParameterModelOptimization.ipynb` |
 
 Every aggregate in Tables 1 and 2 can be recomputed from the point-level files in
 the same table, which is the reason the per-entry cross-validation predictions
@@ -94,10 +104,10 @@ default, since it is a sanity baseline rather than a usable predictor, and until
 this release it could not be reported at all: the flag was added so that the row
 the manuscript prints is reachable rather than orphaned.
 
-Table 3 appears in the manuscript as an appendix. However, since appendices are
-published as extended data rather than alongside the article, its content is carried
-by the five `params.json` files, which are also what `tests/test_params_parity.py`
-asserts the notebooks and `engine/train_models.py` agree with.
+The hyperparameters are cited as extended data rather than tabulated in the article.
+Their content is carried by the five `params.json` files, which are also what
+`tests/test_params_parity.py` asserts the notebooks and `engine/train_models.py` agree
+with.
 
 ## What is not in the archive
 

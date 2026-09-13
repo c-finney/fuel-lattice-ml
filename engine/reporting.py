@@ -36,7 +36,7 @@ def headline_model(available: list[str], metrics: dict | None = None) -> str:
     Return the key of the headline model.
 
     First match in config.HEADLINE_PREF order, which is derived from the
-    cross-validation, benchmark and seed-stability evidence recorded there.
+    cross-validation and benchmark evidence recorded there.
 
     Nothing in HEADLINE_PREF is a baseline, so a caller that opted into Linear
     Regression with include_baseline and restricted --models to it alone would

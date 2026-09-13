@@ -4,19 +4,16 @@ Machine learning prediction of lattice parameters for nuclear fuel solid-solutio
 compositions, covering U(N,C), (Ce,Nd)O2 and other two-component mixed systems, trained
 on Materials Project structures.
 
-> ### This project is retired
->
-> Development ended with the SULI appointment that produced it, on 1 August 2025. The
-> repository is frozen at the state behind the accompanying manuscript and exists so
-> that those results can be checked and reused. There is no maintenance, no support, and
-> no response to issues or pull requests. Dependency versions will drift out from under
-> this code and nobody will fix it. Fork it if you need it to keep working.
->
-> ORNL software release number ORNL-CODE-XXXXXX. See RELEASE.md.
+### This project is retired
 
-MIT licensed, archived at [doi:10.5281/zenodo.XXXXXXX](https://doi.org/10.5281/zenodo.XXXXXXX).
-The Materials Project data redistributed here, and the models derived from it, stay under
-CC BY 4.0; see NOTICE.
+Development ended with the SULI appointment that produced it, on 1 August 2025. The
+repository is frozen at the state behind the accompanying manuscript, so that those results
+can be checked and reused. There is no maintenance and no support, and issues and pull
+requests are not monitored. Dependency versions will drift out from under this code. Fork
+it if you need it to keep working.
+
+MIT licensed, archived at [doi:10.5281/zenodo.22727667](https://doi.org/10.5281/zenodo.22727667).
+The Materials Project data redistributed in `Data/` stays under CC BY 4.0; see NOTICE.
 
 ---
 
@@ -43,9 +40,9 @@ Training from scratch instead of downloading a binary:
 .venv/bin/python cli.py predict --composition "UN0.5C0.5"
 ```
 
-**Pass `--n-jobs -1`.** It is not the default, so without it `train` fits a 600-tree forest
-on a single core. On a 64-core machine rf1 takes about 45 seconds with the flag and had
-not finished after 10 minutes without it. Parallelism does not change the fitted forest,
+Pass `--n-jobs -1`. It is not the default, so without it `train` fits a 600-tree forest on
+a single core: on a 64-core machine rf1 takes about 45 seconds with the flag and had not
+finished after 10 minutes without it. Parallelism does not change the fitted forest,
 because scikit-learn draws each tree's seed from `random_state` before dispatch.
 
 Timings depend heavily on core count, so the figures reported by `cli.py status` are rough.
@@ -59,10 +56,10 @@ and `rf2` at 9.74 GB needs proportionally more.
 
 ## What this is
 
-Four notebooks at the repository root walk through the pipeline end to end and are narrated
-for learning. Every notebook imports from `engine/` rather than defining its own
-hyperparameters, so hyperparameters live in exactly one place, `engine/train_models.py`'s
-`model_estimators()`, pinned by `tests/test_params_parity.py`:
+Four notebooks at the repository root run the pipeline end to end, with commentary. Each
+imports from `engine/` rather than defining its own hyperparameters, so the hyperparameters
+live in one place, `engine/train_models.py`'s `model_estimators()`, which
+`tests/test_params_parity.py` pins:
 
 1. `FuelLatticeParameterDataFeaturization.ipynb`, which queries Materials Project, extracts
    symmetry, and featurizes with matminer.
@@ -81,7 +78,7 @@ relying on any of them.
 ## Repository layout
 
 ```
-engine/         the pipeline, and the single source of truth for everything
+engine/         the pipeline; hyperparameters and paths are defined here only
 cli.py          entry point: status | build | train | evaluate | predict
 server.py       FastMCP stdio server exposing predict + status as MCP tools
 .mcp.json       registers the MCP server for Claude Code
@@ -92,7 +89,7 @@ Models/         model cards, hyperparameters, metrics; binaries fetched separate
 Results/        the optimization study, cross-validation metrics, figures, benchmarks
 exploratory/    unmaintained notebooks
 scripts/        fetch_models, upload_models, write_model_manifest, basis_check,
-                feature_correlations, seed_stability
+                feature_correlations
 tests/          pytest suite, including the hyperparameter-parity and seed-resume guards
 ```
 
@@ -110,38 +107,44 @@ project; the notebooks and the agent tooling stay in sync because they are the s
 
 ## The five models
 
-| Key | Name | Binary | CV MAE, cubic (Å) | U(N,C) Pearson r, 5 seeds |
+| Key | Name | Binary | CV MAE, cubic (Å) | U(N,C) Pearson r |
 |---|---|---|---|---|
-| `rf1` | Lumped RF | 3.97 GB | 0.121701 | +0.9028 ± 0.0084 |
-| `rf2` | Independent RF | 9.74 GB | 0.125516 | +0.9362 ± 0.0132 |
-| `gbr1` | Lumped GBR (XGBoost) | 51 MB | 0.113556 | +0.6099 ± 0.2092 |
-| `gbr2` | Independent GBR (HistGBR) | 23 MB | 0.151228 | +0.0768 ± 0.3945 |
+| `rf1` | Lumped RF | 3.97 GB | 0.121717 | +0.9012 |
+| `rf2` | Independent RF | 9.74 GB | 0.125516 | +0.9405 |
+| `gbr1` | Lumped GBR (XGBoost) | 51 MB | 0.113433 | −0.0972 |
+| `gbr2` | Independent GBR (HistGBR) | 23 MB | 0.151228 | −0.2696 |
 | `lin` | Linear Regression | 17 KB | 1.046069 | −0.9629 |
 
-The benchmark column is the mean and standard deviation over seeds 42 to 46 rather than a
-single fit. Both benchmarks are extrapolation, since the fractional solid solutions they
-score are absent from the training data, so the spread there is wide for some models. The
-two random forests come out 25 to 47 times tighter than the boosted models, and `gbr2`'s
-sign varies with the seed. Everything shipped here is fitted at `random_state=42`.
+Both columns describe the deposited binaries, which `scripts/fetch_models.py` downloads and
+which the manuscript reports. All five were fitted at `random_state=42` on 2026-07-13.
 
-`rf1` leads on that stability rather than on accuracy. `gbr1` is the better cross-validated
-model, at 0.113556 Å against 0.121701 Å while being 77 times smaller, and is the right choice
-wherever a repeatable answer on out-of-domain compositions is not needed. `rf2` is marginally
-the more accurate of the two forests but is last on cross-validated R² over the cubic subset
-and weighs 9.74 GB. See `Results/benchmarks/seed_stability.md`.
+`rf1` is the headline model. `gbr1` has the better cross-validated MAE, 0.113433 Å against
+0.121717 Å, and is 77 times smaller, but it returns a negative correlation on the U(N,C)
+benchmark: it predicts the lattice parameter to fall as carbon substitutes for nitrogen,
+which is the wrong direction. Screening compositions requires the sign to be right. `rf2`
+is marginally more accurate than `rf1` on both benchmarks but is last on cross-validated R²
+over the cubic subset and weighs 9.74 GB.
+
+Quote the boosted models from the deposited binaries rather than from a local refit.
+Boosting fits 1,800 successive rounds, each against the previous round's residuals, so
+floating-point differences between machines compound from round to round; refitting `gbr1`
+elsewhere can produce a measurably different model. A random forest averages 600
+independently built trees, which cancels those differences instead.
+
+Both benchmarks are extrapolation, since the fractional solid solutions they score are
+absent from the training data, so the figures above are specific to the fit that produced
+them.
 
 Linear Regression is suppressed from prediction output unless `--include-baseline` is
-passed, because a model this far off should not be mistaken for a usable prediction.
+passed.
 
-Two cautions apply before any of these numbers are quoted. The cubic-subset metrics are much
-better than the all-systems metrics, at roughly 0.12 Å against 0.31 Å on MAE across
-the 64,128
-training rows, and predictions for the monoclinic, triclinic and trigonal hosts that are
-thinly represented in the database are worse still, by up to 360 % on MAE. Separately, the
-training labels are DFT-relaxed geometry and the benchmark values are experimental
-measurements, so a benchmark MAE is not pure model error. `Results/benchmarks/basis_check.md`
-quantifies that gap and explains why slope and Pearson r, which a constant offset cannot
-change, are the defensible way to compare models here.
+Two limits apply to the table. The cubic-subset metrics are better than the all-systems
+metrics, roughly 0.12 Å against 0.31 Å on MAE over the 64,128 training rows, and the
+monoclinic, triclinic and trigonal hosts that are thinly represented in the database are
+worse still, by up to 360 % on MAE. Separately, the training labels are DFT-relaxed
+geometry and the benchmark values are experimental measurements, so a benchmark MAE is not
+pure model error. `Results/benchmarks/basis_check.md` quantifies that gap and gives slope
+and Pearson r, which a constant offset cannot change.
 
 ## Fetching the model binaries
 
@@ -161,9 +164,10 @@ also explains why loading uses `mmap_mode="r"` and why the binaries must stay un
 ## Attribution
 
 Trained on data from the [Materials Project](https://materialsproject.org), licensed
-CC BY 4.0. Both the seed dataset and the trained models are derived works and carry the
-same attribution requirement on reuse. `NOTICE` carries the funding acknowledgement, which
-is quoted verbatim from the appointment terms and should not be reworded.
+CC BY 4.0. Redistributing the seed dataset carries that attribution requirement. `NOTICE`
+carries the funding acknowledgement, which is quoted verbatim from the appointment terms
+and should not be reworded, and records the rights the U.S. Government holds in this
+software.
 
 ## Citation
 
@@ -172,6 +176,6 @@ version that the manuscript's results were produced with.
 
 ## License
 
-MIT, in LICENSE, and it covers the source code only. The Materials Project data in `Data/`
-and the five models derived from it remain CC BY 4.0, so attribution travels with them
-even though the code around them does not require it.
+MIT, in LICENSE, covering the source code and the five trained model binaries. The
+Materials Project data in `Data/` remains CC BY 4.0, so attribution travels with that
+dataset even though the code and models around it do not require it.

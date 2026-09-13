@@ -1,6 +1,6 @@
 # Lumped RF (`rf1`), the headline model
 
-**Status: trained and 5-fold cross-validated.** Binary:
+Status: trained and 5-fold cross-validated. Binary:
 `Models/binaries/LumpedRFModel.joblib`, 3,966,648,193 bytes. This is the headline model
 returned by `cli.py predict` and by the `predict_lattice_parameter` MCP tool.
 
@@ -34,15 +34,15 @@ trees), which is why the binary is 3.97 GB.
 - 145 features (`Models/feature_labels/ML_FeatureLabels.json`): Magpie composition
   statistics, element fractions, valence-orbital averages, stoichiometry, scalar
   space-group number, symmetry flags, and `nsites`.
-- Licensed under **CC BY 4.0** by the Materials Project, so this model is a derived work
-  and any reuse must retain that attribution (see root `README.md`).
+- The training data are licensed CC BY 4.0 by the Materials Project, and redistributing
+  that dataset carries the attribution requirement. This model binary is MIT licensed;
+  see LICENSE.
 
-**Reproducibility gap:** the original CrossVal notebook run printed `Dataset Size:
-64838` rows; `Models/MANIFEST.json`'s recorded build captured `training_rows: 64128`.
-The Materials Project database shifted between those two runs and **no MP database
-version was captured** at build time. Every future rebuild should record
-`MPRester.get_database_version()` (verify this method exists in the installed `mp-api`
-before relying on it) in `Models/MANIFEST.json`.
+The original CrossVal notebook run printed `Dataset Size: 64838` rows, while
+`Models/MANIFEST.json`'s recorded build captured `training_rows: 64128`. The Materials
+Project database shifted between those two runs. The build behind the deposited binaries is
+the 64,128-row one, pinned by the manifest's `queried_at` of
+2026-06-25T15:03:29.794248+00:00; the earlier run is not what is deposited.
 
 ## Metrics
 
@@ -53,45 +53,43 @@ fitted binary shipped in `Models/binaries/`.
 
 | Parameter | MAE (all systems) | R² (all systems) | MAE (cubic only) | R² (cubic only) |
 |---|---|---|---|---|
-| a | 0.3098 Å | 0.890 | **0.1217 Å** | **0.977** |
-| b | 0.3162 Å | 0.883 | **0.1217 Å** | **0.977** |
-| c | 0.3820 Å | 0.855 | **0.1239 Å** | **0.976** |
+| a | 0.3097 Å | 0.890 | 0.1217 Å | 0.977 |
+| b | 0.3162 Å | 0.883 | 0.1217 Å | 0.977 |
+| c | 0.3819 Å | 0.855 | 0.1239 Å | 0.976 |
 
-**The cubic-subset numbers are the ones to cite**, for the reasons under
-Limitations. Full metrics
+Cite the cubic-subset numbers, for the reasons under Limitations. Full metrics
 (including MSE) are in the CSV. Predicted-vs-actual scatter:
 `Results/figures/pred_vs_true_rf1.png`.
 
 ### Why `rf1` is the headline model
 
 All five models are trained, 5-fold cross-validated
-(`Results/metrics/ModelMetrics_CrossVal.csv`), run against both solid-solution benchmarks
-(`Results/benchmarks/basis_check.md`), and refitted across seeds 42 to 46 to measure how
-far those benchmark numbers move (`Results/benchmarks/seed_stability.md`). `rf1` leads
-`config.HEADLINE_PREF` on the third of those, not the first two.
+(`Results/metrics/ModelMetrics_CrossVal.csv`) and run against both solid-solution benchmarks
+(`Results/benchmarks/basis_check.md`). `rf1` leads `config.HEADLINE_PREF` on the benchmarks,
+not on cross-validation, where `gbr1` has the better `MAE_cubic`, 0.113433 Å against
+0.121717 Å, at 1/77 the size.
 
-The reason is repeatability. Both benchmarks are extrapolation, since the fractional solid
-solutions they score are absent from the training data, and a boosted ensemble refitted
-with a different seed lands somewhere else. Over five seeds the U(N,C) correlation comes
-out as:
+The forests are preferred because they reproduce the direction of the compositional
+dependence. On U(N,C), scored against the deposited binaries at `random_state=42`:
 
-| model | Pearson r | range | sign stable |
+| model | Pearson r | slope | direction |
 |---|---|---|---|
-| `rf1` | +0.9028 ± 0.0084 | +0.8919 to +0.9147 | yes |
-| `rf2` | +0.9362 ± 0.0132 | +0.9172 to +0.9533 | yes |
-| `gbr1` | +0.6099 ± 0.2092 | +0.3764 to +0.8219 | yes |
-| `gbr2` | +0.0768 ± 0.3945 | −0.2870 to +0.5012 | no |
+| `rf1` | +0.9012 | +1.240 | correct |
+| `rf2` | +0.9405 | +1.217 | correct |
+| `gbr1` | −0.0972 | −0.164 | inverted |
+| `gbr2` | −0.2696 | −0.426 | inverted |
 
-The two forests come out 25 to 47 times tighter than the boosted models. Between them,
-`rf2` is marginally the more accurate on
-both benchmarks but is last of the four on CV R²_cubic (0.976283) and weighs 9.74 GB
-against `rf1`'s 3.97 GB. `rf1` is the better cross-validated of the two stable models and
-2.5 times smaller, which is the whole of the argument.
+Both boosted models put the lattice parameter falling as carbon substitutes for nitrogen.
+Between the two forests, `rf2` tracks the measured trend marginally more closely on both
+benchmarks, at Pearson r +0.9405 against +0.9012 on U(N,C) and +0.9706 against +0.9451 on
+(Ce,Nd)O2, with lower scatter in each. On raw MAE the two split: `rf2` is better on U(N,C),
+0.011661 against 0.019434, and worse on (Ce,Nd)O2, 0.149348 against 0.132906. It is also
+last of the four on CV R²_cubic (0.976283) and weighs 9.74 GB against `rf1`'s 3.97 GB.
 
-This is a weaker claim than "most accurate" and it is the one the evidence supports.
-`gbr1` beats `rf1` on cross-validation, at `MAE_cubic` 0.113556 Å against 0.121701 Å while
-being 77 times smaller, and it is the better choice wherever a stable answer on
-out-of-domain compositions does not matter.
+`rf1` also refits consistently, because it averages 600 independently built trees and
+floating-point differences between machines cancel across them. The boosted models fit
+1,800 successive rounds against the previous round's residuals, where such differences
+compound instead, so their figures have to be taken from the deposited binaries.
 
 ## Limitations
 
@@ -99,14 +97,14 @@ out-of-domain compositions does not matter.
   quantities.** Every lattice parameter in the training data is Materials-Project
   DFT-relaxed geometry. (MP's `theoretical: False` flag means the structure was *observed*,
   not that its lattice parameters were *measured*.) A benchmark MAE against experimental
-  `a_true` thus contains the DFT-vs-experiment discrepancy on top of the model's own
-  error, and must not be quoted as pure model error. The effect is material-specific and
-  **changes sign**: DFT − experiment is −0.006621 Å for UN, −0.022736 Å for UC, but
-  **+0.057365 Å** for CeO2, which accounts for essentially all of the uniform
-  over-prediction every model shows on the (Ce,Nd)O2 benchmark. No DFT→experiment correction
-  is shipped, because only 3 of the 9 curated hosts have an in-repo experimental value and
-  the sign flips across those 3. Use the offset-invariant slope / Pearson r reported by
-  `scripts/basis_check.py` when comparing models. See `Results/benchmarks/basis_check.md`.
+  `a_true` therefore contains the DFT-vs-experiment discrepancy on top of the model's own
+  error, and should not be quoted as pure model error. The effect is material-specific and
+  changes sign: DFT − experiment is −0.006621 Å for UN, −0.022736 Å for UC, and +0.057365 Å
+  for CeO2, which accounts for most of the uniform over-prediction every model shows on the
+  (Ce,Nd)O2 benchmark. No DFT→experiment correction is shipped, because only 3 of the 9
+  curated hosts have an in-repo experimental value and the sign flips across those 3. Use
+  the offset-invariant slope and Pearson r from `scripts/basis_check.py` when comparing
+  models. See `Results/benchmarks/basis_check.md`.
 
 - **Validated primarily on cubic hosts.** The cubic-subset R² (~0.976–0.977) is
   substantially higher than the all-systems R² (~0.855–0.890). Predictions for

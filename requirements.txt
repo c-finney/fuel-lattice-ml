@@ -18,6 +18,11 @@ matminer>=0.9.0
 # still loads and predicts identically.
 scikit-learn==1.9.*
 joblib==1.5.*
+# xgboost is lower-bounded rather than pinned. The deposited gbr1 was fitted and
+# pickled under 3.3.0; it has been loaded and scored under 3.4.1 and returns the
+# recorded benchmark values exactly, so the artifact reads across that gap. If a
+# future release stops loading it, pin to 3.3.* — the version each binary was
+# written under is in Models/MANIFEST.json.
 xgboost>=2.0
 
 # Data + utilities
@@ -33,15 +38,17 @@ matplotlib
 # so the correlation values can be regenerated without it.
 seaborn
 
-# MCP server
-mcp>=1.2
+# MCP server. Upper-bounded: server.py imports mcp.server.fastmcp.FastMCP,
+# which mcp 2.x renamed to mcp.server.mcpserver.MCPServer. Without the bound a
+# fresh install resolves to 2.x and server.py fails to import.
+mcp>=1.2,<2
 
 # Environment
 python-dotenv
 
 # scripts/fetch_models.py and scripts/upload_models.py talk to Zenodo over plain
 # HTTPS with urllib from the standard library, so no client package is needed
-# here. huggingface_hub was required until the models moved to Zenodo.
+# here.
 
 # Notebook output stripping (dev-time git filter, see .gitattributes)
 nbstripout

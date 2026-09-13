@@ -25,16 +25,15 @@ from dotenv import load_dotenv
 load_dotenv(REPO_ROOT / ".env")
 
 # Home for the big regenerable artifacts (model binary + generated datasets).
-# Defaults to REPO_ROOT, so a fresh clone is fully self-contained. Only a
-# consumer that wants to avoid a second multi-GB copy on disk (e.g. the
-# fuel-agent MCP submodule, which points this back at the primary checkout)
-# overrides it.
+# Defaults to REPO_ROOT, so a fresh clone is self-contained. Override it only to
+# avoid a second multi-GB copy on disk, e.g. when this checkout is vendored into
+# a larger project that already holds the binaries.
 #
-# `or REPO_ROOT` is load-bearing, NOT redundant: some launchers pass
+# `or REPO_ROOT` is not redundant. Some launchers pass
 # env = {"LATTICE_DATA_ROOT": "${LATTICE_DATA_ROOT}"}, and an unset variable
-# expands to "". os.environ.get(k, default) returns "" (not the default) for
-# a set-but-empty var, and Path("") == Path("."), which would silently
-# redirect every artifact to the process's current working directory.
+# expands to "". os.environ.get(k, default) returns "" rather than the default
+# for a set-but-empty var, and Path("") == Path("."), which would redirect every
+# artifact to the process's current working directory.
 DATA_ROOT = Path(os.environ.get("LATTICE_DATA_ROOT") or REPO_ROOT)
 
 DATA_DIR    = REPO_ROOT / "Data"                         # committed inputs
@@ -114,36 +113,41 @@ REPORTABLE    = ["rf1", "rf2", "gbr1", "gbr2"]
 BASELINE      = ["lin"]
 SCOREABLE     = REPORTABLE + BASELINE
 
-# Ordering derived from three sources of evidence: 5-fold cross-validation
-# (Results/metrics/ModelMetrics_CrossVal.csv), the two solid-solution benchmarks
-# (Results/benchmarks/basis_check.md), and the spread of those benchmark metrics
-# across random seeds (Results/benchmarks/seed_stability.md).
+# Ordering derived from two sources of evidence: 5-fold cross-validation
+# (Results/metrics/ModelMetrics_CrossVal.csv) and the two solid-solution benchmarks
+# (Results/benchmarks/basis_check.md), both measured on the DEPOSITED binaries.
 #
-# The seed spread is what decides it. Both benchmarks are extrapolation, since the
-# fractional solid solutions they score are not in the Materials Project training
-# data, and a boosted ensemble refitted with a different seed lands somewhere else.
-# Over seeds 42-46 the U(N,C) correlation comes out as:
+# The direction of the compositional dependence is what decides it. On U(N,C), scored
+# against the deposited artifacts at random_state=42:
 #
-#     rf1    +0.9028 +- 0.0084     (+0.8919 .. +0.9147)
-#     rf2    +0.9362 +- 0.0132     (+0.9172 .. +0.9533)
-#     gbr1   +0.6099 +- 0.2092     (+0.3764 .. +0.8219)
-#     gbr2   +0.0768 +- 0.3945     (-0.2870 .. +0.5012)   sign varies with seed
+#     rf1    r = +0.9012    slope +1.240
+#     rf2    r = +0.9405    slope +1.217
+#     gbr1   r = -0.0972    slope -0.164     inverts the trend
+#     gbr2   r = -0.2696    slope -0.426     inverts the trend
 #
-# The random forests come out 25x to 47x tighter than the boosted models, which is what
-# puts them first here. Every model in this repository is fitted at random_state=42, and
-# a figure reported from one fit is specific to that seed.
+# Only the two forests reproduce the sign. Both boosted models predict the lattice
+# parameter to FALL as carbon substitutes for nitrogen, which it does not, and a model
+# that inverts the composition dependence cannot screen compositions however small its
+# mean absolute error. That is what puts the forests first here, and gbr1's better
+# cross-validated MAE_cubic (0.113433 A vs rf1's 0.121717) does not override it.
 #
-# rf1 over rf2: rf2 is marginally better on both benchmarks (r +0.9362 vs +0.9028 on
-# U(N,C), +0.9562 vs +0.9323 on (Ce,Nd)O2) but is LAST of the four on CV R2_cubic
-# (0.976283) and weighs 9.74 GB against rf1's 3.97 GB. Between two models that are
-# both stable, rf1 is the better cross-validated one and 2.5x smaller.
+# rf1 over rf2: rf2 is marginally better on both benchmarks (r +0.9405 vs +0.9012 on
+# U(N,C), +0.9706 vs +0.9451 on (Ce,Nd)O2) but is LAST of the four on CV R2_cubic
+# (0.976283) and weighs 9.74 GB against rf1's 3.97 GB. Between two models that both get
+# the sign right, rf1 is the better cross-validated one and 2.5x smaller.
 #
-# gbr1 over gbr2: gbr1 is better on CV (MAE_cubic 0.113556 A vs 0.151228) and its
-# benchmark sign at least holds across seeds, which gbr2's does not.
+# gbr1 over gbr2: gbr1 is better on CV (MAE_cubic 0.113433 A vs 0.151228).
 #
-# CAUTION: a benchmark MAE is NOT pure model error, since the models predict DFT
+# CAUTION 1: a benchmark MAE is NOT pure model error, since the models predict DFT
 # geometry and the benchmarks are experimental. Use Pearson r / slope, which a constant
 # offset cannot change, when comparing models. See Results/benchmarks/basis_check.md.
+#
+# CAUTION 2: these figures describe the deposited binaries at random_state=42, and the
+# boosted models have to be quoted from those binaries rather than from a local refit.
+# Boosting fits 1800 successive rounds against the previous round's residuals, so
+# floating-point differences between machines compound from round to round; a forest
+# averages 600 independent trees and cancels them. Both benchmarks are also
+# extrapolation, so any figure here is specific to the fit that produced it.
 HEADLINE_PREF = ["rf1", "rf2", "gbr1", "gbr2"]
 
 # ---------------------------------------------------------------------------
