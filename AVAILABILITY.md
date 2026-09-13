@@ -7,7 +7,7 @@ manuscript so that the repository and the article cannot drift apart, and so tha
 the file paths quoted in the article can be checked against a real tree.
 
 The Zenodo DOI below is reserved on the draft deposit and resolves once that deposit
-is published. RELEASE.md lists every remaining placeholder in the repository.
+is published.
 
 ## Software and Code Availability
 
@@ -67,11 +67,12 @@ documented rather than resolved.
 >
 > The raw X-ray diffraction patterns and GSAS-II refinement projects for the six
 > Nd-doped CeO2 samples were generated at Oak Ridge National Laboratory and are
-> held there. The raw diffractograms for the two UN specimens that
-> contribute measured points to the U(N, C) set are deposited, under `Data/xrd/`. The refined lattice parameters extracted from them, which are the
+> held there. The refined lattice parameters extracted from them, which are the
 > values this article reports and plots, are included in the deposit as
 > `Data/benchmarks/CeO2Nd2O3Vals.csv`. Requests for the underlying patterns should
-> be directed to the corresponding author.
+> be directed to the corresponding author. The raw diffractograms for the two UN
+> specimens that contribute measured points to the U(N, C) set are deposited, under
+> `Data/xrd/`.
 >
 > Data are available under the terms of the Creative Commons Attribution 4.0
 > International license (CC-BY 4.0), except where the Materials Project's own
@@ -88,7 +89,7 @@ documented rather than resolved.
 | Figure 4, Spearman feature correlations | `Results/metrics/feature_spearman_cubic.csv` | `scripts/feature_correlations.py` |
 | Table 1, cross-validation metrics for five models | `Results/metrics/ModelMetrics_CrossVal.csv` | `cli.py evaluate` |
 | Table 2, MAE, slope and Pearson r on both systems | `Results/benchmarks/basis_check.csv` | `scripts/basis_check.py` |
-| Table 3, model hyperparameters | `Models/<ModelName>/params.json` | Written by `cli.py train` |
+| Model hyperparameters, cited as extended data | `Models/<ModelName>/params.json` | Written by `cli.py train` |
 | Discussion, per-crystal-system accuracy (the "up to 360 %" MAE increase) | `Results/CrystalSystemRandomForestRegressorOptimizationStudy_Final.csv` | `FuelLatticeParameterModelOptimization.ipynb` |
 
 Every aggregate in Tables 1 and 2 can be recomputed from the point-level files in
@@ -103,10 +104,10 @@ default, since it is a sanity baseline rather than a usable predictor, and until
 this release it could not be reported at all: the flag was added so that the row
 the manuscript prints is reachable rather than orphaned.
 
-Table 3 appears in the manuscript as an appendix. However, since appendices are
-published as extended data rather than alongside the article, its content is carried
-by the five `params.json` files, which are also what `tests/test_params_parity.py`
-asserts the notebooks and `engine/train_models.py` agree with.
+The hyperparameters are cited as extended data rather than tabulated in the article.
+Their content is carried by the five `params.json` files, which are also what
+`tests/test_params_parity.py` asserts the notebooks and `engine/train_models.py` agree
+with.
 
 ## What is not in the archive
 
