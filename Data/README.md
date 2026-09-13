@@ -54,7 +54,7 @@ Each folder holds one file, `*_exported.txt`: a single header line carrying the 
 id, anode and scan type, then 3,561 rows of 2-theta and intensity, space separated.
 
 The patterns are the measurements themselves, which is what the lattice parameters in
-`UNUC.csv` were refined from. The GSAS-II refinement projects are not included.
+`UNUC.csv` were refined from.
 
 > ### Label-basis mismatch: read before quoting any benchmark MAE
 >
