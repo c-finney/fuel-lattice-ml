@@ -41,11 +41,11 @@ Instead it reports the two things that ARE provable:
       composition, independent of the basis mismatch. These are the defensible model-comparison
       numbers, and they do not require the correction to exist.
 
-CAVEAT ON INDEPENDENCE: Data/README.md records that UNUC.csv is "based on an experimental fit",
-i.e. a_true is a smooth fitted curve sampled at 21 compositions (plus 2 apparently-measured
-points), not 23 independent measurements. Correlation against it therefore measures fidelity to
-that fit. CeO2Nd2O3Vals.csv has only n=7, so its slope is correspondingly uncertain. Both are
-reported with their n so the reader can weigh them.
+CAVEAT ON INDEPENDENCE: Data/README.md records that 19 of UNUC.csv's 23 rows are sampled from
+the quadratic fit to the literature values, so a_true is largely a smooth fitted curve rather
+than 23 independent measurements; the other 4 rows are measured values. Correlation against it
+therefore measures fidelity to that fit. CeO2Nd2O3Vals.csv has only n=7, so its slope is
+correspondingly uncertain. Both are reported with their n so the reader can weigh them.
 
 Run:  .venv/Scripts/python scripts/basis_check.py
 Out:  Results/benchmarks/basis_check.md  +  Results/benchmarks/basis_check.csv
@@ -261,10 +261,11 @@ def main() -> int:
     w("  and r ≈ 1 has learned the composition dependence and is offset. A model with small bias")
     w("  but r ≈ 0 has learned nothing and lands near the right answer by coincidence.")
     w("")
-    w("Independence caveat: `Data/README.md` records UNUC.csv as \"based on an experimental fit\",")
-    w("so `a_true` there is a smooth fitted curve sampled at many compositions rather than that")
-    w("many independent measurements, and correlation against it measures fidelity to that fit.")
-    w("CeO2Nd2O3Vals.csv has n = 7, so its slope carries real uncertainty. Weigh both by their n.")
+    w("Independence caveat: `Data/README.md` records that 19 of UNUC.csv's 23 rows are sampled")
+    w("from the quadratic fit to the literature values, so `a_true` there is largely a fitted")
+    w("curve rather than 23 independent measurements, and correlation against it measures")
+    w("fidelity to that fit. CeO2Nd2O3Vals.csv has n = 7, so its slope carries real")
+    w("uncertainty. Weigh both by their n.")
     w("")
 
     out_dir = REPO / "Results" / "benchmarks"

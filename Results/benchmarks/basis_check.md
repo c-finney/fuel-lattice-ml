@@ -130,7 +130,8 @@ removing that bias, i.e. how well the model tracks the trend once the offset is 
   and r ≈ 1 has learned the composition dependence and is offset. A model with small bias
   but r ≈ 0 has learned nothing and lands near the right answer by coincidence.
 
-Independence caveat: `Data/README.md` records UNUC.csv as "based on an experimental fit",
-so `a_true` there is a smooth fitted curve sampled at many compositions rather than that
-many independent measurements, and correlation against it measures fidelity to that fit.
-CeO2Nd2O3Vals.csv has n = 7, so its slope carries real uncertainty. Weigh both by their n.
+Independence caveat: `Data/README.md` records that 19 of UNUC.csv's 23 rows are sampled
+from the quadratic fit to the literature values, so `a_true` there is largely a fitted
+curve rather than 23 independent measurements, and correlation against it measures
+fidelity to that fit. CeO2Nd2O3Vals.csv has n = 7, so its slope carries real
+uncertainty. Weigh both by their n.
