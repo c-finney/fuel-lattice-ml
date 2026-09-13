@@ -90,7 +90,8 @@ Results/        the optimization study, cross-validation metrics, figures, bench
 exploratory/    unmaintained notebooks
 scripts/        fetch_models, upload_models, write_model_manifest, basis_check,
                 feature_correlations
-tests/          pytest suite, including the hyperparameter-parity and seed-resume guards
+tests/          pytest suite, including the hyperparameter-parity, seed-resume and
+                MCP-server guards
 ```
 
 `AVAILABILITY.md` maps every figure and table in the manuscript to the file holding its
