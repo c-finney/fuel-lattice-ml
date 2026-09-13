@@ -38,8 +38,10 @@ matplotlib
 # so the correlation values can be regenerated without it.
 seaborn
 
-# MCP server
-mcp>=1.2
+# MCP server. Upper-bounded: server.py imports mcp.server.fastmcp.FastMCP,
+# which mcp 2.x renamed to mcp.server.mcpserver.MCPServer. Without the bound a
+# fresh install resolves to 2.x and server.py fails to import.
+mcp>=1.2,<2
 
 # Environment
 python-dotenv
