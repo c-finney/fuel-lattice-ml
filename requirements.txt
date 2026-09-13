@@ -48,7 +48,7 @@ python-dotenv
 
 # scripts/fetch_models.py and scripts/upload_models.py talk to Zenodo over plain
 # HTTPS with urllib from the standard library, so no client package is needed
-# here. huggingface_hub was required until the models moved to Zenodo.
+# here.
 
 # Notebook output stripping (dev-time git filter, see .gitattributes)
 nbstripout

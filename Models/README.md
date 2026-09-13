@@ -75,9 +75,7 @@ reduce memory, because scikit-learn's `Tree.__setstate__` copies the memmapped a
 C-owned buffers regardless, so predicting with `rf1` still needs about 4.5 GB of free RAM.
 
 The model binary must stay uncompressed. `mmap_mode` is silently ignored by joblib for
-compressed files, which would reinstate both the warnings and the slower load. There is no
-`compress_model.py` in this repository, since that script was considered and rejected for
-this reason.
+compressed files, which would reinstate both the warnings and the slower load.
 
 Version pins matter for pickle compatibility, not for the warnings above. `requirements.txt`
 pins `scikit-learn==1.9.*` and `joblib==1.5.*`, the versions the deposited models were
