@@ -111,6 +111,13 @@ matching the values in `Results/benchmarks/basis_check.md` exactly, so the
 artifact is readable across that gap. A future XGBoost release could change
 that; `Models/MANIFEST.json` records the version the pickles were written under.
 
+The same install resolves scikit-learn to 1.9.1 rather than the 1.9.0 the binaries
+were pickled under, which the `scikit-learn==1.9.*` pin permits.
+`requirements.txt` asks for the model to be re-verified whenever that resolution
+moves, so it was: the deposited `rf1` loaded under 1.9.1 and returned predictions
+bitwise identical to `Results/benchmarks/UNUC/predictions.csv` across all 23
+U(N,C) compositions, at MAE 0.019434 Å.
+
 ## Known problems that were not fixed
 
 These are documented rather than resolved, and a fork inherits all of them:
