@@ -29,12 +29,24 @@ load_dotenv(REPO_ROOT / ".env")
 # avoid a second multi-GB copy on disk, e.g. when this checkout is vendored into
 # a larger project that already holds the binaries.
 #
-# `or REPO_ROOT` is not redundant. Some launchers pass
-# env = {"LATTICE_DATA_ROOT": "${LATTICE_DATA_ROOT}"}, and an unset variable
-# expands to "". os.environ.get(k, default) returns "" rather than the default
-# for a set-but-empty var, and Path("") == Path("."), which would redirect every
-# artifact to the process's current working directory.
-DATA_ROOT = Path(os.environ.get("LATTICE_DATA_ROOT") or REPO_ROOT)
+# Launchers that declare env = {"LATTICE_DATA_ROOT": "${LATTICE_DATA_ROOT}"}
+# substitute nothing when the variable is unset, and hand the process either an
+# empty string or the literal "${LATTICE_DATA_ROOT}". Both redirect every
+# artifact away from REPO_ROOT: Path("") == Path("."), and the literal becomes a
+# relative directory of that name. _env_override treats both as unset.
+def _env_override(name: str) -> str | None:
+    """Return the environment value of `name`, or None if it is unusable.
+
+    Unusable means unset, empty, or still carrying an unexpanded "${...}" from a
+    launcher that declared the variable without a value to put in it.
+    """
+    value = os.environ.get(name, "").strip()
+    if not value or value.startswith("${"):
+        return None
+    return value
+
+
+DATA_ROOT = Path(_env_override("LATTICE_DATA_ROOT") or REPO_ROOT)
 
 DATA_DIR    = REPO_ROOT / "Data"                         # committed inputs
 DATASETS    = DATA_ROOT / "Dataset"                      # generated, gitignored

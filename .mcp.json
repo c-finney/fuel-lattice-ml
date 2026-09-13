@@ -3,11 +3,7 @@
     "lattice-prediction": {
       "type": "stdio",
       "command": "python",
-      "args": ["server.py"],
-      "env": {
-        "MP_API_KEY": "${MP_API_KEY}",
-        "LATTICE_DATA_ROOT": "${LATTICE_DATA_ROOT}"
-      }
+      "args": ["server.py"]
     }
   }
 }
