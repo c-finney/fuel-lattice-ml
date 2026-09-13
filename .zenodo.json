@@ -13,6 +13,18 @@
       "orcid": "0009-0007-6335-1536"
     }
   ],
+  "contributors": [
+    {
+      "name": "Petrosky, Bekah",
+      "affiliation": "Oak Ridge National Laboratory",
+      "type": "Researcher"
+    },
+    {
+      "name": "Adorno Lopes, Denise",
+      "affiliation": "Oak Ridge National Laboratory",
+      "type": "Supervisor"
+    }
+  ],
   "keywords": [
     "machine learning",
     "nuclear fuel",
