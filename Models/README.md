@@ -63,6 +63,14 @@ executes arbitrary code embedded in a pickle, so that hash check is the only bar
 between a compromised download and code execution. Serializing to `skops` or ONNX would
 remove the risk and was not done.
 
+`rf2` is deposited as `IndependentRFModel.joblib.zip`, 2,598,500,447 bytes. Its manifest
+entry carries an `archive` object with the zip's own size and SHA-256, and the script checks
+that digest, extracts `IndependentRFModel.joblib`, and then checks the extracted file
+against the entry's `sha256` before anything can unpickle it. The zip is deleted after
+extraction. Both files are on disk together for a moment, so fetching `rf2` needs about
+12.4 GB free. The extracted file is the uncompressed pickle, so the `mmap_mode` requirement
+below applies to it unchanged.
+
 ## Loading the model: `mmap_mode="r"` is required
 
 `engine/predict.py`'s `_load_model()` always loads with `joblib.load(path, mmap_mode="r")`.

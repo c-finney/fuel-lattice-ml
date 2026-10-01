@@ -48,18 +48,22 @@ the mentor of record.
 
 The archived copy of record is the Zenodo deposit, DOI 10.5281/zenodo.22727667,
 which contains this source tree together with all five trained model binaries,
-about 14 GB in total including the 9.74 GB `rf2`. GitHub holds the working
-history; Zenodo holds the version the manuscript cites, and where the two ever
-disagree the Zenodo copy is the one that was reviewed.
+about 6.6 GB as deposited, `rf2` being stored as a 2.60 GB zip of its 9.74 GB
+pickle. GitHub holds the working history; Zenodo holds the version the manuscript
+cites, and where the two ever disagree the Zenodo copy is the one that was
+reviewed.
 
 The deposited binaries are the artifacts fitted on **2026-07-13**, which are the
 ones every number in the manuscript describes.
 
 Each of the five `uri` fields in `Models/MANIFEST.json` reads
 `zenodo://22727667/<filename>`, which `scripts/fetch_models.py` expands to the
-record's file endpoint. Those URIs resolve once the deposit is published; until
-then a download returns 404. The SHA-256 gate in front of the unpickle is correct
-and verified against the files to be deposited.
+record's file endpoint. For `rf2` the filename is `IndependentRFModel.joblib.zip`:
+that binary is deposited inside a zip, and the script verifies the archive,
+extracts the pickle and verifies that against the manifest before it is loaded.
+Those URIs resolve once the deposit is published; until then a download returns
+404. The SHA-256 gate in front of the unpickle is correct and verified against the
+files on the deposit.
 
 ## What the deposit reproduces
 
@@ -99,7 +103,7 @@ three quoting the prefix in prose and one the `REVOKED_KEY` sentinel that
 will flag those four. `.env` has never been tracked, and the only `MP_API_KEY=`
 occurrence in a tracked file is an error-message template in `engine/config.py`.
 
-The 69-test suite passes under Python 3.12.10 with the pinned versions, and it
+The 74-test suite passes under Python 3.12.10 with the pinned versions, and it
 passes from a clean clone into an empty directory with a fresh virtualenv built
 from `requirements.txt` alone, with no model binaries present.
 

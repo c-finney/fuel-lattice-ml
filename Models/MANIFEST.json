@@ -37,7 +37,13 @@
       "compressed": false,
       "bytes": 9735288229,
       "sha256": "15c21119c71d4d64697efae110a5f95c22b9bbbf3852fc6b48eaf3f4d4881b5b",
-      "uri": "zenodo://22727667/IndependentRFModel.joblib",
+      "uri": "zenodo://22727667/IndependentRFModel.joblib.zip",
+      "archive": {
+        "format": "zip",
+        "member": "IndependentRFModel.joblib",
+        "bytes": 2598500447,
+        "sha256": "9fce8d4cd48d78c7cdb816e1a2dc87562b5dcedc439f4bfb7cc82063c5c95d6f"
+      },
       "status": "trained"
     },
     "gbr1": {

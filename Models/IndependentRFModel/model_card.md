@@ -2,7 +2,8 @@
 
 Status: trained and 5-fold cross-validated. Binary:
 `Models/binaries/IndependentRFModel.joblib`, 9,735,288,229 bytes, the largest artifact in
-the repository at 2.5× `rf1`.
+the repository at 2.5× `rf1`. Deposited on Zenodo as `IndependentRFModel.joblib.zip`,
+2,598,500,447 bytes, which `scripts/fetch_models.py` verifies and extracts.
 
 ## Description
 

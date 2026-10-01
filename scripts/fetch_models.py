@@ -20,6 +20,14 @@ The manifest carries one URI per model, in either of two forms:
 
 The zenodo:// form is expanded to the record's file endpoint. Both are fetched
 over plain HTTPS by urllib, so no third-party client library is involved.
+
+An entry may also carry an "archive" object, {"format": "zip", "member", "bytes",
+"sha256"}, when the URI names a zip holding the binary rather than the binary
+itself. rf2 is deposited this way. The archive's digest is checked first, the
+named member is then extracted, and the extracted file is checked against the
+entry's "sha256" exactly as an unarchived download is. That second check is the
+one that gates the unpickle. The member is a plain uncompressed pickle, so
+mmap_mode works on it as on the others.
 """
 
 from __future__ import annotations
@@ -34,6 +42,7 @@ import tempfile
 import time
 import urllib.error
 import urllib.request
+import zipfile
 from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
@@ -166,6 +175,46 @@ def _download(url: str, dest: Path) -> None:
             tmp.unlink()
 
 
+def _verify(key: str, path: Path, expected: str | None, what: str = "") -> None:
+    """Delete *path* and stop if its SHA-256 is not *expected*."""
+    if not expected:
+        return
+    actual = sha256_of(path)
+    if actual != expected:
+        path.unlink(missing_ok=True)
+        raise SystemExit(
+            f"[fetch_models] {key}: SHA-256 MISMATCH{what}.\n"
+            f"  expected: {expected}\n"
+            f"  actual:   {actual}\n"
+            "The downloaded file has been deleted. Do NOT run joblib.load() on a "
+            "copy of it."
+        )
+
+
+def _extract(archive_path: Path, archive: dict, dest: Path) -> None:
+    """Extract the one named member of a zip archive to *dest*.
+
+    Only the member the manifest names is read, and it is written to *dest*
+    rather than to whatever path the archive records, so an archive cannot
+    place a file anywhere else.
+    """
+    fmt = archive.get("format")
+    if fmt != "zip":
+        raise SystemExit(f"[fetch_models] unsupported archive format '{fmt}'")
+    member = archive.get("member") or dest.name
+    fd, tmp_name = tempfile.mkstemp(dir=dest.parent, prefix=".extract-")
+    os.close(fd)
+    tmp = Path(tmp_name)
+    try:
+        with zipfile.ZipFile(archive_path) as zf, zf.open(member) as src, \
+                open(tmp, "wb") as out:
+            shutil.copyfileobj(src, out, _CHUNK)
+        shutil.move(str(tmp), str(dest))
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
 def fetch(models: list[str] | None = None) -> None:
     if not config.MODEL_MANIFEST.exists():
         raise SystemExit(f"{config.MODEL_MANIFEST} not found, so there is nothing to fetch from.")
@@ -202,11 +251,13 @@ def fetch(models: list[str] | None = None) -> None:
             print(f"[fetch_models] {key}: already present and verified, skipping download")
             continue
 
-        size = entry.get("bytes")
+        archive = entry.get("archive")
+        download_path = out_path.with_name(out_path.name + ".zip") if archive else out_path
+        size = (archive or entry).get("bytes")
         size_note = f" ({size / 1e9:.2f} GB)" if size else ""
         print(f"[fetch_models] {key}: downloading{size_note} from {url}")
         try:
-            _download(url, out_path)
+            _download(url, download_path)
         except urllib.error.HTTPError as exc:
             raise SystemExit(
                 f"[fetch_models] {key}: download failed with HTTP {exc.code}. "
@@ -214,16 +265,15 @@ def fetch(models: list[str] | None = None) -> None:
                 "see RELEASE.md."
             ) from exc
 
-        actual_hash = sha256_of(out_path)
-        if expected_hash and actual_hash != expected_hash:
-            out_path.unlink(missing_ok=True)
-            raise SystemExit(
-                f"[fetch_models] {key}: SHA-256 MISMATCH.\n"
-                f"  expected: {expected_hash}\n"
-                f"  actual:   {actual_hash}\n"
-                "The downloaded file has been deleted. Do NOT run joblib.load() on a "
-                "copy of it."
-            )
+        if archive:
+            _verify(key, download_path, archive.get("sha256"), " on the archive")
+            print(f"[fetch_models] {key}: archive verified, extracting {entry['file']}")
+            try:
+                _extract(download_path, archive, out_path)
+            finally:
+                download_path.unlink(missing_ok=True)
+
+        _verify(key, out_path, expected_hash)
         print(f"[fetch_models] {key}: verified SHA-256, saved to {out_path}")
 
 

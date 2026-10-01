@@ -90,8 +90,8 @@ Results/        the optimization study, cross-validation metrics, figures, bench
 exploratory/    unmaintained notebooks
 scripts/        fetch_models, upload_models, write_model_manifest, basis_check,
                 feature_correlations
-tests/          pytest suite, including the hyperparameter-parity, seed-resume and
-                MCP-server guards
+tests/          pytest suite, including the hyperparameter-parity, seed-resume,
+                MCP-server and archived-download guards
 ```
 
 `AVAILABILITY.md` maps every figure and table in the manuscript to the file holding its
@@ -153,7 +153,7 @@ The binaries are not in git, by `.gitignore`. They live in the Zenodo deposit an
 fetched with:
 
 ```bash
-python scripts/fetch_models.py              # all five, about 14 GB
+python scripts/fetch_models.py              # all five, 6.6 GB download, 13.8 GB on disk
 python scripts/fetch_models.py --models rf1 # just the headline model
 ```
 
