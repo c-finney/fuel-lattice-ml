@@ -2,10 +2,10 @@
 
 ## This project is retired
 
-Development stopped when the SULI appointment that produced it ended on 1 August
-2025. The repository is frozen at the state that backs the accompanying
-manuscript, and it is published so that the results in that manuscript can be
-checked and reused, not as software with a future.
+The work was produced under a SULI appointment, and development stopped with this
+release on 1 October 2026. The repository is frozen at the state that backs the
+accompanying manuscript, and it is published so that the results in that manuscript
+can be checked and reused, not as software with a future.
 
 Concretely, that means no maintenance, no support, no releases, and no response
 to issues or pull requests, none of which are monitored. The MIT license in LICENSE

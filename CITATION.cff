@@ -15,7 +15,7 @@ abstract: >-
   structures. Retired: frozen at the version accompanying the manuscript, no
   longer maintained.
 version: "1.0.0"
-date-released: "2026-09-04"
+date-released: "2026-10-01"
 license: MIT
 repository-code: "https://github.com/c-finney/fuel-lattice-ml"
 doi: "10.5281/zenodo.22727667"

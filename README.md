@@ -6,11 +6,11 @@ on Materials Project structures.
 
 ### This project is retired
 
-Development ended with the SULI appointment that produced it, on 1 August 2025. The
-repository is frozen at the state behind the accompanying manuscript, so that those results
-can be checked and reused. There is no maintenance and no support, and issues and pull
-requests are not monitored. Dependency versions will drift out from under this code. Fork
-it if you need it to keep working.
+The work was produced under a SULI appointment, and development ended with this release
+on 1 October 2026. The repository is frozen at the state behind the accompanying
+manuscript, so that those results can be checked and reused. There is no maintenance and
+no support, and issues and pull requests are not monitored. Dependency versions will drift
+out from under this code. Fork it if you need it to keep working.
 
 MIT licensed, archived at [doi:10.5281/zenodo.22727667](https://doi.org/10.5281/zenodo.22727667).
 The Materials Project data redistributed in `Data/` stays under CC BY 4.0; see NOTICE.
