@@ -1,0 +1,5 @@
+composition,target_Nd_at_pct,a_angstrom,Nd_in_solution_at_pct,unreacted_CeO2_fraction,Nd_fraction_total
+Ce1 O2,0,5.410085,,,
+Ce0.8343 Nd0.1657 O2,10,5.449408,19.704,0.21723,0.165734
+Ce0.7738 Nd0.2262 O2,20,5.468861,29.4305,0.33006,0.226164
+Ce0.6451 Nd0.3549 O2,30,5.488927,39.4635,0.1325,0.354886

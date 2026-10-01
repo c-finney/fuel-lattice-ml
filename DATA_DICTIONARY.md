@@ -50,7 +50,7 @@ CeO2 sample, all measured for this study.
 
 | Column | Meaning |
 |---|---|
-| `composition` | Composition, e.g. `Ce0.8343 Nd0.1657 O2`. The Nd fraction was determined after refinement from the lattice-parameter shift against the Ikuma et al. empirical fit, so it is a derived quantity rather than a weighed-in target. |
+| `composition` | Composition, e.g. `Ce0.8343 Nd0.1657 O2`. The Nd fraction was determined after refinement from the lattice-parameter shift against the Ikuma et al. empirical fit, so it is a derived quantity rather than a weighed-in target. The derivation for the first four rows is in `Data/xrd/RietveldSummary.csv`. |
 | `ref_mp-id` | Reference host, `mp-20194` (CeO2) on every row, since Ce is dominant throughout. |
 | `a_true` | Lattice parameter, Å, from Rietveld refinement of the measured pattern in GSAS-II. The undoped CeO2 value, 5.410085 Å, agrees with the 5.40972 Å reported by Artini et al. The diffractograms are under `Data/xrd/`; see Data/README.md. |
 
@@ -80,6 +80,21 @@ rather than as a column list for the same reason as the UN files above.
 
 Intensity is as recorded by the instrument and is not normalised, so absolute values are
 not comparable between samples.
+
+## Data/xrd/RietveldSummary.csv
+
+The refinement summary for the undoped CeO2 sample and one set of 10, 20 and 30 at% Nd
+samples, 4 rows, converted from the ORNL worksheet. It records how the Nd fraction in
+`CeO2Nd2O3Vals.csv`'s composition column was obtained from the refined lattice parameter.
+
+| Column | Meaning |
+|---|---|
+| `composition` | The matching row of `Data/benchmarks/CeO2Nd2O3Vals.csv`. |
+| `target_Nd_at_pct` | Target Nd content, atomic percent. |
+| `a_angstrom` | Refined lattice parameter, Å. Equal to `a_true` in the matching row. |
+| `Nd_in_solution_at_pct` | Nd in solution, atomic percent, from a linear fit between 5.41 Å at 0 % and 5.61 Å at 100 % after Ikuma et al.: 100 × (a − 5.41) / (5.61 − 5.41). Empty for the undoped sample. |
+| `unreacted_CeO2_fraction` | Unreacted CeO2, as a fraction. Empty for the undoped sample. |
+| `Nd_fraction_total` | Nd fraction used in the composition, C·144 / ((100 − C + 100·U)·140 + C·144), where C is `Nd_in_solution_at_pct` and U is `unreacted_CeO2_fraction`. Rounded to four places, it is the Nd subscript in `composition`. Empty for the undoped sample. |
 
 ## Results/metrics/ModelMetrics_CrossVal.csv
 

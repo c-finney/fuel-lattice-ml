@@ -77,6 +77,10 @@ and intensity, space separated. `CeO2_30Nd2O3_exported.xy` alone opens with a si
 header line carrying the anode, wavelength, scan type and time per step; the other two
 have no header.
 
+`RietveldSummary.csv` is the refinement summary for these samples: the refined lattice
+parameter and the steps from it to the Nd fraction in `CeO2Nd2O3Vals.csv`. Its columns are
+described in `DATA_DICTIONARY.md`.
+
 > ### Label-basis mismatch: read before quoting any benchmark MAE
 >
 > The models are trained on DFT lattice parameters and these benchmarks are experimental

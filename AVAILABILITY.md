@@ -53,10 +53,10 @@ documented rather than resolved.
 >
 > This deposit contains the values behind every figure and table in this article,
 > listed file by file in `AVAILABILITY.md`, together with a description of every
-> variable in `DATA_DICTIONARY.md`. Additionally, the raw XRD diffractograms for the
-> two U(N, C) specimens, the six Nd-doped CeO2 samples and the undoped CeO2 sample are
-> included under `Data/xrd/`. The lattice parameters refined from them are the two
-> measured U(N, C) compositions in `Data/benchmarks/UNUC.csv` and the seven rows of
+> variable in `DATA_DICTIONARY.md`. Additionally, raw XRD diffractograms for the
+> U(N, C) specimens, Nd-doped CeO2 samples, and the undoped CeO2 sample are included
+> under `Data/xrd/`. The lattice parameters refined from them are the two measured
+> U(N, C) compositions in `Data/benchmarks/UNUC.csv` and the seven rows of
 > `Data/benchmarks/CeO2Nd2O3Vals.csv`.
 >
 > **Extended data**
