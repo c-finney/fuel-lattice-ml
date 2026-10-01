@@ -1,13 +1,11 @@
 # Availability statements
 
-Draft text for the two statements requested in review, together with the mapping
-from every figure and table in the manuscript to the file that holds its
-underlying values. The statements are kept here rather than only in the
-manuscript so that the repository and the article cannot drift apart, and so that
-the file paths quoted in the article can be checked against a real tree.
+The two statements requested in review, as they appear in the manuscript, together
+with the mapping from every figure and table in the manuscript to the file that holds
+its underlying values. The statements are kept here as well as in the manuscript so
+that the file paths quoted in the article can be checked against a real tree.
 
-The Zenodo DOI below is reserved on the draft deposit and resolves once that deposit
-is published.
+The Zenodo DOI below identifies the archived deposit.
 
 ## Software and Code Availability
 
@@ -22,7 +20,8 @@ is published.
 > License: MIT
 
 The Zenodo deposit holds the source tree together with all five trained model
-binaries, which total roughly 14 GB and exceed what the Git host accepts. The
+binaries, 13.8 GB on disk and about 6.6 GB as deposited, which exceed what the Git
+host accepts. The
 project is retired and is not maintained; the archived version is the one the
 results in this article were produced with.
 
@@ -36,41 +35,58 @@ documented rather than resolved.
 
 ## Data Availability
 
+> All data are available under the terms of the Creative Commons Attribution 4.0
+> International license (CC-BY 4.0), except where the Materials Project's own CC BY
+> 4.0 terms already apply, in which case attribution to the Materials Project is
+> required.
+>
 > **Source data**
 >
-> The training data were retrieved from the Materials Project
-> (https://materialsproject.org) on 25 June 2026 through the `mp-api` client, and
-> are licensed CC BY 4.0. The retrieved table of 154,192 entries is redistributed
-> in the software archive as `Data/MP_Dataset_Original_Trimmed.csv`, so that every
-> result can be reproduced from the same starting point without a Materials
-> Project API key. After restriction to lattice parameters not exceeding 10 Å and
-> de-duplication, 64,128 entries described by 145 features were used for training.
+> The data underlying this study were obtained from the MP database
+> (https://materialsproject.org), a publicly available repository of DFT-computed
+> materials properties, and were accessed on 25 June 2026 through the MPRester client
+> of the mp-api Python package [3]. Retrieved fields comprised the material
+> identifier, site and element counts, reduced composition, formation energy per atom,
+> the six lattice parameters (a, b, c, α, β, γ), and the crystal system; entries were
+> symmetry annotated and noble-gas-containing compounds removed, thereby yielding a
+> table of 154,192 entries across 15 columns. That table is redistributed with the
+> analysis software as `Data/MP_Dataset_Original_Trimmed.csv` so that the analysis can
+> be reproduced from the same starting point without reissuing the original query and
+> without an MP API key; after restriction to lattice parameters not exceeding 10 Å
+> and de-duplication, 64,128 entries were used to train the models, described by 145
+> features generated with Matminer. MP data are made available under a Creative
+> Commons Attribution 4.0 International (CC BY 4.0) license; the redistributed dataset
+> and the models trained from it are derived works and carry the same attribution
+> requirement.
 >
 > **Underlying data**
 >
 > Zenodo: fuel-lattice-ml: ML prediction of nuclear fuel lattice parameters.
 > https://doi.org/10.5281/zenodo.22727667
 >
-> This deposit contains the values behind every figure and table in this article,
-> listed file by file in `AVAILABILITY.md`, together with a description of every
-> variable in `DATA_DICTIONARY.md`. Additionally, raw XRD diffractograms for the
-> U(N, C) specimens, Nd-doped CeO2 samples, and the undoped CeO2 sample are included
-> under `Data/xrd/`. The lattice parameters refined from them are the two measured
-> U(N, C) compositions in `Data/benchmarks/UNUC.csv` and the seven rows of
+> This deposit contains the values behind every figure and table in this article:
+> Table 1 from `Results/metrics/ModelMetrics_CrossVal.csv`; Table 2 from
+> `Results/benchmarks/basis_check.csv`; Figure 1 from `Data/benchmarks/UNUC.csv`;
+> Figure 2 from `Results/metrics/cv_predictions/cv_predictions_rf1.csv`; Figure 3 from
+> `Results/benchmarks/UNUC/predictions.csv` and
+> `Results/benchmarks/CeO2Nd2O3/predictions.csv`; and Figure 4 from
+> `Results/metrics/feature_spearman_cubic.csv`. Every variable in every file is
+> described in `DATA_DICTIONARY.md`. Additionally, raw XRD diffractograms for the U(N,
+> C) specimens, Nd-doped CeO2 samples, and the undoped CeO2 sample are included under
+> `Data/xrd/`. The lattice parameters refined from them are the two measured U(N, C)
+> compositions in `Data/benchmarks/UNUC.csv` and the seven rows of
 > `Data/benchmarks/CeO2Nd2O3Vals.csv`.
 >
 > **Extended data**
 >
-> The same deposit contains the model cards, exact hyperparameters and
-> cross-validation metrics for all five models, the per-crystal-system
-> optimization study, the label-basis analysis reconciling DFT training labels
-> against experimental validation values, and the four notebooks that reproduce
-> the study end to end.
+> Zenodo: fuel-lattice-ml: ML prediction of nuclear fuel lattice parameters.
+> https://doi.org/10.5281/zenodo.22727667
 >
-> Data are available under the terms of the Creative Commons Attribution 4.0
-> International license (CC-BY 4.0), except where the Materials Project's own
-> CC BY 4.0 terms already apply, in which case attribution to the Materials
-> Project is required.
+> The same deposit contains the exact hyperparameters for all five models, in
+> `Models/<model>/params.json`; the model cards and cross-validation metrics for every
+> trained model; the per-crystal-system optimization study; the label-basis analysis
+> reconciling the DFT training labels against the experimental validation values; and
+> the four notebooks that reproduce the study end to end.
 
 ## Where each figure and table comes from
 
@@ -87,15 +103,15 @@ documented rather than resolved.
 
 Every aggregate in Tables 1 and 2 can be recomputed from the point-level files in
 the same table, which is the reason the per-entry cross-validation predictions
-are written at all. The figures themselves are committed under `Results/figures/` and
-`Results/benchmarks/`, and regenerating any of them requires only the command in
-the right-hand column.
+are written at all. The images for Figures 2 and 3 are committed under
+`Results/figures/` and `Results/benchmarks/`; Figures 1 and 4 are not committed as
+images. Regenerating any figure's values requires only the command in the right-hand
+column.
 
 Reproducing Table 2's Linear Regression row needs `cli.py predict --csv ...
 --include-baseline`. Linear Regression is suppressed from prediction output by
-default, since it is a sanity baseline rather than a usable predictor, and until
-this release it could not be reported at all: the flag was added so that the row
-the manuscript prints is reachable rather than orphaned.
+default, since it is a sanity baseline rather than a usable predictor; the flag
+makes the row the manuscript prints reproducible.
 
 The hyperparameters are cited as extended data rather than tabulated in the article.
 Their content is carried by the five `params.json` files, which are also what

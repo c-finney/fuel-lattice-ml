@@ -61,9 +61,8 @@ Each of the five `uri` fields in `Models/MANIFEST.json` reads
 record's file endpoint. For `rf2` the filename is `IndependentRFModel.joblib.zip`:
 that binary is deposited inside a zip, and the script verifies the archive,
 extracts the pickle and verifies that against the manifest before it is loaded.
-Those URIs resolve once the deposit is published; until then a download returns
-404. The SHA-256 gate in front of the unpickle is correct and verified against the
-files on the deposit.
+The SHA-256 gate in front of the unpickle was verified against the files on the
+deposit.
 
 ## What the deposit reproduces
 
@@ -97,13 +96,14 @@ a file in the deposit.
 
 The secrets position: the Materials Project API key used during development,
 prefix `csvp7B7`, was revoked on 9 July 2026 and is absent from the working tree
-and from all of history. Four matches survive a naive grep and are all benign,
-three quoting the prefix in prose and one the `REVOKED_KEY` sentinel that
+and from all of history. Two matches survive a naive grep and both are benign:
+this paragraph, quoting the prefix, and the `REVOKED_KEY` sentinel that
 `tests/test_params_parity.py` uses to assert it never returns. A secret scanner
-will flag those four. `.env` has never been tracked, and the only `MP_API_KEY=`
-occurrence in a tracked file is an error-message template in `engine/config.py`.
+will flag both. `.env` has never been tracked. `MP_API_KEY=` appears in tracked
+files only as the blank template in `.env.example` and an error-message template
+in `engine/config.py`.
 
-The 74-test suite passes under Python 3.12.10 with the pinned versions, and it
+The 80-test suite passes under Python 3.12.10 with the pinned versions, and it
 passes from a clean clone into an empty directory with a fresh virtualenv built
 from `requirements.txt` alone, with no model binaries present.
 

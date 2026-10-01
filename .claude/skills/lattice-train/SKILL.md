@@ -15,8 +15,8 @@ Cross-validation is **not** done here, being a separate metrics-only step
 ## Usage
 
 - `/lattice-train` or `/lattice-train fast`: train **Lumped RF only** (`rf1`, the
-  model already shipped in this repository as `Models/binaries/LumpedRFModel.joblib`;
-  default).
+  headline model, whose deposited binary `scripts/fetch_models.py` downloads to
+  `Models/binaries/LumpedRFModel.joblib`; default).
 - `/lattice-train full`: train all reportable models plus Linear Regression (LR is
   stored but never shown in prediction output).
 - `/lattice-train models=rf1,gbr1`: train an explicit subset.
@@ -29,7 +29,8 @@ scikit-learn draws each tree's seed from `random_state` before dispatch.
 Model keys: `rf1`=Lumped RF (the headline model, chosen on combined cross-validation
 and benchmark evidence rather than on any single metric), `rf2`=Independent RF,
 `gbr1`=Lumped GBR (XGBoost), `gbr2`=Independent GBR (HistGBR), `lin`=Linear
-Regression (full only, never reported). All five are trained and archived.
+Regression (full only; a baseline that the manuscript's tables report but prediction
+output never shows). All five are trained and deposited on Zenodo.
 
 ## Procedure
 

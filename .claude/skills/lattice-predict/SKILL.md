@@ -2,8 +2,8 @@
 name: lattice-predict
 description: >
   Predict the lattice parameter(s) of a solid-solution composition (e.g. "UN0.5C0.5")
-  using the trained Materials-Project ML model shipped in this repository. Auto-offers
-  to build/train artifacts if they are missing. Use when the user asks for a predicted
+  using the trained Materials-Project ML models deposited with this repository. Offers
+  to fetch the deposited binaries, or to build and train locally, if they are missing. Use when the user asks for a predicted
   lattice parameter, unit cell size, or invokes /lattice-predict.
 ---
 
@@ -36,18 +36,23 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
    ZrO2, Nd2O3, NdO2), by formula, mp-id, or automatic dominant-end-member resolution.
 
 3. **If prerequisites are missing → confirm before any heavy work (MANDATORY):**
-   - State exactly what's missing and the **build** ETA from the status output. With the
-     committed seed dataset present, a normal build is ~9 minutes, and only a forced
-     re-query (`--force`) is a multi-hour job. Say which applies.
-   - Ask the user **yes/no**. Do **not** start building without a "yes".
-   - On **yes**, run in the **background** (`run_in_background: true`), narrating progress:
+   - State exactly what's missing. If it is the model binaries, the first option is to
+     fetch the deposited ones, which are what the manuscript reports:
+     `python scripts/fetch_models.py --models rf1` (3.97 GB from Zenodo, no account; each
+     file is verified against `Models/MANIFEST.json` before use).
+   - The alternative is a local build and train. Give the **build** ETA from the status
+     output: with the committed seed dataset present, a normal build is ~9 minutes, and
+     only a forced re-query (`--force`) is a multi-hour job. Say which applies.
+   - Ask the user **yes/no** and which route. Do **not** start without a "yes".
+   - On **yes** to a local build, run in the **background** (`run_in_background: true`),
+     narrating progress:
      - If the featurized dataset is missing: run the build first (`cli.py build --resume`),
        then a fast train.
      - Fast train (Lumped RF only, the fastest option and the headline model):
        `cli.py train --fast`.
      - When the background job finishes, continue to step 4.
-   - On **no**, stop and tell the user they can run `/lattice-build` then `/lattice-train`
-     later.
+   - On **no**, stop and tell the user they can run `scripts/fetch_models.py`, or
+     `/lattice-build` then `/lattice-train`, later.
 
 4. **Predict:**
    ```

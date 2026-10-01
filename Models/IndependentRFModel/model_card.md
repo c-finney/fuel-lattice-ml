@@ -63,7 +63,7 @@ With that removed it has the lowest scatter of any model there, 0.006921 Å agai
   curated hosts have an in-repo experimental value, and the sign flips across those 3.
   Compare models with the offset-invariant slope and Pearson r from
   `scripts/basis_check.py`.
-- **Size.** 9.74 GB, the largest artifact in the deposit. It is the lowest of the four on
+- **Size.** 9.74 GB unpacked, the largest model binary. It is the lowest of the four on
   CV R²_cubic, so `rf1` is the better choice for most uses; `rf2` is deposited for
   completeness and for the benchmark correlations above.
 - **Validated primarily on cubic hosts.** R²_cubic (0.976283) is well above R²_all

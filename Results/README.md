@@ -5,7 +5,7 @@ Provenance for every file in this directory. Read this before citing a number.
 ## `CrystalSystemRandomForestRegressorOptimizationStudy_Final.csv` (canonical)
 
 Written by `FuelLatticeParameterModelOptimization.ipynb`. This is the per-crystal-system,
-per-lattice-parameter-threshold optimization study for the Lumped RF model
+per-lattice-parameter-threshold optimization study for the lumped RF model
 (`RandomForestRegressor(n_estimators=600, random_state=42)`). Use this file for any
 citation of the optimization study.
 

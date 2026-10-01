@@ -19,7 +19,7 @@ Models/
     IndependentRFModel.joblib     9.74 GB, the largest artifact here
     XGBoostGBRModel.joblib          51 MB
     ScikitLearnGBRModel.joblib      23 MB
-    LinearRegressionModel.joblib    17 KB, baseline only, never reported
+    LinearRegressionModel.joblib    17 KB, baseline only, not shown in prediction output
 ```
 
 ## All five models are trained
@@ -31,13 +31,15 @@ for cross-validation and `Results/benchmarks/basis_check.csv` for the two solid-
 systems.
 
 `rf1` is the headline model in `config.HEADLINE_PREF`. `gbr1` has the better
-cross-validated `MAE_cubic`, 0.113433 Å against 0.121717 Å, and is 77 times smaller.
+cross-validated `MAE_cubic`, 0.1170 Å against 0.1224 Å as the mean over a, b and c in
+Table 1, and is 77 times smaller.
 
 The forests are preferred because they reproduce the direction of the compositional
 dependence on U(N,C). Pearson r is +0.9012 (`rf1`) and +0.9405 (`rf2`); both boosted models
 are negative, −0.0972 (`gbr1`) and −0.2696 (`gbr2`), which puts the lattice parameter
-falling as carbon substitutes for nitrogen. Between the two forests, `rf2` is marginally
-more accurate but is last on CV R²_cubic and weighs 9.74 GB. See
+falling as carbon substitutes for nitrogen. Between the two forests, `rf2` tracks the
+trend marginally more closely on both benchmarks, but is less accurate on (Ce,Nd)O2, last on
+CV R²_cubic, and weighs 9.74 GB. See
 `Results/benchmarks/basis_check.md`.
 
 These figures describe the deposited binaries at `random_state=42`, which is what
@@ -68,13 +70,13 @@ entry carries an `archive` object with the zip's own size and SHA-256, and the s
 that digest, extracts `IndependentRFModel.joblib`, and then checks the extracted file
 against the entry's `sha256` before anything can unpickle it. The zip is deleted after
 extraction. Both files are on disk together for a moment, so fetching `rf2` needs about
-12.4 GB free. The extracted file is the uncompressed pickle, so the `mmap_mode` requirement
+12.3 GB free. The extracted file is the uncompressed pickle, so the `mmap_mode` requirement
 below applies to it unchanged.
 
 ## Loading the model: `mmap_mode="r"` is required
 
 `engine/predict.py`'s `_load_model()` always loads with `joblib.load(path, mmap_mode="r")`.
-This is not a performance tweak: `joblib`'s default (non-mmap) reader reconstructs
+`joblib`'s default (non-mmap) reader reconstructs
 every ndarray by reading it flat and assigning `.shape` in place, which NumPy >= 2.5
 deprecated. For a 600-tree forest that fires ~1,800 `DeprecationWarning`s on every load.
 The memmap path never executes that assignment, so it is silent, ~3.3x faster
@@ -87,10 +89,10 @@ compressed files, which would reinstate both the warnings and the slower load.
 
 Version pins matter for pickle compatibility, not for the warnings above. `requirements.txt`
 pins `scikit-learn==1.9.*` and `joblib==1.5.*`, the versions the deposited models were
-trained and pickled under, as recorded in `MANIFEST.json`. `numpy` is not upper-bounded:
-pinning it below 2.5 was tested and breaks scipy's `sparse.linalg.eigen.arpack` import.
+trained and pickled under, as recorded in `MANIFEST.json`. `numpy` is not upper-bounded,
+because a pin below 2.5 breaks scipy's `sparse.linalg.eigen.arpack` import.
 `scripts/fetch_models.py` compares the running `scikit-learn` version against the manifest
-and warns on a mismatch before unpickling.
+and warns before unpickling if the major or minor version differs.
 
 ## Regenerating the JSON label mirrors
 

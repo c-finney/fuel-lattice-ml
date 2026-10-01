@@ -110,21 +110,25 @@ project; the notebooks and the agent tooling stay in sync because they are the s
 
 | Key | Name | Binary | CV MAE, cubic (Å) | U(N,C) Pearson r |
 |---|---|---|---|---|
-| `rf1` | Lumped RF | 3.97 GB | 0.121717 | +0.9012 |
-| `rf2` | Independent RF | 9.74 GB | 0.125516 | +0.9405 |
-| `gbr1` | Lumped GBR (XGBoost) | 51 MB | 0.113433 | −0.0972 |
-| `gbr2` | Independent GBR (HistGBR) | 23 MB | 0.151228 | −0.2696 |
-| `lin` | Linear Regression | 17 KB | 1.046069 | −0.9629 |
+| `rf1` | Lumped RF | 3.97 GB | 0.1224 | +0.9012 |
+| `rf2` | Independent RF | 9.74 GB | 0.1265 | +0.9405 |
+| `gbr1` | Lumped GBR (XGBoost) | 51 MB | 0.1170 | −0.0972 |
+| `gbr2` | Independent GBR (HistGBR) | 23 MB | 0.1592 | −0.2696 |
+| `lin` | Linear Regression | 17 KB | 1.046 | −0.9629 |
 
-Both columns describe the deposited binaries, which `scripts/fetch_models.py` downloads and
-which the manuscript reports. All five were fitted at `random_state=42` on 2026-07-13.
+The CV MAE is the mean over a, b and c from 5-fold cross-validation, as in Table 1 of the
+manuscript, and comes from per-fold refits recorded in
+`Results/metrics/ModelMetrics_CrossVal.csv`. The Pearson r column scores the deposited
+binaries, which `scripts/fetch_models.py` downloads, against the U(N,C) benchmark, as in
+Table 2. All five binaries were fitted at `random_state=42` on 2026-07-13.
 
-`rf1` is the headline model. `gbr1` has the better cross-validated MAE, 0.113433 Å against
-0.121717 Å, and is 77 times smaller, but it returns a negative correlation on the U(N,C)
+`rf1` is the headline model. `gbr1` has the better cross-validated MAE, 0.1170 Å against
+0.1224 Å, and is 77 times smaller, but it returns a negative correlation on the U(N,C)
 benchmark: it predicts the lattice parameter to fall as carbon substitutes for nitrogen,
 which is the wrong direction. Screening compositions requires the sign to be right. `rf2`
-is marginally more accurate than `rf1` on both benchmarks but is last on cross-validated R²
-over the cubic subset and weighs 9.74 GB.
+tracks the compositional trend marginally more closely than `rf1` on both benchmarks, but
+is less accurate on (Ce,Nd)O2, last on cross-validated R² over the cubic subset, and weighs
+9.74 GB.
 
 Quote the boosted models from the deposited binaries rather than from a local refit.
 Boosting fits 1,800 successive rounds, each against the previous round's residuals, so
@@ -139,8 +143,7 @@ them.
 Linear Regression is suppressed from prediction output unless `--include-baseline` is
 passed.
 
-Two limits apply to the table. The cubic-subset metrics are better than the all-systems
-metrics, roughly 0.12 Å against 0.31 Å on MAE over the 64,128 training rows, and the
+The cubic-subset metrics are better than the all-systems metrics, roughly 0.12 Å against 0.31 Å on MAE over the 64,128 training rows, and the
 monoclinic, triclinic and trigonal hosts that are thinly represented in the database are
 worse still, by up to 360 % on MAE. Separately, the training labels are DFT-relaxed
 geometry and the benchmark values are experimental measurements, so a benchmark MAE is not
@@ -178,5 +181,6 @@ version that the manuscript's results were produced with.
 ## License
 
 MIT, in LICENSE, covering the source code and the five trained model binaries. The
-Materials Project data in `Data/` remains CC BY 4.0, so attribution travels with that
-dataset even though the code and models around it do not require it.
+Materials Project data in `Data/` remains CC BY 4.0. The models are derived from it, so
+the Materials Project attribution travels with them as well as with the dataset; see
+NOTICE.

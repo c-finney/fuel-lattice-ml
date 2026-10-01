@@ -35,8 +35,8 @@ filtered to a,b,c ≤ 10 Å, 145 features, 64,128 rows.
 | b | 0.152303 | 0.977945 | 0.380820 | 0.873556 |
 | c | 0.174036 | 0.972340 | 0.485335 | 0.823700 |
 
-`gbr2` has the highest MAE_cubic of the four reportable models, 0.151228 Å against `gbr1`'s
-0.113433. It is compact at 23 MB but not accurate.
+`gbr2` has the highest MAE_cubic of the four reportable models, 0.1592 Å against `gbr1`'s
+0.1170 Å as the mean over a, b and c in Table 1. It is compact at 23 MB but not accurate.
 
 ## Limitations
 

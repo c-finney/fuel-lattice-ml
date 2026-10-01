@@ -1,9 +1,7 @@
 # Data dictionary
 
-Every column of every data file that this repository ships, with its meaning and
-its units. Written because a table of numbers with bare column names is not
-reusable data, and because review asked for descriptions of the variables rather
-than only the values.
+Every column of every data file under `Data/` and `Results/`, with its meaning and
+its units.
 
 Lattice parameters are in ångström throughout, angles in degrees, and energies in
 electronvolts per atom. Additionally, where a column can be missing, that is stated.
@@ -22,7 +20,7 @@ than to training: the 10 Å restriction and de-duplication that reduce it to the
 | `nsites` | Number of atomic sites in the conventional unit cell. Retained as a model feature. |
 | `nelements` | Number of distinct chemical elements. Used for polymorph de-duplication, not as a feature. |
 | `composition_reduced` | Reduced formula, e.g. `U1 N1`. Part of the de-duplication key. |
-| `formation_energy_per_atom` | DFT formation energy, eV/atom. Used to pick which polymorph survives de-duplication, keeping the lowest. |
+| `formation_energy_per_atom` | DFT formation energy, eV/atom. Used to pick which polymorph survives de-duplication, keeping the lowest. Empty for 4 rows, all elemental Yb entries (mp-71, mp-162, mp-972364, mp-1187875), for which the Materials Project returned none. |
 | `a`, `b`, `c` | Lattice parameters of the conventional cell, Å. These are the three prediction targets. Every value is DFT-relaxed at 0 K, which is the basis mismatch that Results/benchmarks/basis_check.md quantifies. |
 | `alpha`, `beta`, `gamma` | Lattice angles, degrees. Carried through but not predicted. |
 | `crystal_system` | One of cubic, tetragonal, orthorhombic, hexagonal, trigonal, monoclinic, triclinic. Defines the cubic subset that the headline metrics are computed on. |
@@ -32,16 +30,19 @@ than to training: the 10 Å restriction and de-duplication that reduce it to the
 
 ## Data/benchmarks/UNUC.csv
 
-The U(N, C) validation system, 23 rows. `a_true` here is sampled from a quadratic
-fit to literature measurements rather than being 23 independent experiments, which
-matters when reading any correlation computed against it.
+The U(N, C) validation system, 23 rows. Nineteen of them, at y = 0.05 to 0.95 in steps
+of 0.05, are sampled from a quadratic fit to literature measurements rather than being
+independent experiments, which matters when reading any correlation computed against
+them. The other four are measured values: the UN and UC end members from Wyckoff, and
+the two compositions at y = 0.98412 and 0.94510 refined in this study from the
+diffractograms in `Data/xrd/`.
 
 | Column | Meaning |
 |---|---|
 | `composition` | Solid-solution composition, e.g. `U1 N0.95 C0.05`. |
 | `ref_mp-id` | Materials Project id of the reference host structure whose symmetry is fed to the model. An input, not a label. Resolved as the dominant end-member, breaking the 50/50 tie on formation energy; see Data/README.md. |
 | `y` | Nitrogen fraction in UN(y)C(1-y), from 0 to 1. |
-| `a_true` | Experimental lattice parameter, Å, read off the literature quadratic fit. |
+| `a_true` | Experimental lattice parameter, Å: read off the literature quadratic fit for the 19 sampled rows, measured for the other four. |
 
 ## Data/benchmarks/CeO2Nd2O3Vals.csv
 
@@ -140,8 +141,8 @@ the figure shows.
 |---|---|
 | `n_cubic_rows` | Number of cubic rows the correlations were computed over. Constant down the file. |
 | `feature` | Feature name, matching `Models/feature_labels/ML_FeatureLabels.json`. |
-| `spearman_rho` | Spearman rank correlation with `a`, from -1 to 1. |
-| `abs_rho` | Absolute value of the above, which the file is sorted by. |
+| `spearman_rho` | Spearman rank correlation with `a`, from -1 to 1. Empty for the seven `cs_*` crystal-system one-hot features, which are constant over the cubic subset and so have no defined rank correlation. |
+| `abs_rho` | Absolute value of the above, which the file is sorted by. Empty where `spearman_rho` is. |
 | `in_figure` | Whether `abs_rho` exceeds 0.2, the display threshold used in the figure. The features below the threshold are kept because a weak correlation is a result too. |
 
 ## Results/benchmarks/<system>/predictions.csv
@@ -158,16 +159,17 @@ Per-composition predictions on a validation system, from every trained model.
 
 ## Results/benchmarks/basis_check.csv
 
-Two kinds of row share this file, distinguished by `kind`, so most columns are
+Three kinds of row share this file, distinguished by `kind`, so most columns are
 empty on any given row.
 
 | Column | Meaning |
 |---|---|
-| `kind` | `anchor` for a DFT-versus-experiment comparison on one host, `metric` for a model's score on one benchmark. |
-| `host`, `mp_id` | Anchor rows only: the host material and its Materials Project id. |
-| `dft_a_angstrom`, `experimental_a_angstrom` | Anchor rows only: the two values being compared, Å. |
+| `kind` | `anchor` for a DFT-versus-experiment comparison on one host; `unanchored` for a curated host with no experimental value in this repository (UO2, PuO2, ThO2, ZrO2, Nd2O3, NdO2), so its offset is unknown; `metric` for a model's score on one benchmark. |
+| `host`, `mp_id` | Anchor and unanchored rows: the host material and its Materials Project id. |
+| `dft_a_angstrom` | Anchor and unanchored rows: the DFT lattice parameter, Å. |
+| `experimental_a_angstrom` | Anchor rows only: the experimental lattice parameter, Å. |
 | `delta_dft_minus_exp_angstrom` | Anchor rows only: DFT minus experiment, Å. Its sign flips across the three anchors, which is why no correction factor is shipped. |
-| `experimental_source` | Anchor rows only: which file and row the experimental value came from, or a statement that none exists in this repository. |
+| `experimental_source` | Anchor and unanchored rows: which file and row the experimental value came from, or, on an unanchored row, `NONE IN REPO, delta unknown`. |
 | `benchmark`, `system`, `n_rows` | Metric rows only: which validation set, and how many compositions. |
 | `model_key`, `model_name` | Metric rows only: which model. |
 | `MAE_vs_exp_angstrom` | Metric rows only: mean absolute error against the experimental value, Å. Contains the basis mismatch and is not pure model error. |
@@ -236,11 +238,10 @@ integer index column, title-cased headers (`Lattice Parameter Threshold`,
 
 ## Results/CrystalSystemRandomForestRegressorOptimizationStudy_Final.csv
 
-The per-crystal-system accuracy sweep for the Lumped RF model. Note that `MSE`,
-`MAE` and `R2` here are strings holding a three-element array for a, b and c,
-written by numpy rather than as separate columns, so parsing them takes more than
-`float()`. That is awkward and was left as it is, because reformatting the file
-would break its correspondence with the run that produced it.
+The per-crystal-system accuracy sweep for the lumped RF model. `MSE`, `MAE` and `R2`
+here are strings holding a three-element array for a, b and c, written by numpy rather
+than as separate columns, so parsing them takes more than `float()`. The file is kept
+as the run that produced it wrote it.
 
 | Column | Meaning |
 |---|---|
