@@ -36,7 +36,7 @@ documented rather than resolved.
 ## Data Availability
 
 > All data are available under the terms of the Creative Commons Attribution 4.0
-> International license (CC-BY 4.0), except where the Materials Project's own CC BY
+> International license (CC BY 4.0), except where the Materials Project's own CC BY
 > 4.0 terms already apply, in which case attribution to the Materials Project is
 > required.
 >
@@ -103,9 +103,9 @@ documented rather than resolved.
 
 Every aggregate in Tables 1 and 2 can be recomputed from the point-level files in
 the same table, which is the reason the per-entry cross-validation predictions
-are written at all. The images for Figures 2 and 3 are committed under
-`Results/figures/` and `Results/benchmarks/`; Figures 1 and 4 are not committed as
-images. Regenerating any figure's values requires only the command in the right-hand
+are written at all. Plots of the data behind Figures 2 and 3 are committed under
+`Results/figures/` and `Results/benchmarks/`, though not the published renderings;
+Figures 1 and 4 are not committed as images. Regenerating any figure's values requires only the command in the right-hand
 column.
 
 Reproducing Table 2's Linear Regression row needs `cli.py predict --csv ...

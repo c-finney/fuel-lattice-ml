@@ -15,7 +15,7 @@ an explicit accuracy caution, described under Limitations below.
 ## Description
 
 A single native multi-output `sklearn.ensemble.RandomForestRegressor`, in which every tree in
-the 600-tree forest predicts a, b, and c jointly, as opposed to `rf2` (Independent RF),
+the 600-tree forest predicts a, b, and c jointly, as opposed to `rf2` (independent RF),
 which fits three independent forests.
 
 ## Hyperparameters

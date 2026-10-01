@@ -49,7 +49,7 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
      - If the featurized dataset is missing: run the build first (`cli.py build --resume`),
        then a fast train.
      - Fast train (Lumped RF only, the fastest option and the headline model):
-       `cli.py train --fast`.
+       `cli.py train --fast --n-jobs -1`.
      - When the background job finishes, continue to step 4.
    - On **no**, stop and tell the user they can run `scripts/fetch_models.py`, or
      `/lattice-build` then `/lattice-train`, later.

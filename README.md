@@ -143,7 +143,8 @@ them.
 Linear Regression is suppressed from prediction output unless `--include-baseline` is
 passed.
 
-The cubic-subset metrics are better than the all-systems metrics, roughly 0.12 Å against 0.31 Å on MAE over the 64,128 training rows, and the
+The cubic-subset metrics are better than the all-systems metrics, roughly 0.12 Å against
+0.34 Å on `rf1`'s MAE averaged over a, b and c across the 64,128 training rows, and the
 monoclinic, triclinic and trigonal hosts that are thinly represented in the database are
 worse still, by up to 360 % on MAE. Separately, the training labels are DFT-relaxed
 geometry and the benchmark values are experimental measurements, so a benchmark MAE is not

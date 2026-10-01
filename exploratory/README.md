@@ -18,8 +18,8 @@
   checks. Persists no artifacts.
 - **`FuelLatticeParameterVisualization.ipynb`**, which uses the **deprecated**
   `pymatgen.ext.matproj.MPRester` (the shipped `engine/mp_client.py` uses the current
-  `mp_api.client.MPRester`). This notebook will not run against the pymatgen version
-  pinned in `requirements.txt`.
+  `mp_api.client.MPRester`). This notebook will not run against the pymatgen versions
+  `requirements.txt` allows.
 
 If you want to extend the modeling work, start from `engine/` and the four core
 notebooks at the repository root, not from anything here.

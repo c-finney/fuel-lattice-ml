@@ -103,7 +103,7 @@ will flag both. `.env` has never been tracked. `MP_API_KEY=` appears in tracked
 files only as the blank template in `.env.example` and an error-message template
 in `engine/config.py`.
 
-The 80-test suite passes under Python 3.12.10 with the pinned versions, and it
+The 83-test suite passes under Python 3.12.10 with the pinned versions, and it
 passes from a clean clone into an empty directory with a fresh virtualenv built
 from `requirements.txt` alone, with no model binaries present.
 

@@ -31,7 +31,7 @@ thin, narrated wrapper).
 2. **Only warn about a multi-hour job when `--force` is requested**, or when the
    trimmed dataset is genuinely absent (`build.ok == false` in the status output with
    `MP_API_KEY` missing). In that case: state that a full rebuild is a **one-time,
-   multi-hour** job (full Materials Project download + ~50k `SpacegroupAnalyzer` runs +
+   multi-hour** job (full Materials Project download + ~154k `SpacegroupAnalyzer` runs +
    matminer featurization of the compositions), and ask the user **yes/no** before
    starting. Do not start without an explicit "yes".
 
@@ -54,6 +54,7 @@ thin, narrated wrapper).
 ## Notes
 
 - Produces only the dataset + feature-label artifacts; it never trains models.
-- Generated artifacts land in `Dataset/` and `Models/binaries/` (both git-ignored,
-  regenerable). The committed seed lives in `Data/` and is never overwritten by a
+- Generated artifacts land in `Dataset/` (git-ignored, regenerable) and
+  `Models/feature_labels/` (tracked; a clean rebuild rewrites them byte-identically).
+  The committed seed lives in `Data/` and is never overwritten by a
   normal `--resume` build.

@@ -36,7 +36,7 @@ output never shows). All five are trained and deposited on Zenodo.
 
 1. **Precondition:** the featurized dataset must exist. Run `python cli.py status --json`;
    if the dataset/feature-labels are missing, tell the user to run `/lattice-build`
-   first, or offer to run it, since with the committed seed present it's ~9 minutes and not the
+   first, or offer to run it (with the committed seed present it's ~9 minutes, not the
    old multi-hour estimate), and stop.
 
 2. **State the ETA and confirm:** fast (`rf1`) ≈ minutes; full (including 1800-estimator
@@ -44,10 +44,10 @@ output never shows). All five are trained and deposited on Zenodo.
 
 3. **Run** (background for `full`; foreground is fine for `fast`):
    ```
-   python cli.py train --fast
-   #   or  python cli.py train --full
-   #   or  python cli.py train --models rf1,gbr1
-   #   optional: --n-jobs N to cap CPU/memory
+   python cli.py train --fast --n-jobs -1
+   #   or  python cli.py train --full --n-jobs -1
+   #   or  python cli.py train --models rf1,gbr1 --n-jobs -1
+   #   use --n-jobs N instead to cap CPU/memory
    ```
 
 4. **On completion**, report which models were written to `Models/binaries/` and that
@@ -59,6 +59,8 @@ output never shows). All five are trained and deposited on Zenodo.
 - Final models are full-dataset fits (`.fit(X, Y)`), and these are what prediction loads.
 - Use `/lattice-evaluate` to estimate model accuracy via 5-fold cross-validation; that
   step refits its own fold models and never touches these saved binaries.
-- Overwriting `Models/binaries/LumpedRFModel.joblib` here means it no longer matches
-  `Models/LumpedRFModel/metrics.json` (generated from a specific past cross-validation
-  run) until you re-run `/lattice-evaluate`, so mention this if the user retrains `rf1`.
+- Overwriting `Models/binaries/LumpedRFModel.joblib` here replaces the deposited binary
+  that the manuscript's benchmark figures describe. The cross-validation metrics in
+  `Models/LumpedRFModel/metrics.json` describe the hyperparameters, not one fitted binary,
+  so they stay valid. Mention this if the user retrains `rf1`, and that
+  `scripts/fetch_models.py --models rf1` restores the deposited one.

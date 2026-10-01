@@ -1,14 +1,14 @@
 # Independent RF (`rf2`)
 
 Status: trained and 5-fold cross-validated. Binary:
-`Models/binaries/IndependentRFModel.joblib`, 9,735,288,229 bytes, the largest artifact in
-the repository at 2.5× `rf1`. Deposited on Zenodo as `IndependentRFModel.joblib.zip`,
+`Models/binaries/IndependentRFModel.joblib`, 9,735,288,229 bytes, the largest model binary
+at 2.5× `rf1`. Deposited on Zenodo as `IndependentRFModel.joblib.zip`,
 2,598,500,447 bytes, which `scripts/fetch_models.py` verifies and extracts.
 
 ## Description
 
 A `MultiOutputRegressor` wrapping one independent `RandomForestRegressor` per lattice
-parameter (a, b, c), as opposed to `rf1` (Lumped RF), which uses a single native
+parameter (a, b, c), as opposed to `rf1` (lumped RF), which uses a single native
 multi-output forest where every tree predicts all three parameters jointly.
 
 ## Hyperparameters

@@ -76,7 +76,7 @@ rather than as a column list for the same reason as the UN files above.
 
 | Part | Meaning |
 |---|---|
-| Header | Present in `CeO2_30Nd2O3_exported.xy` only: one single-quoted line giving `Id`, `Comment`, `Operator`, `Anode` (Cu), `Wavelength` (1.5406 Å), `Scantype` (coupled TwoTheta/Theta), `TimePerStep` in seconds, and stage coordinates `X`, `Y`, `Z`. The other three files start directly with data. |
+| Header | Present in `CeO2_30Nd2O3_exported.xy` only: one single-quoted line giving `Id`, `Comment`, `Operator`, `Anode` (Cu), `Wavelength` (1.5406 Å), `Scantype` (coupled TwoTheta/Theta), `TimePerStep` as exported by the instrument's software, and stage coordinates `X`, `Y`, `Z`. The other three files start directly with data. |
 | Data rows | 24,575 rows, two space-separated values each: scattering angle 2-theta in degrees, from 10.00 to 109.98 in steps of about 0.0041, then measured intensity. |
 
 Intensity is as recorded by the instrument and is not normalised, so absolute values are
