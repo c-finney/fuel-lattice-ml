@@ -155,7 +155,8 @@ def check_prereqs(stage: str) -> dict:
         if not config.ML_FEATURELABELS.exists():
             missing.append("ML_FeatureLabels.joblib (run /lattice-train first)")
         if not av:
-            missing.append("at least one trained model (run /lattice-train first)")
+            missing.append("at least one trained model (fetch the deposited binaries "
+                           "with scripts/fetch_models.py, or run /lattice-train)")
         # A missing MP_API_KEY does NOT block predict/evaluate: reference
         # resolution for any of the 9 curated end-members (or an explicit
         # --reference mp-id already in that table) works with zero network

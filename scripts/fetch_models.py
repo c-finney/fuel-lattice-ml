@@ -72,7 +72,10 @@ def _check_sklearn_version(expected: str | None) -> None:
         print("[fetch_models] WARNING: scikit-learn is not installed, so compatibility "
               "with the pickled model cannot be verified.")
         return
-    if running != expected:
+    # requirements.txt pins scikit-learn==1.9.*, and RELEASE.md records the
+    # deposited models as verified across that patch range, so only a change of
+    # major or minor version is worth a warning.
+    if running.split(".")[:2] != expected.split(".")[:2]:
         print(f"[fetch_models] WARNING: running scikit-learn {running} against a model "
               f"pickled with {expected}. It may fail to load, or load incorrectly. "
               "See Models/README.md.")
@@ -93,6 +96,8 @@ def _resolve_uri(uri: str) -> str | None:
 
 _MAX_ATTEMPTS = 6
 _BACKOFF = 5  # seconds, multiplied by the attempt number
+_TIMEOUT = 60  # seconds without data before a stalled connection is retried
+_RETRYABLE_HTTP = {429, 500, 502, 503, 504}
 
 
 def _download(url: str, dest: Path) -> None:
@@ -102,7 +107,8 @@ def _download(url: str, dest: Path) -> None:
     A multi-gigabyte transfer over one TLS connection does not reliably survive.
     The failure seen in practice is an SSL EOF part way through, which arrives as
     URLError rather than as a short read, so a plain single-shot download of rf1
-    (3.97 GB) or rf2 (9.74 GB) can fail repeatedly on an otherwise healthy link.
+    (3.97 GB) or the rf2 archive (2.60 GB) can fail repeatedly on an otherwise
+    healthy link.
 
     Each attempt therefore resumes from the bytes already on disk using a Range
     request, so a drop at 3 GB costs the remainder rather than the whole file. A
@@ -130,7 +136,7 @@ def _download(url: str, dest: Path) -> None:
             if have:
                 req.add_header("Range", f"bytes={have}-")
             try:
-                with urllib.request.urlopen(req) as response:
+                with urllib.request.urlopen(req, timeout=_TIMEOUT) as response:
                     # 206 means the server honoured the Range and we append;
                     # 200 means it sent the whole file, so start over.
                     resuming = response.status == 206
@@ -160,8 +166,16 @@ def _download(url: str, dest: Path) -> None:
                     break
                 raise urllib.error.URLError(
                     f"short read: {tmp.stat().st_size} of {total} bytes")
-            except urllib.error.HTTPError:
-                raise                      # 404 and friends are not retryable
+            except urllib.error.HTTPError as exc:
+                # A 404 will not change on retry. Rate limiting and gateway
+                # errors are transient, so they keep the partial file and
+                # resume like a dropped connection.
+                if exc.code not in _RETRYABLE_HTTP or attempt == _MAX_ATTEMPTS:
+                    raise
+                got = tmp.stat().st_size if tmp.exists() else 0
+                print(f"\n[fetch_models]   attempt {attempt} got HTTP {exc.code}; "
+                      f"resuming from {got / 1e9:.2f} GB in {_BACKOFF * attempt}s")
+                time.sleep(_BACKOFF * attempt)
             except (urllib.error.URLError, OSError, EOFError) as exc:
                 if attempt == _MAX_ATTEMPTS:
                     raise
@@ -169,16 +183,24 @@ def _download(url: str, dest: Path) -> None:
                 print(f"\n[fetch_models]   attempt {attempt} failed ({exc}); "
                       f"resuming from {got / 1e9:.2f} GB in {_BACKOFF * attempt}s")
                 time.sleep(_BACKOFF * attempt)
-        shutil.move(str(tmp), str(dest))
+        # os.replace renames over an existing file on every platform, where
+        # shutil.move falls back to copying the whole file on Windows.
+        os.replace(tmp, dest)
     finally:
         if tmp.exists():
             tmp.unlink()
 
 
 def _verify(key: str, path: Path, expected: str | None, what: str = "") -> None:
-    """Delete *path* and stop if its SHA-256 is not *expected*."""
+    """Delete *path* and stop if its SHA-256 is not *expected*.
+
+    A missing digest is refused rather than passed, since this check is what
+    stands between the download and joblib.load().
+    """
     if not expected:
-        return
+        path.unlink(missing_ok=True)
+        raise SystemExit(f"[fetch_models] {key}: the manifest records no SHA-256{what}, "
+                         "so the download cannot be verified and has been deleted.")
     actual = sha256_of(path)
     if actual != expected:
         path.unlink(missing_ok=True)
@@ -206,10 +228,13 @@ def _extract(archive_path: Path, archive: dict, dest: Path) -> None:
     os.close(fd)
     tmp = Path(tmp_name)
     try:
-        with zipfile.ZipFile(archive_path) as zf, zf.open(member) as src, \
-                open(tmp, "wb") as out:
-            shutil.copyfileobj(src, out, _CHUNK)
-        shutil.move(str(tmp), str(dest))
+        with zipfile.ZipFile(archive_path) as zf:
+            if member not in zf.namelist():
+                raise SystemExit(f"[fetch_models] the archive holds no member named "
+                                 f"'{member}'; it holds {zf.namelist()}")
+            with zf.open(member) as src, open(tmp, "wb") as out:
+                shutil.copyfileobj(src, out, _CHUNK)
+        os.replace(tmp, dest)
     finally:
         if tmp.exists():
             tmp.unlink()
@@ -259,10 +284,11 @@ def fetch(models: list[str] | None = None) -> None:
         try:
             _download(url, download_path)
         except urllib.error.HTTPError as exc:
+            hint = ("The file was not found at that address."
+                    if exc.code == 404 else
+                    "The server kept refusing after repeated attempts; try again later.")
             raise SystemExit(
-                f"[fetch_models] {key}: download failed with HTTP {exc.code}. "
-                "If the Zenodo deposit is not published yet, the record will 404; "
-                "see RELEASE.md."
+                f"[fetch_models] {key}: download failed with HTTP {exc.code}. {hint}"
             ) from exc
 
         if archive:

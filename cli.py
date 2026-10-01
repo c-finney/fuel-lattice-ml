@@ -158,7 +158,8 @@ def main():
         print("  train     — train models (notebook 2)")
         print("  evaluate  — cross-validation metrics (notebook 2 CV)")
         print("  predict   — predict lattice parameters (notebook 3)")
-        sys.exit(1)
+        # Asking for help is not an error; an unknown or missing command is.
+        sys.exit(0 if sys.argv[1:2] in (["-h"], ["--help"]) else 1)
 
     cmd = sys.argv[1]
     rest = sys.argv[2:]

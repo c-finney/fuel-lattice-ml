@@ -58,7 +58,9 @@ def predict_lattice_parameter(
 
     If status == "needs_build":
       Returns missing artifacts and build_eta — the agent should ask
-      the user yes/no before running /lattice-build + /lattice-train.
+      the user yes/no before fetching the deposited binaries with
+      scripts/fetch_models.py, or, if they prefer a local refit, running
+      /lattice-build + /lattice-train.
 
     If status == "needs_reference":
       Returns candidates list — the agent should ask which end-member to use,

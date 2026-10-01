@@ -102,14 +102,15 @@ class TestSeedResume:
         the original flag was `action="store_true", default=True` with no
         way to disable it from the command line at all).
         """
-        from engine.build_dataset import main
-        import argparse
+        from engine import build_dataset
 
-        # Rebuild just the parser the way main() does, to inspect it without
-        # actually running a build.
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--resume", action=argparse.BooleanOptionalAction, default=True)
-        args = parser.parse_args(["--no-resume"])
-        assert args.resume is False
-        args = parser.parse_args([])
-        assert args.resume is True
+        # Drive the real main() and capture what it would pass to build(), so the
+        # parser under test is the one that ships rather than a copy of it.
+        done = {"rows": 0, "paths": {}}
+        with patch.object(build_dataset, "build", return_value=done) as mock_build:
+            build_dataset.main(["--no-resume"])
+            assert mock_build.call_args.kwargs["resume"] is False
+            build_dataset.main(["--resume"])
+            assert mock_build.call_args.kwargs["resume"] is True
+            build_dataset.main([])
+            assert mock_build.call_args.kwargs["resume"] is True

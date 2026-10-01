@@ -125,7 +125,9 @@ def main():
     manifest = build_manifest()
     config.MODEL_MANIFEST.parent.mkdir(parents=True, exist_ok=True)
 
-    # Preserve any existing `uri` fields when regenerating (e.g. after an HF upload)
+    # Preserve the deposit fields when regenerating, as long as the binary is the
+    # one they describe: the `uri`, and for a binary deposited inside a zip, the
+    # `archive` object that fetch_models.py needs to unpack it.
     if config.MODEL_MANIFEST.exists():
         try:
             existing = json.loads(config.MODEL_MANIFEST.read_text(encoding="utf-8"))
@@ -133,6 +135,8 @@ def main():
                 old = existing.get("models", {}).get(key, {})
                 if entry.get("status") == "trained" and old.get("uri") and old.get("sha256") == entry.get("sha256"):
                     entry["uri"] = old["uri"]
+                    if old.get("archive"):
+                        entry["archive"] = old["archive"]
         except (json.JSONDecodeError, OSError):
             pass
 

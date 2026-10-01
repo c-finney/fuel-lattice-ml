@@ -128,12 +128,19 @@ def upload(deposition: str, models: list[str] | None = None,
         if not record_only:
             _put_file(bucket, path, token)
 
+        uri = f"zenodo://{deposition}/{filename}"
+        if record_only and entry.get("archive"):
+            # Deposited by hand inside a zip (rf2): the URI names the zip, and
+            # the archive object recording its digest is kept.
+            uri = f"zenodo://{deposition}/{filename}.zip"
+        else:
+            entry.pop("archive", None)
         entry.update({
             "file":       filename,
             "compressed": False,
             "bytes":      size,
             "sha256":     digest,
-            "uri":        f"zenodo://{deposition}/{filename}",
+            "uri":        uri,
             "status":     "trained",
         })
         changed = True

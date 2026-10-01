@@ -8,7 +8,11 @@ extracted pickle. A URI naming a file the deposit does not hold returns 404 only
 after publication, when the file set can no longer change, so the agreement
 between the manifest and the archive handling is checked here instead.
 
-No network access: `_download` is replaced by a local copy.
+Also covered: transient HTTP errors are retried while a 404 is not, a missing digest
+or archive member is refused cleanly, and neither manifest writer can drop or contradict
+the archive entry.
+
+No network access: `_download` is replaced by a local copy, or `urlopen` by a stub.
 """
 
 import hashlib
@@ -88,6 +92,102 @@ def test_extracted_digest_mismatch_deletes_the_extracted_file(deposit):
     with pytest.raises(SystemExit, match="MISMATCH"):
         fetch_models.fetch(["fake"])
     assert list(models_dir.iterdir()) == []
+
+
+def test_missing_archive_member_is_a_clean_exit(deposit):
+    entry, write, models_dir = deposit
+    write({**entry, "archive": {**entry["archive"], "member": "Other.joblib"}})
+    with pytest.raises(SystemExit, match="no member named 'Other.joblib'"):
+        fetch_models.fetch(["fake"])
+    assert list(models_dir.iterdir()) == []
+
+
+def test_entry_without_digest_is_refused(deposit):
+    entry, write, models_dir = deposit
+    write({k: v for k, v in entry.items() if k != "sha256"})
+    with pytest.raises(SystemExit, match="no SHA-256"):
+        fetch_models.fetch(["fake"])
+    assert list(models_dir.iterdir()) == []
+
+
+class _Response:
+    """Just enough of an HTTP response for _download()."""
+
+    def __init__(self, body: bytes):
+        self.status, self._body = 200, body
+        self.headers = {"Content-Length": str(len(body))}
+
+    def read(self, n):
+        out, self._body = self._body[:n], self._body[n:]
+        return out
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+def _urlopen_failing_with(codes, body, calls):
+    def urlopen(req, timeout=None):
+        calls.append(timeout)
+        if len(calls) <= len(codes):
+            raise fetch_models.urllib.error.HTTPError(req.full_url, codes[len(calls) - 1],
+                                                      "error", {}, None)
+        return _Response(body)
+    return urlopen
+
+
+def test_transient_http_errors_are_retried(tmp_path, monkeypatch):
+    calls, body = [], b"x" * 1000
+    monkeypatch.setattr(fetch_models, "_BACKOFF", 0)
+    monkeypatch.setattr(fetch_models.urllib.request, "urlopen",
+                        _urlopen_failing_with([503, 429], body, calls))
+    dest = tmp_path / "f.bin"
+    fetch_models._download("https://example.invalid/f.bin", dest)
+    assert dest.read_bytes() == body
+    assert len(calls) == 3 and all(t == fetch_models._TIMEOUT for t in calls)
+    assert [p.name for p in tmp_path.iterdir()] == ["f.bin"]
+
+
+def test_not_found_is_not_retried(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(fetch_models, "_BACKOFF", 0)
+    monkeypatch.setattr(fetch_models.urllib.request, "urlopen",
+                        _urlopen_failing_with([404], b"", calls))
+    with pytest.raises(fetch_models.urllib.error.HTTPError):
+        fetch_models._download("https://example.invalid/f.bin", tmp_path / "f.bin")
+    assert len(calls) == 1
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_record_only_upload_keeps_the_archive_uri(deposit, monkeypatch):
+    from scripts import upload_models
+
+    entry, _, models_dir = deposit
+    models_dir.mkdir()
+    (models_dir / "Fake.joblib").write_bytes(b"not a real pickle, only bytes to hash" * 1000)
+    upload_models.upload("123", ["fake"], record_only=True)
+    after = json.loads(fetch_models.config.MODEL_MANIFEST.read_text(encoding="utf-8"))
+    rec = after["models"]["fake"]
+    assert rec["uri"] == "zenodo://123/Fake.joblib.zip"
+    assert rec["archive"] == entry["archive"]
+    assert rec["sha256"] == entry["sha256"]
+
+
+def test_regenerated_manifest_keeps_the_archive(deposit, monkeypatch):
+    from scripts import write_model_manifest
+
+    entry, _, _ = deposit
+    fresh = {"file": entry["file"], "compressed": False, "bytes": entry["bytes"],
+             "sha256": entry["sha256"], "uri": None, "status": "trained"}
+    monkeypatch.setattr(write_model_manifest, "build_manifest",
+                        lambda: {"provenance": {}, "models": {"fake": dict(fresh)}})
+    write_model_manifest.main()
+    after = json.loads(fetch_models.config.MODEL_MANIFEST.read_text(encoding="utf-8"))
+    rec = after["models"]["fake"]
+    assert rec["uri"] == entry["uri"]
+    assert rec["archive"] == entry["archive"]
 
 
 def test_manifest_uris_name_what_is_deposited():
