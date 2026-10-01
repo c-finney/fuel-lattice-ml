@@ -67,14 +67,15 @@ TwoTheta/Theta, 10 to 110 degrees 2-theta in steps of about 0.0041 degrees.
 | Folder | Composition in `CeO2Nd2O3Vals.csv` | `a_true`, angstrom |
 |---|---|---|
 | `CeO2/` | Ce1 O2 | 5.410085 |
+| `CeO2_10Nd2O3/` | Ce0.8343 Nd0.1657 O2 | 5.449408 |
 | `CeO2_20Nd2O3/` | Ce0.7738 Nd0.2262 O2 | 5.468861 |
 | `CeO2_30Nd2O3/` | Ce0.6451 Nd0.3549 O2 | 5.488927 |
 
-The folder names carry the target Nd content of the sample (20 and 30 at% Nd); the
+The folder names carry the target Nd content of the sample (10, 20 and 30 at% Nd); the
 composition column is the Nd fraction determined after refinement, as described in
 `DATA_DICTIONARY.md`. Each folder holds one file, `*_exported.xy`: 24,575 rows of 2-theta
 and intensity, space separated. `CeO2_30Nd2O3_exported.xy` alone opens with a single
-header line carrying the anode, wavelength, scan type and time per step; the other two
+header line carrying the anode, wavelength, scan type and time per step; the other three
 have no header.
 
 `RietveldSummary.xlsx` is the refinement summary for these samples: the refined lattice
