@@ -161,6 +161,70 @@ def test_not_found_is_not_retried(tmp_path, monkeypatch):
     assert list(tmp_path.iterdir()) == []
 
 
+class _Flaky:
+    """A server that sends `step` bytes per request and then drops the connection."""
+
+    def __init__(self, body: bytes, step: int, error):
+        self.body, self.step, self.error, self.calls = body, step, error, 0
+
+    def urlopen(self, req, timeout=None):
+        self.calls += 1
+        rng = req.get_header("Range")
+        start = int(rng.split("=")[1].rstrip("-")) if rng else 0
+        chunk = self.body[start:start + self.step]
+        last = start + len(chunk) >= len(self.body)
+        error = self.error
+
+        class Resp:
+            status = 206 if rng else 200
+            headers = ({"Content-Range": f"bytes {start}-{len(self.body) - 1}/{len(self.body)}"}
+                       if rng else {"Content-Length": str(len(self.body))})
+            sent = False
+
+            def read(self_, n):
+                if not self_.sent:
+                    self_.sent = True
+                    return chunk
+                if last:
+                    return b""
+                raise error
+
+            def __enter__(self_):
+                return self_
+
+            def __exit__(self_, *exc):
+                return False
+
+        return Resp()
+
+
+@pytest.mark.parametrize("error", [ConnectionResetError("reset"),
+                                   fetch_models.http.client.IncompleteRead(b"")])
+def test_progress_resets_the_retry_budget(tmp_path, monkeypatch, error):
+    body = bytes(range(256)) * 40
+    server = _Flaky(body, 1000, error)
+    monkeypatch.setattr(fetch_models, "_BACKOFF", 0)
+    monkeypatch.setattr(fetch_models, "_MAX_ATTEMPTS", 2)
+    monkeypatch.setattr(fetch_models.urllib.request, "urlopen", server.urlopen)
+    dest = tmp_path / "f.bin"
+    fetch_models._download("https://example.invalid/f.bin", dest)
+    assert dest.read_bytes() == body
+    assert server.calls == 11      # 10,240 bytes at 1,000 per connection
+    assert [p.name for p in tmp_path.iterdir()] == ["f.bin"]
+
+
+def test_persistent_connection_failure_is_a_clean_exit(deposit, monkeypatch):
+    _, _, models_dir = deposit
+
+    def always_drops(url, dest):
+        raise fetch_models.urllib.error.URLError("connection reset")
+
+    monkeypatch.setattr(fetch_models, "_download", always_drops)
+    with pytest.raises(SystemExit, match="failed after repeated attempts"):
+        fetch_models.fetch(["fake"])
+    assert list(models_dir.iterdir()) == []
+
+
 def test_record_only_upload_keeps_the_archive_uri(deposit, monkeypatch):
     from scripts import upload_models
 

@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.client
 import json
 import os
 import shutil
@@ -94,8 +95,9 @@ def _resolve_uri(uri: str) -> str | None:
     return None
 
 
-_MAX_ATTEMPTS = 6
-_BACKOFF = 5  # seconds, multiplied by the attempt number
+_MAX_ATTEMPTS = 6   # consecutive attempts without progress before giving up
+_MAX_TOTAL = 60     # attempts in all, however much each one progressed
+_BACKOFF = 5  # seconds, multiplied by the consecutive-failure count
 _TIMEOUT = 60  # seconds without data before a stalled connection is retried
 _RETRYABLE_HTTP = {429, 500, 502, 503, 504}
 
@@ -129,8 +131,12 @@ def _download(url: str, dest: Path) -> None:
     os.close(fd)
     tmp = Path(tmp_name)
     total = None
+    # Consecutive attempts that made no progress. An attempt that added bytes
+    # resets the count, so a long download over a link that drops repeatedly
+    # still finishes; _MAX_TOTAL bounds the whole loop regardless.
+    failures = 0
     try:
-        for attempt in range(1, _MAX_ATTEMPTS + 1):
+        for attempt in range(1, _MAX_TOTAL + 1):
             have = tmp.stat().st_size if tmp.exists() else 0
             req = urllib.request.Request(url)
             if have:
@@ -170,19 +176,22 @@ def _download(url: str, dest: Path) -> None:
                 # A 404 will not change on retry. Rate limiting and gateway
                 # errors are transient, so they keep the partial file and
                 # resume like a dropped connection.
-                if exc.code not in _RETRYABLE_HTTP or attempt == _MAX_ATTEMPTS:
+                failures += 1
+                if exc.code not in _RETRYABLE_HTTP or failures >= _MAX_ATTEMPTS:
                     raise
                 got = tmp.stat().st_size if tmp.exists() else 0
                 print(f"\n[fetch_models]   attempt {attempt} got HTTP {exc.code}; "
-                      f"resuming from {got / 1e9:.2f} GB in {_BACKOFF * attempt}s")
-                time.sleep(_BACKOFF * attempt)
-            except (urllib.error.URLError, OSError, EOFError) as exc:
-                if attempt == _MAX_ATTEMPTS:
-                    raise
+                      f"resuming from {got / 1e9:.2f} GB in {_BACKOFF * failures}s")
+                time.sleep(_BACKOFF * failures)
+            except (urllib.error.URLError, OSError, EOFError,
+                    http.client.IncompleteRead) as exc:
                 got = tmp.stat().st_size if tmp.exists() else 0
+                failures = 1 if got > have else failures + 1
+                if failures >= _MAX_ATTEMPTS or attempt == _MAX_TOTAL:
+                    raise
                 print(f"\n[fetch_models]   attempt {attempt} failed ({exc}); "
-                      f"resuming from {got / 1e9:.2f} GB in {_BACKOFF * attempt}s")
-                time.sleep(_BACKOFF * attempt)
+                      f"resuming from {got / 1e9:.2f} GB in {_BACKOFF * failures}s")
+                time.sleep(_BACKOFF * failures)
         # os.replace renames over an existing file on every platform, where
         # shutil.move falls back to copying the whole file on Windows.
         os.replace(tmp, dest)
@@ -240,6 +249,13 @@ def _extract(archive_path: Path, archive: dict, dest: Path) -> None:
             tmp.unlink()
 
 
+def _in_use(key: str, exc: OSError) -> str:
+    return (f"[fetch_models] {key}: could not write {exc.filename or 'the model file'} "
+            f"({exc.strerror or exc}). On Windows this usually means the existing file is "
+            "open in another program, such as a running MCP server or notebook that has "
+            "loaded the model. Close it and run the command again.")
+
+
 def fetch(models: list[str] | None = None) -> None:
     if not config.MODEL_MANIFEST.exists():
         raise SystemExit(f"{config.MODEL_MANIFEST} not found, so there is nothing to fetch from.")
@@ -277,6 +293,12 @@ def fetch(models: list[str] | None = None) -> None:
             continue
 
         archive = entry.get("archive")
+        # Refuse before downloading anything, and before touching a file that may
+        # already be in place, if there is nothing to verify the download against.
+        if not expected_hash or (archive and not archive.get("sha256")):
+            raise SystemExit(f"[fetch_models] {key}: the manifest records no SHA-256"
+                             f"{' for the archive' if expected_hash else ''}, so a download "
+                             "could not be verified. Nothing was downloaded.")
         download_path = out_path.with_name(out_path.name + ".zip") if archive else out_path
         size = (archive or entry).get("bytes")
         size_note = f" ({size / 1e9:.2f} GB)" if size else ""
@@ -284,11 +306,18 @@ def fetch(models: list[str] | None = None) -> None:
         try:
             _download(url, download_path)
         except urllib.error.HTTPError as exc:
-            hint = ("The file was not found at that address."
-                    if exc.code == 404 else
-                    "The server kept refusing after repeated attempts; try again later.")
+            hint = ("The file was not found at that address." if exc.code == 404 else
+                    "Try again later." if exc.code in _RETRYABLE_HTTP else
+                    "The server refused the request.")
             raise SystemExit(
                 f"[fetch_models] {key}: download failed with HTTP {exc.code}. {hint}"
+            ) from exc
+        except PermissionError as exc:
+            raise SystemExit(_in_use(key, exc)) from exc
+        except (urllib.error.URLError, OSError, http.client.IncompleteRead) as exc:
+            raise SystemExit(
+                f"[fetch_models] {key}: download failed after repeated attempts ({exc}). "
+                "Check the connection and run the command again."
             ) from exc
 
         if archive:
@@ -296,6 +325,8 @@ def fetch(models: list[str] | None = None) -> None:
             print(f"[fetch_models] {key}: archive verified, extracting {entry['file']}")
             try:
                 _extract(download_path, archive, out_path)
+            except PermissionError as exc:
+                raise SystemExit(_in_use(key, exc)) from exc
             finally:
                 download_path.unlink(missing_ok=True)
 
@@ -304,7 +335,8 @@ def fetch(models: list[str] | None = None) -> None:
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--models", type=str, default=None,
                         help="Comma-separated model keys (default: all in MANIFEST)")
     args = parser.parse_args(argv)
