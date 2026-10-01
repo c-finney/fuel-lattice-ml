@@ -20,10 +20,10 @@ refitted, no model binary is loaded and no dataset has to be rebuilt:
 Figure 1 is not drawn here. It plots individual literature measurements that are
 not in this repository; only the fitted curve is, in Data/benchmarks/UNUC.csv.
 
-Figure 2 uses the same plotting function and resolution as the published figure.
-Figures 3 and 4 follow the published layout, with two differences: the legend of
-Figure 3 uses the model names from the text, and the feature labels of Figure 4
-are horizontal, so that each sits level with its own bar.
+Figure 2 uses the same plotting function and resolution as the published figure
+and reproduces it exactly. Figures 3 and 4 reproduce the published layout, legend
+names and label angle. Figure 3 is drawn as one figure where the published version
+was assembled from two separately drawn panels.
 
 USAGE
 -----
@@ -54,11 +54,11 @@ DEFAULT_OUT = RESULTS / "figures" / "manuscript"
 
 # Figure 3 series in legend order, with the colours of the published figure.
 SERIES = [
-    ("lin",  "Linear Regression", "gray"),
-    ("rf1",  "Lumped RF",         "orange"),
-    ("rf2",  "Independent RF",    "black"),
-    ("gbr1", "Lumped GBR",        "blue"),
-    ("gbr2", "Independent GBR",   "purple"),
+    ("lin",  "Linear Regression",        "gray"),
+    ("rf1",  "Lumped RF Regressor",      "orange"),
+    ("rf2",  "Independent RF Regressor", "black"),
+    ("gbr1", "Lumped GB Regressor",      "blue"),
+    ("gbr2", "Independent GB Regressor", "purple"),
 ]
 
 
@@ -132,7 +132,8 @@ def figure4(out_dir: Path) -> Path:
     s = pd.read_csv(RESULTS / "metrics" / "feature_spearman_cubic.csv")
     s = s[s["in_figure"]].sort_values("abs_rho", ascending=False, kind="stable")
     n = len(s)
-    colours = plt.get_cmap("coolwarm")(np.linspace(0, 1, n))
+    # Sampled as seaborn's "coolwarm" palette is, which the published figure used.
+    colours = plt.get_cmap("coolwarm")(np.linspace(0, 1, n + 2)[1:-1])
     y = np.arange(n)
 
     fig, ax = plt.subplots(figsize=(12, 12))
@@ -144,7 +145,7 @@ def figure4(out_dir: Path) -> Path:
     ax.set_ylabel("Input Feature Label", fontsize=16, fontweight="bold")
     ax.set_title("Spearman Correlation of Features for Lattice Parameter\n"
                  "of Cubic Crystal Systems (≥ 0.2 or ≤ −0.2)", fontsize=20, fontweight="bold")
-    ax.tick_params(axis="y", labelsize=12)
+    ax.tick_params(axis="y", labelsize=12, labelrotation=20)
     ax.tick_params(axis="x", labelsize=14)
     for t in ax.get_xticklabels() + ax.get_yticklabels():
         t.set_fontweight("bold")
