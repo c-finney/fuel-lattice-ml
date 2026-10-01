@@ -52,7 +52,7 @@ CeO2 sample, all measured for this study.
 |---|---|
 | `composition` | Composition, e.g. `Ce0.8343 Nd0.1657 O2`. The Nd fraction was determined after refinement from the lattice-parameter shift against the Ikuma et al. empirical fit, so it is a derived quantity rather than a weighed-in target. The derivation for the first four rows is in `Data/xrd/RietveldSummary.xlsx`. |
 | `ref_mp-id` | Reference host, `mp-20194` (CeO2) on every row, since Ce is dominant throughout. |
-| `a_true` | Lattice parameter, Å, from Rietveld refinement of the measured pattern in GSAS-II. The undoped CeO2 value, 5.410085 Å, agrees with the 5.40972 Å reported by Artini et al. The diffractograms are under `Data/xrd/`; see Data/README.md. |
+| `a_true` | Lattice parameter, Å, from Rietveld refinement of the measured pattern in GSAS-II. The undoped CeO2 value, 5.410085 Å, agrees with the 5.40972 Å reported by Artini et al. and the 5.41 Å given by the empirical fit of Ikuma et al. at zero Nd content. The diffractograms are under `Data/xrd/`; see Data/README.md. |
 
 ## Data/xrd/UN-*/\*_exported.txt
 
