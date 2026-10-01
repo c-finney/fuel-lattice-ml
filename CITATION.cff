@@ -21,12 +21,11 @@ repository-code: "https://github.com/c-finney/fuel-lattice-ml"
 doi: "10.5281/zenodo.22727667"
 url: "https://doi.org/10.5281/zenodo.22727667"
 keywords:
-  - machine learning
-  - nuclear fuel
-  - lattice parameter
-  - materials informatics
-  - random forest
-  - gradient boosting
+  - Machine Learning
+  - Rietveld Refinement
+  - Lattice Parameters
+  - Fuel Composition
+  - Accelerated Fuel Qualification
 references:
   - type: dataset
     title: "The Materials Project"

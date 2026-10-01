@@ -26,14 +26,11 @@
     }
   ],
   "keywords": [
-    "machine learning",
-    "nuclear fuel",
-    "lattice parameter",
-    "materials informatics",
-    "random forest",
-    "gradient boosting",
-    "Materials Project",
-    "accelerated fuel qualification"
+    "Machine Learning",
+    "Rietveld Refinement",
+    "Lattice Parameters",
+    "Fuel Composition",
+    "Accelerated Fuel Qualification"
   ],
   "related_identifiers": [
     {
