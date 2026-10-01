@@ -41,9 +41,15 @@ the prediction notebook and as regression-test fixtures:
 
 ## `xrd/`
 
-Raw laboratory X-ray diffractograms for the two UN specimens that appear in `UNUC.csv`
-as measured points rather than as samples of the literature fit. Cu anode, coupled
-TwoTheta/Theta, 20 to 92 degrees 2-theta in 0.02 degree steps at 5 s per step.
+Raw laboratory X-ray diffractograms, one folder per sample. The patterns are the
+measurements themselves, which is what the lattice parameters in `benchmarks/` were
+refined from.
+
+### U(N,C)
+
+The two UN specimens that appear in `UNUC.csv` as measured points rather than as samples
+of the literature fit. Cu anode, coupled TwoTheta/Theta, 20 to 92 degrees 2-theta in 0.02
+degree steps at 5 s per step.
 
 | Folder | Lab specimen id | Composition in `UNUC.csv` |
 |---|---|---|
@@ -53,8 +59,23 @@ TwoTheta/Theta, 20 to 92 degrees 2-theta in 0.02 degree steps at 5 s per step.
 Each folder holds one file, `*_exported.txt`: a single header line carrying the specimen
 id, anode and scan type, then 3,561 rows of 2-theta and intensity, space separated.
 
-The patterns are the measurements themselves, which is what the lattice parameters in
-`UNUC.csv` were refined from.
+### (Ce,Nd)O2
+
+Measured on a D2 PHASER benchtop diffractometer. Cu anode (1.5406 angstrom), coupled
+TwoTheta/Theta, 10 to 110 degrees 2-theta in steps of about 0.0041 degrees.
+
+| Folder | Composition in `CeO2Nd2O3Vals.csv` | `a_true`, angstrom |
+|---|---|---|
+| `CeO2/` | Ce1 O2 | 5.410085 |
+| `CeO2_20Nd2O3/` | Ce0.7738 Nd0.2262 O2 | 5.468861 |
+| `CeO2_30Nd2O3/` | Ce0.6451 Nd0.3549 O2 | 5.488927 |
+
+The folder names carry the target Nd content of the sample (20 and 30 at% Nd); the
+composition column is the Nd fraction determined after refinement, as described in
+`DATA_DICTIONARY.md`. Each folder holds one file, `*_exported.xy`: 24,575 rows of 2-theta
+and intensity, space separated. `CeO2_30Nd2O3_exported.xy` alone opens with a single
+header line carrying the anode, wavelength, scan type and time per step; the other two
+have no header.
 
 > ### Label-basis mismatch: read before quoting any benchmark MAE
 >

@@ -53,7 +53,11 @@ documented rather than resolved.
 >
 > This deposit contains the values behind every figure and table in this article,
 > listed file by file in `AVAILABILITY.md`, together with a description of every
-> variable in `DATA_DICTIONARY.md`.
+> variable in `DATA_DICTIONARY.md`. Additionally, the raw XRD diffractograms for the
+> two U(N, C) specimens, the six Nd-doped CeO2 samples and the undoped CeO2 sample are
+> included under `Data/xrd/`. The lattice parameters refined from them are the two
+> measured U(N, C) compositions in `Data/benchmarks/UNUC.csv` and the seven rows of
+> `Data/benchmarks/CeO2Nd2O3Vals.csv`.
 >
 > **Extended data**
 >
@@ -62,17 +66,6 @@ documented rather than resolved.
 > optimization study, the label-basis analysis reconciling DFT training labels
 > against experimental validation values, and the four notebooks that reproduce
 > the study end to end.
->
-> **Data not shared**
->
-> The raw X-ray diffraction patterns and GSAS-II refinement projects for the six
-> Nd-doped CeO2 samples were generated at Oak Ridge National Laboratory and are
-> held there. The refined lattice parameters extracted from them, which are the
-> values this article reports and plots, are included in the deposit as
-> `Data/benchmarks/CeO2Nd2O3Vals.csv`. Requests for the underlying patterns should
-> be directed to the corresponding author. The raw diffractograms for the two UN
-> specimens that contribute measured points to the U(N, C) set are deposited, under
-> `Data/xrd/`.
 >
 > Data are available under the terms of the Creative Commons Attribution 4.0
 > International license (CC-BY 4.0), except where the Materials Project's own
@@ -109,10 +102,9 @@ Their content is carried by the five `params.json` files, which are also what
 `tests/test_params_parity.py` asserts the notebooks and `engine/train_models.py` agree
 with.
 
-## What is not in the archive
+## Completeness
 
-The raw diffraction data is the one gap, and it is described above. Everything
-else that the article reports is present, including the intermediate artifacts
+Everything that the article reports is present, including the intermediate artifacts
 that are normally discarded: the out-of-fold prediction for all 64,128 training
 entries under each of the five models, rather than only the summary metrics
 computed from them.

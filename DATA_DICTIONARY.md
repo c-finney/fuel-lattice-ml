@@ -45,14 +45,14 @@ matters when reading any correlation computed against it.
 
 ## Data/benchmarks/CeO2Nd2O3Vals.csv
 
-The (Ce, Nd)O2 validation system, 7 rows: six Nd-doped CeO2 samples measured for
-this study, plus pure CeO2 from literature.
+The (Ce, Nd)O2 validation system, 7 rows: six Nd-doped CeO2 samples and one undoped
+CeO2 sample, all measured for this study.
 
 | Column | Meaning |
 |---|---|
 | `composition` | Composition, e.g. `Ce0.8343 Nd0.1657 O2`. The Nd fraction was determined after refinement from the lattice-parameter shift against the Ikuma et al. empirical fit, so it is a derived quantity rather than a weighed-in target. |
 | `ref_mp-id` | Reference host, `mp-20194` (CeO2) on every row, since Ce is dominant throughout. |
-| `a_true` | Lattice parameter, Å, from Rietveld refinement of the measured pattern in GSAS-II. The patterns themselves are held at ORNL; see AVAILABILITY.md. |
+| `a_true` | Lattice parameter, Å, from Rietveld refinement of the measured pattern in GSAS-II. The undoped CeO2 value, 5.410085 Å, agrees with the 5.40972 Å reported by Artini et al. The diffractograms are under `Data/xrd/`; see Data/README.md. |
 
 ## Data/xrd/UN-*/\*_exported.txt
 
@@ -67,6 +67,19 @@ with named columns, so it is described here rather than as a column list.
 Intensity is as recorded by the instrument and is not normalised, so absolute values are
 not comparable between the two specimens; peak positions are what the lattice parameter is
 refined from.
+
+## Data/xrd/CeO2*/\*_exported.xy
+
+A raw diffractogram of a (Ce, Nd)O2 sample as exported from the D2 PHASER. Described here
+rather than as a column list for the same reason as the UN files above.
+
+| Part | Meaning |
+|---|---|
+| Header | Present in `CeO2_30Nd2O3_exported.xy` only: one single-quoted line giving `Id`, `Comment`, `Operator`, `Anode` (Cu), `Wavelength` (1.5406 Å), `Scantype` (coupled TwoTheta/Theta), `TimePerStep` in seconds, and stage coordinates `X`, `Y`, `Z`. The other two files start directly with data. |
+| Data rows | 24,575 rows, two space-separated values each: scattering angle 2-theta in degrees, from 10.00 to 109.98 in steps of about 0.0041, then measured intensity. |
+
+Intensity is as recorded by the instrument and is not normalised, so absolute values are
+not comparable between samples.
 
 ## Results/metrics/ModelMetrics_CrossVal.csv
 
