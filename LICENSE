@@ -24,6 +24,9 @@ SOFTWARE.
 
 The MIT License above covers the source code in this repository and the trained
 model binaries distributed with it. It does not cover the Materials Project data
-redistributed in Data/, which remains under CC BY 4.0. See NOTICE, which also
+redistributed in Data/, which remains under CC BY 4.0. The data files produced for
+this study, under Data/benchmarks/, Data/xrd/ and Results/, are licensed under the
+Creative Commons Attribution 4.0 International license (CC BY 4.0), as the
+accompanying manuscript's Data Availability statement records. See NOTICE, which also
 records the rights the U.S. Government holds in this software independently of
 this license.

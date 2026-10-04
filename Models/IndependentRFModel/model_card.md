@@ -59,7 +59,7 @@ With that removed it has the lowest scatter of any model there, 0.006921 Å agai
   *measured*). A benchmark MAE against experimental `a_true` therefore contains the
   DFT-vs-experiment discrepancy on top of model error. It is material-specific and changes
   sign: DFT − experiment is −0.006621 Å (UN), −0.022736 Å (UC), +0.057365 Å (CeO2), which
-  accounts for most of `rf2`'s (Ce,Nd)O₂ bias. No correction is shipped: only 3 of the 9
+  accounts for part of `rf2`'s (Ce,Nd)O₂ bias, 0.057 of 0.149 Å. No correction is shipped: only 3 of the 9
   curated hosts have an in-repo experimental value, and the sign flips across those 3.
   Compare models with the offset-invariant slope and Pearson r from
   `scripts/basis_check.py`.

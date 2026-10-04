@@ -17,7 +17,7 @@ than to training: the 10 Å restriction and de-duplication that reduce it to the
 | Column | Meaning |
 |---|---|
 | `material_id` | Materials Project identifier, e.g. `mp-1865`. Unique within a database version, and the key to trace any row back to the source. |
-| `nsites` | Number of atomic sites in the conventional unit cell. Retained as a model feature. |
+| `nsites` | Number of atomic sites in the structure the Materials Project stores, usually the primitive cell (2 for UN, 3 for CeO2), not the conventional cell. Retained as a model feature. |
 | `nelements` | Number of distinct chemical elements. Used for polymorph de-duplication, not as a feature. |
 | `composition_reduced` | Reduced formula, e.g. `U1 N1`. Part of the de-duplication key. |
 | `formation_energy_per_atom` | DFT formation energy, eV/atom. Used to pick which polymorph survives de-duplication, keeping the lowest. Empty for 4 rows, all elemental Yb entries (mp-71, mp-162, mp-972364, mp-1187875), for which the Materials Project returned none. |
@@ -192,7 +192,7 @@ value an object with the fields below. Sourced from the Materials Project, CC BY
 | `spacegroup_num` | International space-group number, 1-230. Fed to the model as a scalar feature. |
 | `is_centrosymmetric` | Whether the space group contains an inversion centre. Model feature. |
 | `n_symmetry_ops` | Number of symmetry operations in the space group. Model feature. |
-| `nsites` | Sites in the conventional cell. Model feature and dedup key. |
+| `nsites` | Sites in the Materials Project structure, usually the primitive cell. Model feature and dedup key. |
 | `energy_above_hull` | eV/atom above the convex hull. Used only to break reference ties. |
 | `formation_energy_per_atom` | eV/atom. The second tie-break, used when `energy_above_hull` cannot decide. |
 | `note` | Free text recording how the entry was verified and any tie-break reasoning. Not consumed by code. |
@@ -246,8 +246,8 @@ as the run that produced it wrote it.
 | Column | Meaning |
 |---|---|
 | `lattice_parameter_threshold` | Upper bound on a, b and c for rows included, Å. |
-| `OHE_method` | Which symmetry encoding the run used, `sg` for space group or `cs` for crystal system. |
-| `crystal_system` | Which system the row scores, or `all`. |
+| `OHE_method` | Which symmetry encoding the run used: `sg`, the space-group number, on every row of this file. |
+| `crystal_system` | Which crystal system the row scores. |
 | `MSE`, `MAE`, `R2` | Three-element arrays over a, b and c, in Å², Å and dimensionless. |
 | `dataset_size` | Rows surviving the threshold and encoding for this configuration. |
 

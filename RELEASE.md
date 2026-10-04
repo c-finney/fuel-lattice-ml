@@ -153,4 +153,5 @@ These are documented rather than resolved, and a fork inherits all of them:
   unpickling, and that is a mitigation rather than a fix. Serializing to skops or
   ONNX would remove the risk and was never done.
 - Predictions for non-cubic hosts are substantially worse than the headline cubic
-  numbers suggest, by up to 360 % on MAE for the least represented systems.
+  numbers suggest, by up to 360 % on MAE for the less symmetric or thinly represented
+  systems.

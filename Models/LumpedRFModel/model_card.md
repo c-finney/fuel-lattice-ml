@@ -100,8 +100,8 @@ compound instead, so their figures have to be taken from the deposited binaries.
   `a_true` therefore contains the DFT-vs-experiment discrepancy on top of the model's own
   error, and should not be quoted as pure model error. The effect is material-specific and
   changes sign: DFT − experiment is −0.006621 Å for UN, −0.022736 Å for UC, and +0.057365 Å
-  for CeO2, which accounts for most of the uniform over-prediction every model shows on the
-  (Ce,Nd)O2 benchmark. No DFT→experiment correction is shipped, because only 3 of the 9
+  for CeO2, which accounts for part of the uniform over-prediction every model shows on the
+  (Ce,Nd)O2 benchmark, about 39 % of `rf1`'s error on pure CeO2. No DFT→experiment correction is shipped, because only 3 of the 9
   curated hosts have an in-repo experimental value and the sign flips across those 3. Use
   the offset-invariant slope and Pearson r from `scripts/basis_check.py` when comparing
   models. See `Results/benchmarks/basis_check.md`.

@@ -96,8 +96,8 @@ both against the Ikuma et al. reference. Its layout is described in `DATA_DICTIO
 > 4.884 Å.
 >
 > The effect is material-dependent. For CeO2 (`mp-20194`) the DFT value exceeds the
-> experimental one by +0.057365 Å, which accounts for most of the uniform over-prediction
-> every model shows on the (Ce,Nd)O2 benchmark.
+> experimental one by +0.057365 Å, which accounts for part of the uniform over-prediction
+> every model shows on the (Ce,Nd)O2 benchmark: about 39 % of `rf1`'s error on pure CeO2.
 >
 > No DFT→experiment correction is shipped, because this repository cannot justify one: only
 > 3 of the 9 curated hosts have an experimental value here at all, and the sign of the delta

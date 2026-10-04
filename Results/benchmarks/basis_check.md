@@ -63,10 +63,11 @@ determines which of the three anchors can be relied on:
 | UC | −0.022736 | less negative, possibly positive | sign undetermined |
 
 A thermal-expansion term on a ~4.9 Å cell over a few hundred K is plausibly the same order
-as the UN and UC deltas. The CeO2 result therefore stands, and with it the explanation for
-the uniform over-prediction on (Ce,Nd)O2, but the claim that DFT under-estimates UN and UC
-does not follow. That would require a cited thermal-expansion coefficient, which this
-repository does not hold. Only the sign of the correction is known, not its magnitude.
+as the UN and UC deltas. The CeO2 result therefore stands, and with it part of the
+explanation for the uniform over-prediction on (Ce,Nd)O2, but the claim that DFT
+under-estimates UN and UC does not follow. That would require a cited thermal-expansion
+coefficient, which this repository does not hold. Only the sign of the correction is
+known, not its magnitude.
 
 ### What a calibration reference would need
 

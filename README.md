@@ -145,8 +145,8 @@ passed.
 
 The cubic-subset metrics are better than the all-systems metrics, roughly 0.12 Å against
 0.34 Å on `rf1`'s MAE averaged over a, b and c across the 64,128 training rows, and the
-monoclinic, triclinic and trigonal hosts that are thinly represented in the database are
-worse still, by up to 360 % on MAE. Separately, the training labels are DFT-relaxed
+less symmetric or thinly represented hosts, monoclinic, triclinic and trigonal, are worse
+still, by up to 360 % on MAE. Separately, the training labels are DFT-relaxed
 geometry and the benchmark values are experimental measurements, so a benchmark MAE is not
 pure model error. `Results/benchmarks/basis_check.md` quantifies that gap and gives slope
 and Pearson r, which a constant offset cannot change.
@@ -182,6 +182,7 @@ version that the manuscript's results were produced with.
 ## License
 
 MIT, in LICENSE, covering the source code and the five trained model binaries. The
-Materials Project data in `Data/` remains CC BY 4.0. The models are derived from it, so
+Materials Project data in `Data/` remains CC BY 4.0, and the data files produced for this
+study, under `Data/benchmarks/`, `Data/xrd/` and `Results/`, are CC BY 4.0 as well. The models are derived from it, so
 the Materials Project attribution travels with them as well as with the dataset; see
 NOTICE.

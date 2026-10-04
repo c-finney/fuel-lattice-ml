@@ -42,6 +42,9 @@ and MIT does not. The Materials Project attribution above travels with the model
 whichever way that question is read, and anyone redistributing a model should
 retain it.
 
+The data files produced for this study, under Data/benchmarks/, Data/xrd/ and
+Results/, are licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+
 Materials Project terms of use state that the data are computed and may not be
 accurate enough for a given application, and that the developers, contributors
 and hosts of the Materials Project are not to be held liable for inaccuracies in

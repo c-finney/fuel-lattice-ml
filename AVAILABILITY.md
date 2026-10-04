@@ -20,8 +20,8 @@ The Zenodo DOI below identifies the archived deposit.
 > License: MIT
 
 The Zenodo deposit holds the source tree together with all five trained model
-binaries, 13.8 GB on disk and about 6.6 GB as deposited, which exceed what the Git
-host accepts. The
+binaries, 13.8 GB on disk and about 6.6 GB as deposited. They are kept out of the Git
+repository because the two random forest binaries exceed what the Git host accepts. The
 project is retired and is not maintained; the archived version is the one the
 results in this article were produced with.
 
@@ -54,10 +54,10 @@ documented rather than resolved.
 > be reproduced from the same starting point without reissuing the original query and
 > without an MP API key; after restriction to lattice parameters not exceeding 10 Å
 > and de-duplication, 64,128 entries were used to train the models, described by 145
-> features generated with Matminer. MP data are made available under a Creative
-> Commons Attribution 4.0 International (CC BY 4.0) license; the redistributed dataset
-> and the models trained from it are derived works and carry the same attribution
-> requirement.
+> features generated with Matminer and Pymatgen. MP data are made available under a
+> Creative Commons Attribution 4.0 International (CC BY 4.0) license; the
+> redistributed dataset and the models trained from it are derived works and carry the
+> same attribution requirement.
 >
 > **Underlying data**
 >
