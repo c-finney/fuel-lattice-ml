@@ -177,7 +177,8 @@ def _download(url: str, dest: Path) -> None:
                 # errors are transient, so they keep the partial file and
                 # resume like a dropped connection.
                 failures += 1
-                if exc.code not in _RETRYABLE_HTTP or failures >= _MAX_ATTEMPTS:
+                if (exc.code not in _RETRYABLE_HTTP or failures >= _MAX_ATTEMPTS
+                        or attempt == _MAX_TOTAL):
                     raise
                 got = tmp.stat().st_size if tmp.exists() else 0
                 print(f"\n[fetch_models]   attempt {attempt} got HTTP {exc.code}; "
@@ -327,6 +328,13 @@ def fetch(models: list[str] | None = None) -> None:
                 _extract(download_path, archive, out_path)
             except PermissionError as exc:
                 raise SystemExit(_in_use(key, exc)) from exc
+            except OSError as exc:
+                need = (archive.get("bytes", 0) + entry.get("bytes", 0)) / 1e9
+                raise SystemExit(
+                    f"[fetch_models] {key}: extraction failed ({exc.strerror or exc}). "
+                    f"Extracting needs about {need:.1f} GB free while the archive and the "
+                    "extracted file coexist."
+                ) from exc
             finally:
                 download_path.unlink(missing_ok=True)
 

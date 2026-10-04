@@ -67,9 +67,10 @@ def _token() -> str:
 
 def _bucket_url(deposition: str, token: str) -> str:
     import urllib.request
-    req = urllib.request.Request(
-        f"{_API}/deposit/depositions/{deposition}?access_token={token}"
-    )
+    # The token goes in a header, which proxies and server logs do not record,
+    # rather than in the query string.
+    req = urllib.request.Request(f"{_API}/deposit/depositions/{deposition}")
+    req.add_header("Authorization", f"Bearer {token}")
     with urllib.request.urlopen(req) as response:
         meta = json.loads(response.read())
     bucket = meta.get("links", {}).get("bucket")
@@ -87,10 +88,11 @@ def _put_file(bucket: str, path: Path, token: str) -> None:
     print(f"[upload_models]   uploading {size / 1e9:.2f} GB")
     with open(path, "rb") as f:
         req = urllib.request.Request(
-            f"{bucket}/{path.name}?access_token={token}",
+            f"{bucket}/{path.name}",
             data=f,
             method="PUT",
         )
+        req.add_header("Authorization", f"Bearer {token}")
         req.add_header("Content-Type", "application/octet-stream")
         req.add_header("Content-Length", str(size))
         with urllib.request.urlopen(req) as response:

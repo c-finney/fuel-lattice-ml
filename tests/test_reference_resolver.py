@@ -102,7 +102,21 @@ _CEO2_SYMMETRY = {
     "spacegroup_num": 225,
     "is_centrosymmetric": True,
     "n_symmetry_ops": 48,
-    "nsites": 12,
+    "nsites": 3,
+    "energy_above_hull": 0.0,
+    "_source": "curated_table",
+}
+
+# NdO2 resolves in the real curated table (mp-31049), so the mock returns it too.
+# Only the non-host guard keeps it from being chosen; a mock returning None here
+# would let the test pass with the guard disabled.
+_NDO2_SYMMETRY = {
+    "mp_id": "mp-31049",
+    "crystal_system": "monoclinic",
+    "spacegroup_num": 12,
+    "is_centrosymmetric": True,
+    "n_symmetry_ops": 4,
+    "nsites": 6,
     "energy_above_hull": 0.0,
     "_source": "curated_table",
 }
@@ -117,7 +131,8 @@ def _mock_reference_symmetry(formula_or_mpid):
         "mp-2489": _UC_SYMMETRY,
         "CeO2": _CEO2_SYMMETRY,
         "mp-20194": _CEO2_SYMMETRY,
-        "NdO2": None,   # not a valid host
+        "NdO2": _NDO2_SYMMETRY,   # resolvable, but not a valid host
+        "mp-31049": _NDO2_SYMMETRY,
     }
     return mapping.get(formula_or_mpid)
 
@@ -220,6 +235,18 @@ class TestResolveReference:
 
         assert result["status"] == "ok"
         assert result["mp_id"] == "mp-20194"  # CeO2 fallback
+        assert result["mp_id"] != _NDO2_SYMMETRY["mp_id"]
+
+    def test_cendo2_without_guard_would_pick_ndo2(self):
+        """Shows the guard test above can fail: with the guard off, NdO2 wins."""
+        comp = parse_composition("Ce0.2 Nd0.8 O2")
+        with patch("engine.reference_resolver._is_valid_host", return_value=(True, "")),              patch("engine.reference_resolver.mp_client.reference_symmetry",
+                   side_effect=_mock_reference_symmetry),              patch("engine.reference_resolver.mp_client.energy_above_hull",
+                   side_effect=_mock_energy_above_hull),              patch("engine.reference_resolver.mp_client.formation_energy",
+                   side_effect=_mock_formation_energy):
+            result = resolve_reference(comp)
+
+        assert result["mp_id"] == _NDO2_SYMMETRY["mp_id"]
 
     def test_three_mixed_elements_needs_reference(self):
         """U(N,C,O) -> >2 mixed -> needs_reference"""

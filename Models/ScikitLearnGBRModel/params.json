@@ -15,5 +15,6 @@
     "b",
     "c"
   ],
-  "status": "trained"
+  "status": "trained",
+  "note": "early_stopping is scikit-learn's default 'auto': above 10,000 samples each regressor holds out 10% of its rows (validation_fraction=0.1) as an early-stopping check. It never triggered; all three ran 1800 iterations."
 }

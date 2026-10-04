@@ -11,8 +11,10 @@ lattice-build / lattice-train / lattice-evaluate skills for those instead.
 Run from any cwd; sys.path fix ensures engine imports resolve correctly.
 """
 
-import sys
+import json
 import os
+import subprocess
+import sys
 from pathlib import Path
 
 # --- sys.path fix -----------------------------------------------------------
@@ -45,19 +47,21 @@ def predict_lattice_parameter(
     reference   : Optional mp-id or formula to force the reference structure
                   (skips auto-resolution)
     models      : Optional list of model keys to use (e.g. ["rf1","gbr1"]).
-                  Default: all available trained models except Linear Regression.
+                  Default: all available trained models except Linear Regression,
+                  which this tool does not report.
 
     Returns
     -------
     dict with keys:
-      status     : "ok" | "needs_build" | "needs_reference"
+      status     : "ok" | "needs_build" | "needs_reference" | "invalid_composition"
+                   | "error"
       headline   : {model, values: {a[,b,c]}, units: "Å"}
       table      : [{model_key, model_name, a[,b,c]}]
       reference  : {mp_id, crystal_system, spacegroup_num, basis, source, ...}
       warnings   : [str]
 
     If status == "needs_build":
-      Returns missing artifacts and build_eta — the agent should ask
+      Returns missing artifacts, fetch_hint and build_eta — the agent should ask
       the user yes/no before fetching the deposited binaries with
       scripts/fetch_models.py, or, if they prefer a local refit, running
       /lattice-build + /lattice-train.
@@ -65,9 +69,30 @@ def predict_lattice_parameter(
     If status == "needs_reference":
       Returns candidates list — the agent should ask which end-member to use,
       then re-call with reference=<chosen>.
+
+    If status == "invalid_composition" or "error":
+      Returns a reason (unparseable formula, unknown model key).
     """
-    from engine.predict import predict_one
-    return predict_one(composition, reference=reference, models=models)
+    # The prediction runs in a child process with stdin closed. Run in-process, it
+    # deadlocks on Windows: while the stdio transport holds a pending read on stdin,
+    # the lazy compiled-module imports, matminer's multiprocessing pool and the loky
+    # workers that MultiOutputRegressor(n_jobs=-1) starts never return.
+    cmd = [sys.executable, str(_HERE / "cli.py"), "predict",
+           "--composition", composition, "--json"]
+    if reference:
+        cmd += ["--reference", reference]
+    if models:
+        cmd += ["--models", ",".join(models)]
+    proc = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True,
+                          text=True, encoding="utf-8", cwd=str(_HERE),
+                          env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+    out = proc.stdout
+    start = out.find("{")
+    if start < 0:
+        return {"status": "error",
+                "reason": f"prediction process exited {proc.returncode}: "
+                          f"{proc.stderr.strip()[-2000:]}"}
+    return json.loads(out[start:])
 
 
 @mcp.tool()

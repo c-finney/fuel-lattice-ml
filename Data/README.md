@@ -16,7 +16,7 @@ models trained from it are MIT licensed; see LICENSE.
 
 ## `reference_systems.json`
 
-Curated symmetry/lattice data for 9 end-member host structures (UN, UC, CeO2, UO2,
+Curated symmetry and stability data for 9 end-member host structures (UN, UC, CeO2, UO2,
 PuO2, ThO2, ZrO2, Nd2O3, NdO2), used by `engine/mp_client.py`'s reference resolution.
 This is what lets `cli.py predict` resolve a reference host for any of these systems,
 by formula, by mp-id, or via automatic dominant-end-member detection, with **zero**
@@ -124,7 +124,7 @@ Worked through for the two benchmarks:
   hull energy says nothing about which is more stable than the other), so the decision
   falls to `formation_energy_per_atom`, where **UN (−1.582 eV/atom) beats UC (−0.255)**.
   The 50/50 row thus takes `mp-1865`.
-- **`CeO2Nd2O3Vals.csv`**, `Ce_x Nd_(1-x) O2`. Ce is dominant on every row (lowest Ce
+- **`CeO2Nd2O3Vals.csv`**, `Ce_(1-x) Nd_x O2`. Ce is dominant on every row (lowest Ce
   fraction is 0.6451), so **CeO2, `mp-20194`** throughout; no tie arises. NdO2 would be
   invalid as a host regardless, because Nd is 3+ and NdO2 is thus not a stable
   fluorite (see the non-host guard in `reference_resolver.py`).

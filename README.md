@@ -26,11 +26,14 @@ committed as `Data/MP_Dataset_Original_Trimmed.csv`, 21 MB:
 git clone https://github.com/c-finney/fuel-lattice-ml
 cd fuel-lattice-ml
 python -m venv .venv                       # Python 3.12
-.venv/bin/pip install -r requirements.txt  # .venv\Scripts\pip on Windows
+.venv/bin/pip install -r requirements.txt
 
-python scripts/fetch_models.py --models rf1   # 3.97 GB from Zenodo, no account needed
+.venv/bin/python scripts/fetch_models.py --models rf1   # 3.97 GB from Zenodo, no account needed
 .venv/bin/python cli.py predict --composition "UN0.5C0.5"
 ```
+
+On Windows the venv's programs are `.venv\Scripts\python` and `.venv\Scripts\pip`. Where
+`python` is not on the PATH, create the venv with `python3`.
 
 Training from scratch instead of downloading a binary:
 
@@ -70,6 +73,9 @@ live in one place, `engine/train_models.py`'s `model_estimators()`, which
 4. `FuelLatticeParameterModelOptimization.ipynb`, the per-crystal-system and
    per-lattice-threshold accuracy sweep.
 
+The notebooks need a Jupyter front end, which `requirements.txt` does not install:
+`.venv/bin/pip install jupyterlab`.
+
 `exploratory/` holds five further notebooks from earlier experimentation, including a neural
 network and an alternate train/test split. They are unmaintained, untested, and not
 guaranteed to run against the pinned dependencies; read `exploratory/README.md` before
@@ -83,6 +89,7 @@ cli.py          entry point: status | build | train | evaluate | predict
 server.py       FastMCP stdio server exposing predict + status as MCP tools
 .mcp.json       registers the MCP server for Claude Code
 .claude/skills/ lattice-predict, lattice-build, lattice-train, lattice-evaluate
+.claude/commands/ the slash commands that invoke those skills
 Data/           committed inputs: the build seed, curated references, benchmarks
 Dataset/        GENERATED and gitignored, rebuilt by `cli.py build`
 Models/         model cards, hyperparameters, metrics; binaries fetched separately
@@ -104,7 +111,8 @@ The repository is also a self-contained MCP tool. `.mcp.json` registers a
 `.claude/skills/` ships four skills that a Claude Code agent can drive directly, as in
 `/lattice-predict UN0.5C0.5`. Clone it standalone or as a submodule of a larger agent
 project; the notebooks and the agent tooling stay in sync because they are the same
-`engine/` code.
+`engine/` code. `.mcp.json` starts the server with whichever `python` is on the PATH, so
+activate `.venv` before launching Claude Code.
 
 ## The five models
 
@@ -146,7 +154,7 @@ passed.
 The cubic-subset metrics are better than the all-systems metrics, roughly 0.12 Å against
 0.34 Å on `rf1`'s MAE averaged over a, b and c across the 64,128 training rows, and the
 less symmetric or thinly represented hosts, monoclinic, triclinic and trigonal, are worse
-still, by up to 360 % on MAE. Separately, the training labels are DFT-relaxed
+still, by up to 360 % on MAE in the per-crystal-system optimization study. Separately, the training labels are DFT-relaxed
 geometry and the benchmark values are experimental measurements, so a benchmark MAE is not
 pure model error. `Results/benchmarks/basis_check.md` quantifies that gap and gives slope
 and Pearson r, which a constant offset cannot change.
@@ -157,8 +165,8 @@ The binaries are not in git, by `.gitignore`. They live in the Zenodo deposit an
 fetched with:
 
 ```bash
-python scripts/fetch_models.py              # all five, 6.6 GB download, 13.8 GB on disk
-python scripts/fetch_models.py --models rf1 # just the headline model
+.venv/bin/python scripts/fetch_models.py              # all five, 6.6 GB download, 13.8 GB on disk
+.venv/bin/python scripts/fetch_models.py --models rf1 # just the headline model
 ```
 
 Neither command needs an account or a token, and each verifies the download's SHA-256
@@ -182,7 +190,7 @@ version that the manuscript's results were produced with.
 ## License
 
 MIT, in LICENSE, covering the source code and the five trained model binaries. The
-Materials Project data in `Data/` remains CC BY 4.0, and the data files produced for this
-study, under `Data/benchmarks/`, `Data/xrd/` and `Results/`, are CC BY 4.0 as well. The models are derived from it, so
-the Materials Project attribution travels with them as well as with the dataset; see
-NOTICE.
+Materials Project data in `Data/` remains CC BY 4.0. The models are derived from it, so the
+Materials Project attribution travels with them as well as with the dataset; see NOTICE.
+The data files produced for this study, under `Data/benchmarks/`, `Data/xrd/` and
+`Results/`, are also CC BY 4.0.

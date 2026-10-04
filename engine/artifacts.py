@@ -110,7 +110,7 @@ def available_models() -> list[str]:
 # build_dataset.py. The multi-hour figure only applies to a forced re-query
 # (`cli.py build --force`), which re-downloads the full MP snapshot.
 _BUILD_ETA_RESUME = "~9 minutes (featurization only; seed dataset already present)"
-_BUILD_ETA_FORCE  = "tens of minutes to ~2 hours (full MP re-download + ~50k SpacegroupAnalyzer + matminer featurization)"
+_BUILD_ETA_FORCE  = "tens of minutes to ~2 hours (full MP re-download + ~154k SpacegroupAnalyzer + matminer featurization)"
 _TRAIN_ETA  = ("~10 minutes (rf1 fast mode) or up to ~60 minutes (full suite), "
                "and much longer without --n-jobs -1, which is not the default")
 
@@ -147,16 +147,17 @@ def check_prereqs(stage: str) -> dict:
 
     elif stage == "train":
         if not config.DATASET_FEATURIZED.exists():
-            missing.append("MP_Dataset_Featurized.csv (run /lattice-build first)")
+            missing.append("MP_Dataset_Featurized.csv (run `python cli.py build --resume` first)")
         if not config.FEATURELABELS.exists():
-            missing.append("FeatureLabels.joblib (run /lattice-build first)")
+            missing.append("FeatureLabels.joblib (run `python cli.py build --resume` first)")
 
     elif stage in ("predict", "evaluate"):
         if not config.ML_FEATURELABELS.exists():
-            missing.append("ML_FeatureLabels.joblib (run /lattice-train first)")
+            missing.append("ML_FeatureLabels.joblib (run `python cli.py train` first)")
         if not av:
             missing.append("at least one trained model (fetch the deposited binaries "
-                           "with scripts/fetch_models.py, or run /lattice-train)")
+                           "with `python scripts/fetch_models.py`, or run "
+                           "`python cli.py train`)")
         # A missing MP_API_KEY does NOT block predict/evaluate: reference
         # resolution for any of the 9 curated end-members (or an explicit
         # --reference mp-id already in that table) works with zero network

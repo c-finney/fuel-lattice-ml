@@ -7,7 +7,9 @@ Verifies:
   - Headline value is in a physically sane range (~4.5-5.5 Å)
   - Table contains no Linear Regression row (LR is a baseline sanity check only,
     never shown in prediction output — see config.REPORTABLE)
-  - Appropriate warnings field is present
+  - The warnings field is present and is a list
+  - Unknown model keys, and 'lin' without include_baseline, are reported as errors
+  - An unparseable composition is reported as invalid_composition
 """
 
 import sys
@@ -118,13 +120,12 @@ class TestPredictSmoke:
 
         a_val = hl["values"]["a"]
         assert 4.5 <= a_val <= 5.5, f"Lattice parameter a={a_val:.4f} Å out of expected range [4.5, 5.5]"
+        assert isinstance(result["warnings"], list)
 
-    def test_no_lr_in_table(self):
-        """
-        Table must not contain a Linear Regression row — it is excluded from
-        config.REPORTABLE and never shown in prediction output.
-        """
-        from engine import predict, config
+    @staticmethod
+    def _lr_fixture(lr_allowed: bool):
+        """rf1 and the Linear Regression binary are both on disk; returns the patches."""
+        import pandas as pd
 
         mock_labels = ["spacegroup_num", "is_centrosymmetric", "n_symmetry_ops",
                        "cs_cubic", "nsites"]
@@ -136,35 +137,78 @@ class TestPredictSmoke:
             if "LumpedRF" in path:
                 return _make_mock_rf_model(4.91)
             if "LinearRegression" in path:
-                # Should never be loaded (LR excluded from REPORTABLE)
-                raise AssertionError("Linear Regression model should not be loaded in predict!")
+                if not lr_allowed:
+                    raise AssertionError("Linear Regression model should not be loaded in predict!")
+                return _make_mock_rf_model(5.80)
             raise FileNotFoundError(path)
 
-        import pandas as pd
-        mock_X = pd.DataFrame([{l: 0.0 for l in mock_labels}])
-
         def mock_prereqs(stage):
+            # artifacts.available_models() lists REPORTABLE keys only, so lin is absent
+            # here even though its binary is present (model_exists is patched True).
             return {
                 "ok": True,
                 "missing": [],
                 "build_eta": "hours",
                 "train_eta": "minutes",
-                "available_models": ["rf1"],   # only rf1 available (no LR)
+                "available_models": ["rf1"],
             }
 
-        with patch("engine.artifacts.check_prereqs", side_effect=mock_prereqs), \
-             patch("engine.predict.resolve_reference", return_value=_CUBIC_REF), \
-             patch("engine.predict.build_prediction_frame", return_value=mock_X), \
-             patch("joblib.load", side_effect=mock_load):
+        mock_X = pd.DataFrame([{l: 0.0 for l in mock_labels}])
+        return [
+            patch("engine.artifacts.check_prereqs", side_effect=mock_prereqs),
+            patch("engine.config.model_exists", return_value=True),
+            patch("engine.predict.resolve_reference", return_value=_CUBIC_REF),
+            patch("engine.predict.build_prediction_frame", return_value=mock_X),
+            patch("joblib.load", side_effect=mock_load),
+        ]
 
-            result = predict.predict_one("UN0.5C0.5")
+    def _run(self, patches, **kwargs):
+        from contextlib import ExitStack
+        from engine import predict
 
+        with ExitStack() as stack:
+            for p_ in patches:
+                stack.enter_context(p_)
+            return predict.predict_one("UN0.5C0.5", **kwargs)
+
+    def test_no_lr_in_table(self):
+        """
+        Table must not contain a Linear Regression row by default, even with its
+        binary on disk: it is excluded from config.REPORTABLE and opted in only by
+        include_baseline.
+        """
+        result = self._run(self._lr_fixture(lr_allowed=False))
         assert result["status"] == "ok"
-        table = result["table"]
-
-        # No Linear Regression row
-        lr_rows = [r for r in table if r.get("model_key") == "lin"]
+        lr_rows = [r for r in result["table"] if r.get("model_key") == "lin"]
         assert not lr_rows, f"Linear Regression should not appear in table, but found: {lr_rows}"
+
+    def test_lr_appears_only_with_include_baseline(self):
+        """The same setup does produce a lin row once opted in, so the test above can fail."""
+        result = self._run(self._lr_fixture(lr_allowed=True), include_baseline=True)
+        assert result["status"] == "ok"
+        assert [r for r in result["table"] if r["model_key"] == "lin"]
+
+    def test_lin_requested_without_baseline_is_an_error(self):
+        result = self._run(self._lr_fixture(lr_allowed=False), models=["rf1", "lin"])
+        assert result["status"] == "error"
+        assert "include-baseline" in result["reason"]
+
+    def test_unknown_model_key_is_an_error(self):
+        result = self._run(self._lr_fixture(lr_allowed=False), models=["foo"])
+        assert result["status"] == "error"
+        assert "foo" in result["reason"]
+
+    def test_model_keys_are_case_insensitive(self):
+        result = self._run(self._lr_fixture(lr_allowed=False), models=[" RF1"])
+        assert result["status"] == "ok"
+        assert [r["model_key"] for r in result["table"]] == ["rf1"]
+
+    def test_invalid_composition(self):
+        from engine import predict
+
+        with patch("engine.artifacts.check_prereqs", side_effect=_mock_prereqs_ok):
+            result = predict.predict_one("un0.5c0.5")
+        assert result["status"] == "invalid_composition"
 
     def test_needs_reference_propagated(self):
         """

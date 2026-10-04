@@ -206,3 +206,63 @@ def test_mcp_json_declares_no_unexpanded_placeholders():
     server_cfg = json.loads(raw)["mcpServers"]["lattice-prediction"]
     for name, value in (server_cfg.get("env") or {}).items():
         assert not value.strip().startswith("${"), f"{name} is an unexpanded reference"
+
+
+# ---------------------------------------------------------------------------
+# 5. A prediction over the real stdio transport returns
+# ---------------------------------------------------------------------------
+
+def _stdio_call(proc, message, timeout):
+    """Send one JSON-RPC message and return the next stdout line, or None on timeout."""
+    import threading
+
+    proc.stdin.write(json.dumps(message) + "\n")
+    proc.stdin.flush()
+    if "id" not in message:
+        return None
+    box = {}
+    t = threading.Thread(target=lambda: box.setdefault("line", proc.stdout.readline()),
+                         daemon=True)
+    t.start()
+    t.join(timeout)
+    return box.get("line")
+
+
+def test_predict_over_stdio_returns():
+    """Defect 3: on Windows, predict_lattice_parameter run in-process never returned.
+
+    While the stdio transport held a pending read on stdin, the lazy compiled-module
+    imports, matminer's multiprocessing pool and the loky workers that
+    MultiOutputRegressor(n_jobs=-1) starts deadlocked, so the call hung until the
+    client gave up. In-process tests could not see it; only a real stdio round trip
+    does. Skipped when gbr1, the smallest reportable binary, is absent.
+    """
+    from engine import config
+
+    if not config.model_exists("gbr1"):
+        pytest.skip("gbr1 binary not present")
+
+    proc = subprocess.Popen([sys.executable, str(REPO_ROOT / "server.py")],
+                            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                            stderr=subprocess.DEVNULL, text=True, encoding="utf-8",
+                            cwd=str(REPO_ROOT))
+    try:
+        init = _stdio_call(proc, {"jsonrpc": "2.0", "id": 1, "method": "initialize",
+                                  "params": {"protocolVersion": "2024-11-05",
+                                             "capabilities": {},
+                                             "clientInfo": {"name": "pytest", "version": "0"}}},
+                           timeout=60)
+        assert init and '"result"' in init, init
+        _stdio_call(proc, {"jsonrpc": "2.0", "method": "notifications/initialized"}, timeout=0)
+        line = _stdio_call(proc, {"jsonrpc": "2.0", "id": 2, "method": "tools/call",
+                                  "params": {"name": "predict_lattice_parameter",
+                                             "arguments": {"composition": "UN0.5C0.5",
+                                                           "models": ["gbr1"]}}},
+                           timeout=180)
+        assert line is not None, "predict_lattice_parameter sent no reply within 180 s"
+        payload = json.loads(json.loads(line)["result"]["content"][0]["text"])
+        assert payload["status"] == "ok", payload
+        assert payload["headline"]["model"] == "gbr1"
+        assert payload["headline"]["units"] == "Å"
+    finally:
+        proc.kill()

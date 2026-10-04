@@ -4,7 +4,7 @@ Every column of every data file under `Data/` and `Results/`, with its meaning a
 its units.
 
 Lattice parameters are in ångström throughout, angles in degrees, and energies in
-electronvolts per atom. Additionally, where a column can be missing, that is stated.
+electronvolts per atom. Where a column can be missing, that is stated.
 
 ## Data/MP_Dataset_Original_Trimmed.csv
 
@@ -25,8 +25,8 @@ than to training: the 10 Å restriction and de-duplication that reduce it to the
 | `alpha`, `beta`, `gamma` | Lattice angles, degrees. Carried through but not predicted. |
 | `crystal_system` | One of cubic, tetragonal, orthorhombic, hexagonal, trigonal, monoclinic, triclinic. Defines the cubic subset that the headline metrics are computed on. |
 | `spacegroup_num` | International space group number, 1 to 230. Used as a scalar feature; the one-hot expansion of it is dropped before training. |
-| `is_centrosymmetric` | Whether the space group contains an inversion centre. Boolean feature. |
-| `n_symmetry_ops` | Order of the space group's symmetry operation set. Numeric feature. |
+| `is_centrosymmetric` | Whether the space group contains an inversion center. Boolean feature. |
+| `n_symmetry_ops` | Number of symmetry operations SpacegroupAnalyzer finds for the stored Materials Project structure, including pure translations when that cell is a supercell, so a few entries exceed 192 (up to 512). Numeric feature. |
 
 ## Data/benchmarks/UNUC.csv
 
@@ -65,7 +65,7 @@ with named columns, so it is described here rather than as a column list.
 | Line 1 | Header, single-quoted: `Id` is the lab specimen identifier, then `Comment`, `Operator`, `Anode` (Cu) and `Scantype` (coupled TwoTheta/Theta). |
 | Lines 2 onward | 3,561 rows, two space-separated values each: scattering angle 2-theta in degrees, then measured intensity. |
 
-Intensity is as recorded by the instrument and is not normalised, so absolute values are
+Intensity is as recorded by the instrument and is not normalized, so absolute values are
 not comparable between the two specimens; peak positions are what the lattice parameter is
 refined from.
 
@@ -79,7 +79,7 @@ rather than as a column list for the same reason as the UN files above.
 | Header | Present in `CeO2_30Nd2O3_exported.xy` only: one single-quoted line giving `Id`, `Comment`, `Operator`, `Anode` (Cu), `Wavelength` (1.5406 Å), `Scantype` (coupled TwoTheta/Theta), `TimePerStep` as exported by the instrument's software, and stage coordinates `X`, `Y`, `Z`. The other three files start directly with data. |
 | Data rows | 24,575 rows, two space-separated values each: scattering angle 2-theta in degrees, from 10.00 to 109.98 in steps of about 0.0041, then measured intensity. |
 
-Intensity is as recorded by the instrument and is not normalised, so absolute values are
+Intensity is as recorded by the instrument and is not normalized, so absolute values are
 not comparable between samples.
 
 ## Data/xrd/RietveldSummary.xlsx
@@ -190,8 +190,8 @@ value an object with the fields below. Sourced from the Materials Project, CC BY
 | `mp_id` | Materials Project identifier for the host structure. |
 | `crystal_system` | Crystal system of the host, e.g. `cubic`. Drives the collapse of a, b, c to a single reported `a`. |
 | `spacegroup_num` | International space-group number, 1-230. Fed to the model as a scalar feature. |
-| `is_centrosymmetric` | Whether the space group contains an inversion centre. Model feature. |
-| `n_symmetry_ops` | Number of symmetry operations in the space group. Model feature. |
+| `is_centrosymmetric` | Whether the space group contains an inversion center. Model feature. |
+| `n_symmetry_ops` | Number of symmetry operations of the stored host structure, counted as for the training feature. Model feature. |
 | `nsites` | Sites in the Materials Project structure, usually the primitive cell. Model feature and dedup key. |
 | `energy_above_hull` | eV/atom above the convex hull. Used only to break reference ties. |
 | `formation_energy_per_atom` | eV/atom. The second tie-break, used when `energy_above_hull` cannot decide. |
@@ -199,10 +199,10 @@ value an object with the fields below. Sourced from the Materials Project, CC BY
 
 ## Results/benchmarks/benchmark_metrics.csv
 
-Absolute-error summary for each model on each solid-solution benchmark. This file
-reports error only; `basis_check.csv` carries the same models with the
-offset-invariant slope and Pearson r alongside, and is what the manuscript's
-benchmark table cites.
+Absolute-error summary for each of the four reportable models (`rf1`, `rf2`, `gbr1`,
+`gbr2`) on each solid-solution benchmark. This file reports error only;
+`basis_check.csv` adds the Linear Regression baseline and the offset-invariant slope and
+Pearson r, and is what the manuscript's benchmark table cites.
 
 | Column | Meaning |
 |---|---|

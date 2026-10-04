@@ -14,6 +14,13 @@ design.
 See `params.json`: `max_iter=1800`, `learning_rate=0.05`, `max_depth=10`,
 `max_features=0.8`, `random_state=42`.
 
+`early_stopping` is left at scikit-learn's default, `'auto'`, which enables it above
+10,000 samples. Each of the three regressors therefore set aside a random 10 % of its
+training rows (`validation_fraction=0.1`, seeded by `random_state=42`) as an
+early-stopping check, and was fitted on the other 90 %. The check never triggered: all
+three ran the full 1,800 iterations (`n_iter_ = 1800`). The cross-validation refits
+behave the same way inside each fold.
+
 Note: an earlier, unmaintained exploratory notebook
 (`exploratory/FuelLatticeParameterModelCreation_TrainTest.ipynb`) trains this same
 model with `max_iter=1500` instead of `1800`, a real discrepancy between that notebook
@@ -71,5 +78,5 @@ filtered to a,b,c ≤ 10 Å, 145 features, 64,128 rows.
 ## To retrain
 
 ```bash
-python cli.py train --models gbr2
+python cli.py train --models gbr2 --n-jobs -1
 ```

@@ -94,12 +94,16 @@ def format_markdown(payload: dict) -> str:
             )
         if payload["status"] == "needs_build":
             missing = "\n- ".join(payload.get("missing", []))
+            fetch = payload.get("fetch_hint", "python scripts/fetch_models.py --models rf1")
             return (
-                f"**Artifacts missing.** Cannot predict until built.\n\n"
+                f"**Artifacts missing.** Cannot predict yet.\n\n"
                 f"Missing:\n- {missing}\n\n"
-                f"Build ETA: {payload.get('build_eta', 'unknown')}\n\n"
-                "Run `/lattice-build` then `/lattice-train` first."
+                f"Fetch the deposited binaries with `{fetch}`, or train locally with "
+                "`python cli.py build --resume` then `python cli.py train --fast --n-jobs -1` "
+                f"(build: {payload.get('build_eta', 'unknown')})."
             )
+        if payload["status"] == "invalid_composition":
+            return f"**Invalid composition.** {reason}"
         return f"**Error:** {reason}"
 
     lines = []
@@ -189,12 +193,13 @@ def plot_pred_vs_true(df: pd.DataFrame, out_dir: Path, title: str | None = None)
     if "a_true" not in df.columns:
         return out_dir / "no_plot.txt"
 
+    # The four reportable models only: Linear Regression's ~0.9 A offset on (Ce,Nd)O2
+    # would compress the scale, and Figure 3 (scripts/make_figures.py) plots it instead.
     pred_cols = [
         (key, f"a_pred_{key}")
         for key in config.REPORTABLE
         if f"a_pred_{key}" in df.columns
     ]
-    # Fall back to any a_pred_* column not covered by REPORTABLE (e.g. a headline alias)
     if not pred_cols:
         return out_dir / "no_plot.txt"
 

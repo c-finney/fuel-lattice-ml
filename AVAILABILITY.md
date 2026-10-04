@@ -18,6 +18,28 @@ The Zenodo DOI below identifies the archived deposit.
 > prediction of nuclear fuel lattice parameters. Zenodo; 2026.)
 >
 > License: MIT
+>
+> The repository contains the complete featurization, training, evaluation, and
+> prediction pipeline; a command-line interface; four narrated Jupyter notebooks and the
+> scripts under `scripts/` that together reproduce the study end to end; model cards,
+> exact hyperparameters, and cross-validation metrics for every trained model; a pytest
+> regression suite; and citation metadata in `CITATION.cff`. The software is written in
+> Python and was developed and tested against Python 3.12.10 with scikit-learn 1.9.0,
+> XGBoost 3.3.0, NumPy 2.5.1, Pandas 2.3.3, Joblib 1.5.3, Matminer 0.10.1, and pymatgen
+> 2026.5.4, with dependency constraints given in `requirements.txt` and the exact
+> versions used recorded in `Models/MANIFEST.json`; because the post-query featurization
+> input is committed to the repository, a fresh clone rebuilds the training dataset and
+> can retrain the models without requiring an MP API key, while the deposited binaries
+> remain the models of record. The five trained model binaries are distributed from the
+> Zenodo deposit and retrieved by a helper script that verifies each download against
+> the SHA-256 digest recorded in `Models/MANIFEST.json` before it is deserialized.
+> Beyond its command-line and notebook interfaces, the repository is also packaged as an
+> agent tool: it registers a Model Context Protocol (MCP) server exposing lattice
+> parameter prediction and artifact status queries, together with four Claude Code
+> skills (lattice-predict, lattice-build, lattice-train, and lattice-evaluate), allowing
+> researchers to obtain predictions conversationally—for example, by requesting the
+> lattice parameter of a given solid-solution composition in natural language—without
+> writing code or managing the underlying model artifacts.
 
 The Zenodo deposit holds the source tree together with all five trained model
 binaries, 13.8 GB on disk and about 6.6 GB as deposited. They are kept out of the Git
@@ -46,10 +68,11 @@ documented rather than resolved.
 > (https://materialsproject.org), a publicly available repository of DFT-computed
 > materials properties, and were accessed on 25 June 2026 through the MPRester client
 > of the mp-api Python package [3]. Retrieved fields comprised the material
-> identifier, site and element counts, reduced composition, formation energy per atom,
-> the six lattice parameters (a, b, c, α, β, γ), and the crystal system; entries were
-> symmetry annotated and noble-gas-containing compounds removed, thereby yielding a
-> table of 154,192 entries across 15 columns. That table is redistributed with the
+> identifier, structure, site and element counts, reduced composition, and formation
+> energy per atom; the six lattice parameters (a, b, c, α, β, γ) and the crystal system
+> were taken from the conventional standard cell determined with pymatgen’s
+> SpacegroupAnalyzer, and noble-gas-containing compounds were removed, thereby yielding
+> a table of 154,192 entries across 15 columns. That table is redistributed with the
 > analysis software as `Data/MP_Dataset_Original_Trimmed.csv` so that the analysis can
 > be reproduced from the same starting point without reissuing the original query and
 > without an MP API key; after restriction to lattice parameters not exceeding 10 Å
@@ -86,7 +109,8 @@ documented rather than resolved.
 > `Models/<model>/params.json`; the model cards and cross-validation metrics for every
 > trained model; the per-crystal-system optimization study; the label-basis analysis
 > reconciling the DFT training labels against the experimental validation values; and
-> the four notebooks that reproduce the study end to end.
+> the four notebooks and the scripts under `scripts/` that together reproduce the study
+> end to end.
 
 ## Where each figure and table comes from
 
@@ -108,8 +132,10 @@ those files alone, with no model binary and no rebuilt dataset, into
 `Results/figures/manuscript/`, where the output is committed. Figure 2 comes out
 pixel-identical to the published figure. Figure 1 plots individual literature
 measurements that are not in this repository, so it is not regenerated; the fitted
-curve it shows is in `Data/benchmarks/UNUC.csv`. Regenerating any figure's values
-requires only the command in the right-hand column.
+curve it shows is in `Data/benchmarks/UNUC.csv`. Regenerating the values behind Figures
+2 and 4 takes the command in the right-hand column after `cli.py build --resume` and
+`cli.py train` have produced the training frame, and Figure 3's needs the deposited
+binaries in place.
 
 Reproducing Table 2's Linear Regression row needs `cli.py predict --csv ...
 --include-baseline`. Linear Regression is suppressed from prediction output by

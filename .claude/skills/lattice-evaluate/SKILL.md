@@ -31,7 +31,11 @@ prediction are the full-dataset fits produced by `/lattice-train`.
    ```
    Include `lin`: the Linear Regression baseline is a row of the manuscript's Table 1, and
    `config.REPORTABLE`, the default when `--models` is omitted, leaves it out, so a run
-   without it rewrites `ModelMetrics_CrossVal.csv` without that row.
+   without it rewrites `ModelMetrics_CrossVal.csv` without that row. The same holds for
+   any subset, such as `models=rf1,rf2`: the run rewrites `ModelMetrics_CrossVal.csv`
+   with only that subset's rows, and `metrics.json` and `cv_predictions/` for those
+   keys. Tell the user before a subset run; restore the committed files afterwards with
+   `git checkout -- Results/metrics/ Models/`.
 
 4. **Report:** summarize `Results/metrics/ModelMetrics_CrossVal.csv`, giving per-model
    MAE/MSE/R² for a, b, c, both overall and cubic-only. Quote the **cubic-only**

@@ -3,11 +3,12 @@ cli.py — Single entry point for all lattice-parameter-prediction slash command
 
 Usage:
   python cli.py status [--json]
-  python cli.py build  [--thresh N] [--resume] [--force] [--limit N]
+  python cli.py build  [--thresh N] [--resume | --no-resume] [--force] [--limit N]
   python cli.py train  [--fast | --full | --models a,b,...] [--n-jobs N]
-  python cli.py evaluate [--models ...] [--out-dir DIR]
+  python cli.py evaluate [--models a,b,...] [--out-dir DIR] [--n-jobs N]
   python cli.py predict --composition COMP | --csv PATH
                         [--reference REF] [--models a,b,...] [--out-dir DIR] [--json]
+                        [--include-baseline]
 
 cli.py prepends its own directory to sys.path so it works from any cwd.
 """
@@ -131,9 +132,9 @@ def _cmd_evaluate(rest: list[str]) -> None:
     main(rest)
 
 
-def _cmd_predict(rest: list[str]) -> None:
+def _cmd_predict(rest: list[str]) -> int:
     from engine.predict import main
-    main(rest)
+    return main(rest)
 
 
 # ---------------------------------------------------------------------------
@@ -163,7 +164,7 @@ def main():
 
     cmd = sys.argv[1]
     rest = sys.argv[2:]
-    COMMANDS[cmd](rest)
+    sys.exit(COMMANDS[cmd](rest) or 0)
 
 
 if __name__ == "__main__":

@@ -40,7 +40,7 @@ thin, narrated wrapper).
    python cli.py build --resume
    #   or, for a forced rebuild:
    python cli.py build --force
-   #   optional: --thresh 20 overrides the build Å threshold
+   #   optional: --thresh N sets the build Å threshold (default 20)
    ```
    (Activate the repo's `.venv` first if `python` doesn't already resolve to it.)
    The job is resumable, so if the query stage already completed a re-run reuses the

@@ -45,8 +45,8 @@ Hosts with no in-repo experimental value, whose delta is unknown and not estimat
 
 DFT relaxes at 0 K, without zero-point motion. The experimental values are measured at some
 T > 0, and for UN at a temperature the source does not state (COD 9008757, Wyckoff
-*Crystal Structures* 1963, carries no `_cell_measurement_temperature`). Every material
-expands on heating, so `a_exp(T) > a_exp(0 K)`, and:
+*Crystal Structures* 1963, carries no `_cell_measurement_temperature`). UN, UC and CeO2
+expand on heating, so `a_exp(T) > a_exp(0 K)`, and:
 
 ```
 DFT − a_exp(0K)  =  [DFT − a_exp(T)]  +  [a_exp(T) − a_exp(0K)]

@@ -7,7 +7,7 @@ Status: trained and 5-fold cross-validated. Binary:
 
 A `MultiOutputRegressor` wrapping plain `sklearn.linear_model.LinearRegression`, one
 independent linear fit per lattice parameter (a, b, c). It is a baseline sanity check,
-trained only under `cli.py train --full` and suppressed from prediction output by default.
+trained by `cli.py train --full` or `--models lin`, never by the default fast mode, and suppressed from prediction output by default.
 `config.REPORTABLE` excludes it and `config.SCOREABLE` adds it back for the benchmark
 scoring paths.
 
@@ -40,7 +40,7 @@ An order of magnitude worse than any ensemble model, which is why it is kept as 
 Lattice parameter depends on composition in a way a linear fit cannot represent, and
 R²_cubic of 0.43 against 0.98 for the ensembles measures that.
 
-## Benchmark behaviour
+## Benchmark behavior
 
 On the solid-solution benchmarks, absolute error and trend fidelity separate:
 

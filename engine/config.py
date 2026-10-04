@@ -114,8 +114,9 @@ MODEL_FILES = {
     "lin":  ("LinearRegressionModel.joblib",    "Linear Regression"),
 }
 
-# Linear Regression is trained only under `train --full` and is never shown in
-# prediction output by default, existing solely as a baseline sanity check.
+# Linear Regression is trained by `train --full` or `train --models lin`, never by the
+# default fast mode, and is never shown in prediction output by default, existing
+# solely as a baseline sanity check.
 REPORTABLE    = ["rf1", "rf2", "gbr1", "gbr2"]
 
 # The baseline is excluded from REPORTABLE on purpose, but the manuscript's
@@ -126,28 +127,30 @@ BASELINE      = ["lin"]
 SCOREABLE     = REPORTABLE + BASELINE
 
 # Ordering derived from two sources of evidence: 5-fold cross-validation
-# (Results/metrics/ModelMetrics_CrossVal.csv) and the two solid-solution benchmarks
-# (Results/benchmarks/basis_check.md), both measured on the DEPOSITED binaries.
+# (Results/metrics/ModelMetrics_CrossVal.csv), computed from per-fold refits, and the
+# two solid-solution benchmarks (Results/benchmarks/basis_check.md), scored on the
+# DEPOSITED binaries.
 #
 # The direction of the compositional dependence is what decides it. On U(N,C), scored
 # against the deposited artifacts at random_state=42:
 #
 #     rf1    r = +0.9012    slope +1.240
 #     rf2    r = +0.9405    slope +1.217
-#     gbr1   r = -0.0972    slope -0.164     inverts the trend
-#     gbr2   r = -0.2696    slope -0.426     inverts the trend
+#     gbr1   r = -0.0972    slope -0.164     does not reproduce the trend
+#     gbr2   r = -0.2696    slope -0.426     does not reproduce the trend
 #
-# Only the two forests reproduce the sign. Both boosted models predict the lattice
-# parameter to FALL as carbon substitutes for nitrogen, which it does not, and a model
-# that inverts the composition dependence cannot screen compositions however small its
-# mean absolute error. That is what puts the forests first here, and gbr1's better
-# cross-validated MAE_cubic (0.1170 A vs rf1's 0.1224, mean over a, b, c as in
-# Table 1) does not override it.
+# Only the two forests reproduce the sign. Neither boosted model shows a meaningful
+# correlation with the measured rise as carbon substitutes for nitrogen, and a model
+# that does not reproduce the composition dependence cannot screen compositions
+# however small its mean absolute error. That is what puts the forests first here, and
+# gbr1's better cross-validated MAE_cubic (0.1170 A vs rf1's 0.1224, mean over a, b, c
+# as in Table 1) does not override it.
 #
 # rf1 over rf2: rf2 is marginally better on both benchmarks (r +0.9405 vs +0.9012 on
 # U(N,C), +0.9706 vs +0.9451 on (Ce,Nd)O2) but is LAST of the four on CV R2_cubic
-# (0.976283) and weighs 9.74 GB against rf1's 3.97 GB. Between two models that both get
-# the sign right, rf1 is the better cross-validated one and 2.5x smaller.
+# (0.9753, mean over a, b, c as in Table 1) and weighs 9.74 GB against rf1's 3.97 GB.
+# Between two models that both get the sign right, rf1 is the better cross-validated
+# one and 2.5x smaller.
 #
 # gbr1 over gbr2: gbr1 is better on CV (MAE_cubic 0.1170 A vs 0.1592, mean over a, b, c).
 #
@@ -171,8 +174,6 @@ DATASET_FEATURIZED = DATASETS / "MP_Dataset_Featurized.csv"
 DATASET_TRAINING   = DATASETS / "Training_Dataset.csv"
 FEATURELABELS       = FEATURE_DIR / "FeatureLabels.joblib"
 ML_FEATURELABELS    = FEATURE_DIR / "ML_FeatureLabels.joblib"
-
-MODEL_URI_BASE = os.environ.get("LATTICE_MODEL_URI", "")   # e.g. zenodo://<record_id>
 
 
 def dataset_original() -> Path:

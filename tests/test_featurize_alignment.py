@@ -123,3 +123,23 @@ class TestFeatureLabelAlignment:
         assert "nsites" in ml_labels, (
             "'nsites' should be in ML_FeatureLabels (added via toAdd in train preprocessing)."
         )
+
+    def test_prediction_frame_matches_ml_feature_labels(self):
+        """Check 3: a featurized prediction row has exactly the trained feature columns."""
+        import json
+        from engine.predict import build_prediction_frame
+
+        ref = json.loads(config.REFERENCE_SYSTEMS.read_text(encoding="utf-8"))["UN"]
+        X = build_prediction_frame([{
+            "composition": "UN0.5C0.5",
+            "crystal_system": ref["crystal_system"],
+            "spacegroup_num": ref["spacegroup_num"],
+            "is_centrosymmetric": ref["is_centrosymmetric"],
+            "n_symmetry_ops": ref["n_symmetry_ops"],
+            "nsites": ref["nsites"],
+        }])
+        labels = json.loads((config.FEATURE_DIR / "ML_FeatureLabels.json").read_text(encoding="utf-8"))
+        assert list(X.columns) == labels
+        assert bool(X["cs_cubic"].iloc[0])
+        assert not any(bool(X[c].iloc[0]) for c in labels if c.startswith("cs_") and c != "cs_cubic")
+

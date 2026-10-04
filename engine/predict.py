@@ -191,7 +191,8 @@ def predict_one(
     Returns
     -------
     dict with keys:
-      status     : "ok" | "needs_build" | "needs_reference"
+      status     : "ok" | "needs_build" | "needs_reference" | "invalid_composition"
+                   | "error"
       headline   : {model, values: {a[,b,c]}, units}
       table      : [{model_key, model_name, a[,b,c]}]
       reference  : {mp_id, crystal_system, …, basis, source}
@@ -218,11 +219,37 @@ def predict_one(
         av = av + [k for k in config.BASELINE
                    if k not in av and config.model_exists(k)]
     if models:
-        av = [k for k in models if k in av]
+        models = [k.strip().lower() for k in models if k.strip()]
+    if models:
+        unknown = [k for k in models if k not in config.MODEL_FILES]
+        if unknown:
+            return {
+                "status": "error",
+                "reason": f"Unknown model key(s): {', '.join(unknown)}. "
+                          f"Valid keys: {', '.join(config.MODEL_FILES)}.",
+            }
+        if not include_baseline and any(k in config.BASELINE for k in models):
+            return {
+                "status": "error",
+                "reason": "Linear Regression ('lin') is a sanity baseline and is reported "
+                          "only with --include-baseline.",
+            }
+        absent = [k for k in models if k not in av]
+        if absent:
+            return {
+                "status":  "needs_build",
+                "missing": [f"model binary for {k} ({config.MODEL_FILES[k][0]})"
+                            for k in absent],
+                "fetch_hint": "python scripts/fetch_models.py --models " + ",".join(absent),
+                "build_eta": prereq["build_eta"],
+                "train_eta": prereq["train_eta"],
+            }
+        av = models
     if not av:
         return {
             "status":  "needs_build",
             "missing": ["at least one trained model"],
+            "fetch_hint": "python scripts/fetch_models.py --models rf1",
             "build_eta": prereq["build_eta"],
             "train_eta": prereq["train_eta"],
         }
@@ -232,8 +259,7 @@ def predict_one(
         comp = parse_composition(composition)
     except Exception as exc:
         return {
-            "status": "needs_reference",
-            "candidates": [],
+            "status": "invalid_composition",
             "reason": f"Cannot parse composition '{composition}': {exc}",
         }
 
@@ -470,7 +496,7 @@ def main(argv=None):
 
     model_list = [k.strip() for k in args.models.split(",")] if args.models else None
 
-    if args.composition:
+    if args.composition is not None:
         result = predict_one(args.composition, reference=args.reference, models=model_list,
                              include_baseline=args.include_baseline)
 
@@ -486,20 +512,27 @@ def main(argv=None):
             print(json.dumps(result, indent=2))
         else:
             print(reporting.format_markdown(result))
+        # A non-ok status is a failure for scripts, even though it prints guidance.
+        return 0 if result.get("status") == "ok" else 2
     else:
         result = predict_csv(args.csv, models=model_list, out_dir=args.out_dir,
                              include_baseline=args.include_baseline)
+        out_df = result["dataframe"]
         if args.json:
-            # Remove non-serializable dataframe
+            # The dataframe goes out as records, with NaN as null so the output is valid JSON
             r = {k: v for k, v in result.items() if k != "dataframe"}
+            r["predictions"] = out_df.astype(object).where(out_df.notna(), None).to_dict(
+                orient="records")
             print(json.dumps(r, indent=2))
         else:
             print(f"Batch prediction: {result['rows']} rows")
+            print(out_df.to_string(index=False))
             for w in result["warnings"]:
-                print(f"  ! {w}")
+                print(f"  {w}")
             if result.get("predictions_path"):
                 print(f"  Output: {result['predictions_path']}")
+        return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

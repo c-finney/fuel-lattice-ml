@@ -76,5 +76,5 @@ third. See `Results/benchmarks/basis_check.md`.
 ## To retrain
 
 ```bash
-python cli.py train --models gbr1
+python cli.py train --models gbr1 --n-jobs -1
 ```

@@ -116,9 +116,18 @@ def _curated_lookup(formula_or_mpid: str) -> dict | None:
         return None
 
     key = formula_or_mpid.strip()
-    # Direct key lookup (by formula)
-    if key in db:
-        entry = dict(db[key])
+    # Formula lookup: exact key, then case-insensitively, then by reduced formula
+    # ("U1 N1" -> "UN")
+    match = key if key in db else {k.lower(): k for k in db}.get(key.lower())
+    if match is None and not key.startswith(("mp-", "mvc-")):
+        try:
+            from pymatgen.core import Composition
+            reduced = Composition(key).reduced_formula
+            match = reduced if reduced in db else None
+        except Exception:
+            match = None
+    if match is not None:
+        entry = dict(db[match])
         entry["_source"] = "curated_table"
         return entry
     # Lookup by mp-id
@@ -181,7 +190,8 @@ def _resolve_by_mpid(mp_id: str) -> dict | None:
 
     try:
         docs = search_summary(
-            fields=["material_id", "structure", "nsites", "energy_above_hull"],
+            fields=["material_id", "structure", "nsites", "energy_above_hull",
+                    "formation_energy_per_atom"],
             material_ids=[mp_id],
         )
     except Exception:
@@ -195,6 +205,7 @@ def _resolve_by_mpid(mp_id: str) -> dict | None:
     result = {
         "mp_id":               mp_id,
         "energy_above_hull":   getattr(doc, "energy_above_hull", None),
+        "formation_energy_per_atom": getattr(doc, "formation_energy_per_atom", None),
         "_source":             "live_mp",
         **sym,
     }
@@ -213,8 +224,8 @@ def _resolve_by_formula(formula: str) -> dict | None:
         # Use chemsys search for reliability
         chemsys = "-".join(sorted(el.symbol for el in comp.elements))
         docs = search_summary(
-            fields=["material_id", "structure", "nsites",
-                    "energy_above_hull", "theoretical", "composition_reduced"],
+            fields=["material_id", "structure", "nsites", "energy_above_hull",
+                    "formation_energy_per_atom", "theoretical", "composition_reduced"],
             chemsys=chemsys,
         )
     except Exception:
@@ -251,6 +262,7 @@ def _resolve_by_formula(formula: str) -> dict | None:
     result = {
         "mp_id":             mp_id,
         "energy_above_hull": getattr(doc, "energy_above_hull", None),
+        "formation_energy_per_atom": getattr(doc, "formation_energy_per_atom", None),
         "_source":           "live_mp",
         **sym,
     }

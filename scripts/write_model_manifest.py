@@ -28,12 +28,6 @@ def sha256_of(path: Path) -> str:
     return h.hexdigest()
 
 
-# Distribution name per import name, where they differ. pymatgen ships as a
-# namespace package with no __version__ attribute on the top-level module, so
-# reading it by import returned "unknown" in every manifest written before this.
-_DIST_NAME = {"sklearn": "scikit-learn", "pymatgen": "pymatgen-core"}
-
-
 def package_versions() -> dict:
     """Versions in THIS interpreter. See resolve_packages() for why that differs."""
     from engine import artifacts
@@ -45,15 +39,9 @@ def resolve_packages(stages: dict) -> tuple[dict, str]:
     Prefer the environment recorded when the models were fitted.
 
     This script reads whatever interpreter runs it, which is not necessarily the
-    one that did the training. The manifest committed in c6b1532 was regenerated
-    weeks after its models were fitted, so its `packages` block described the
-    machine that ran this script. That mattered: rebuilding gbr1 from the same
-    seed produced a different binary and different benchmark numbers, and the
-    recorded xgboost version could not be used to rule version drift in or out,
-    because it was never a record of the training environment in the first place.
-
-    train() now stamps versions into each train:<key> stage. When every trained
-    model carries the same stamp, that is what gets recorded. Disagreement
+    one that did the training, so its own versions are not a record of the
+    training environment. train() stamps versions into each train:<key> stage.
+    When every trained model carries the same stamp, that is what gets recorded. Disagreement
     between models means they were fitted under different environments, which is
     worth surfacing rather than flattening.
     """
@@ -140,7 +128,7 @@ def main():
         except (json.JSONDecodeError, OSError):
             pass
 
-    config.MODEL_MANIFEST.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    config.MODEL_MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {config.MODEL_MANIFEST}")
     for key, entry in manifest["models"].items():
         print(f"  {key}: {entry.get('status')}"

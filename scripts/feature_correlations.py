@@ -24,8 +24,9 @@ USAGE
 -----
     python scripts/feature_correlations.py
 
-Requires Dataset/Training_Dataset.csv, which `cli.py build` and `cli.py train`
-both write. Output goes to Results/metrics/feature_spearman_cubic.csv.
+Requires Dataset/Training_Dataset.csv, which `cli.py train` (or `cli.py evaluate`)
+writes from the featurized dataset that `cli.py build` produces. Output goes to
+Results/metrics/feature_spearman_cubic.csv.
 """
 
 from __future__ import annotations
@@ -50,7 +51,7 @@ def compute() -> pd.DataFrame:
     if not config.DATASET_TRAINING.exists():
         raise SystemExit(
             f"{config.DATASET_TRAINING} not found. Run `python cli.py build --resume` "
-            "first; the training frame is generated, not committed."
+            "then `python cli.py train`; the training frame is generated, not committed."
         )
     if not config.ML_FEATURELABELS.exists():
         raise SystemExit(f"{config.ML_FEATURELABELS} not found.")
@@ -96,8 +97,8 @@ def main() -> None:
               f"({shown.iloc[0]['spearman_rho']:+.4f})")
         neg = shown[shown["spearman_rho"] < 0]
         if len(neg):
-            print(f"[correlations] Strongest negative: {neg.iloc[-1]['feature']} "
-                  f"({neg.iloc[-1]['spearman_rho']:+.4f})")
+            print(f"[correlations] Strongest negative: {neg.iloc[0]['feature']} "
+                  f"({neg.iloc[0]['spearman_rho']:+.4f})")
 
 
 if __name__ == "__main__":

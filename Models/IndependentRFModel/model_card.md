@@ -31,8 +31,8 @@ filtered to a,b,c ≤ 10 Å, 145 features, 64,128 rows.
 | b | 0.127465 | 0.974935 | 0.341422 | 0.870053 |
 | c | 0.126418 | 0.974801 | 0.403132 | 0.843363 |
 
-On cross-validation `rf2` is the lowest of the four reportable models by R²_cubic (0.976283,
-against `gbr1`'s 0.982628) while being the largest. Independent per-output forests gain
+On cross-validation `rf2` is the lowest of the four reportable models by R²_cubic (0.9753,
+against `gbr1`'s 0.9817, means over a, b, c as in Table 1) while being the largest. Independent per-output forests gain
 nothing over `rf1`'s joint trees here, at 2.5× the size.
 
 ## Benchmark performance
@@ -66,8 +66,8 @@ With that removed it has the lowest scatter of any model there, 0.006921 Å agai
 - **Size.** 9.74 GB unpacked, the largest model binary. It is the lowest of the four on
   CV R²_cubic, so `rf1` is the better choice for most uses; `rf2` is deposited for
   completeness and for the benchmark correlations above.
-- **Validated primarily on cubic hosts.** R²_cubic (0.976283) is well above R²_all
-  (0.886938). `predict_one()` warns on non-cubic hosts.
+- **Validated primarily on cubic hosts.** R²_cubic for a (0.976283) is well above
+  R²_all (0.886938). `predict_one()` warns on non-cubic hosts.
 - **Out-of-domain elements** absent from the training features degrade accuracy;
   `predict_one()` warns when detected.
 - **Pickle format risk.** Raw `joblib`/pickle artifact, as `Models/README.md` explains.
@@ -75,5 +75,5 @@ With that removed it has the lowest scatter of any model there, 0.006921 Å agai
 ## To retrain
 
 ```bash
-python cli.py train --models rf2
+python cli.py train --models rf2 --n-jobs -1
 ```

@@ -156,8 +156,8 @@ def main() -> int:
     w("")
     w("DFT relaxes at 0 K, without zero-point motion. The experimental values are measured at some")
     w("T > 0, and for UN at a temperature the source does not state (COD 9008757, Wyckoff")
-    w("*Crystal Structures* 1963, carries no `_cell_measurement_temperature`). Every material")
-    w("expands on heating, so `a_exp(T) > a_exp(0 K)`, and:")
+    w("*Crystal Structures* 1963, carries no `_cell_measurement_temperature`). UN, UC and CeO2")
+    w("expand on heating, so `a_exp(T) > a_exp(0 K)`, and:")
     w("")
     w("```")
     w("DFT − a_exp(0K)  =  [DFT − a_exp(T)]  +  [a_exp(T) − a_exp(0K)]")
@@ -272,7 +272,9 @@ def main() -> int:
     out_dir = REPO / "Results" / "benchmarks"
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "basis_check.md").write_text("\n".join(lines), encoding="utf-8")
-    pd.DataFrame(csv_rows).to_csv(out_dir / "basis_check.csv", index=False)
+    # n_rows is empty on the anchor rows; Int64 keeps the counts integers, not 23.0
+    pd.DataFrame(csv_rows).astype({"n_rows": "Int64"}).to_csv(
+        out_dir / "basis_check.csv", index=False)
     print(f"wrote {out_dir / 'basis_check.md'}")
     print(f"wrote {out_dir / 'basis_check.csv'}")
     return 0

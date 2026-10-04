@@ -57,3 +57,12 @@ class TestCompositionParse:
         """parse_composition should return a pymatgen Composition"""
         comp = parse_composition("UN0.5C0.5")
         assert isinstance(comp, Composition)
+
+    def test_rejects_dummy_species(self):
+        """pymatgen accepts "Xx" as a dummy species; the models have no features for it."""
+        with pytest.raises(ValueError):
+            parse_composition("Xx2O")
+
+    def test_rejects_empty(self):
+        with pytest.raises(ValueError):
+            parse_composition("")

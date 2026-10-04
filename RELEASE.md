@@ -31,7 +31,7 @@ under MIT:
       through ORNL's internal process by the ORNL co-authors; the editorial comments
       carried in the manuscript file came from that review.
 - [x] **Copyright line in LICENSE: confirmed.** `Copyright (c) 2026 Cade Finney`.
-      The rights the Government holds under items 1 and 3 of the Participant Data
+      The rights the Government holds under Sections 1 and 3 of the Participant Data
       Agreement are recorded in NOTICE under "Government rights", and LICENSE
       points at it; those rights sit alongside the MIT grant rather than
       displacing it.
@@ -78,9 +78,9 @@ The inputs rebuild byte-identically on any machine:
   committed label files byte-identically, so `git status` stays clean.
 - `Dataset/MP_Dataset_Featurized.csv` comes out at SHA-256
   `8bff88c700d2ce98d229de0752975988ba2d5f2f2562a64395f8d47af074ab01`.
-- `Dataset/Training_Dataset.csv` comes out at 64,128 rows and 145 features,
-  SHA-256 `5903296149f451383dfe32e266fb1f28966e4411eaf946f221f839e7dacfcb2a`,
-  matching `Models/MANIFEST.json`.
+- `Dataset/Training_Dataset.csv` comes out at 64,128 rows and 145 features, the
+  counts `Models/MANIFEST.json` records, at SHA-256
+  `5903296149f451383dfe32e266fb1f28966e4411eaf946f221f839e7dacfcb2a`.
 
 The deposited binaries reproduce every model number reported. Scored against both
 solid-solution benchmarks they return the manuscript's benchmark table in full,
@@ -154,4 +154,4 @@ These are documented rather than resolved, and a fork inherits all of them:
   ONNX would remove the risk and was never done.
 - Predictions for non-cubic hosts are substantially worse than the headline cubic
   numbers suggest, by up to 360 % on MAE for the less symmetric or thinly represented
-  systems.
+  systems in the per-crystal-system optimization study.

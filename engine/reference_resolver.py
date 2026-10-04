@@ -23,7 +23,7 @@ prevalent end-member's mp-id, and for a 50/50 mix the more stable one's.
 
 from __future__ import annotations
 
-from pymatgen.core import Composition
+from pymatgen.core import Composition, Element
 
 from engine import mp_client
 
@@ -36,8 +36,17 @@ def parse_composition(s: str) -> Composition:
     """
     Parse a composition string tolerating spaces and non-integer stoichiometries.
     Examples: "UN0.5C0.5", "U1 N0.5 C0.5", "Ce0.8343 Nd0.1657 O2"
+
+    Raises ValueError for an empty composition or for symbols pymatgen accepts only
+    as dummy species (e.g. "Xx"), which the models have no features for.
     """
-    return Composition(s)
+    comp = Composition(s)
+    if not comp.elements:
+        raise ValueError("empty composition")
+    dummies = [str(sp) for sp in comp.elements if not isinstance(sp, Element)]
+    if dummies:
+        raise ValueError(f"not chemical elements: {', '.join(dummies)}")
+    return comp
 
 
 # ---------------------------------------------------------------------------

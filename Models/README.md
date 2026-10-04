@@ -4,22 +4,24 @@
 
 ```
 Models/
-  MANIFEST.json                 committed: provenance, versions, hashes, Zenodo URIs
-  feature_labels/                committed: the model input contract
+  MANIFEST.json                   committed: provenance, versions, hashes, Zenodo URIs
+  feature_labels/                 committed: the model input contract
     FeatureLabels.joblib          503 labels (build-time; NO 'nelements')
     FeatureLabels.json            human-readable mirror of the above
     ML_FeatureLabels.joblib       145 labels (train-time; final model input)
     ML_FeatureLabels.json         human-readable mirror of the above
+    cs_FeatureLabels.joblib       the 7 crystal-system one-hot labels (build-time)
+    sg_FeatureLabels.joblib       the 230 space-group one-hot labels (build-time)
   <ModelName>/
-    model_card.md                committed: intended use, training data, metrics, limitations
-    params.json                  committed: exact hyperparameters (parity-test fixture)
-    metrics.json                 committed, ONLY for trained models
-  binaries/                      GITIGNORED: fetched via scripts/fetch_models.py
+    model_card.md                 committed: intended use, training data, metrics, limitations
+    params.json                   committed: exact hyperparameters (parity-test fixture)
+    metrics.json                  committed, ONLY for trained models
+  binaries/                       GITIGNORED: fetched via scripts/fetch_models.py
     LumpedRFModel.joblib          3.97 GB, the headline model
     IndependentRFModel.joblib     9.74 GB, the largest artifact here
-    XGBoostGBRModel.joblib          51 MB
-    ScikitLearnGBRModel.joblib      23 MB
-    LinearRegressionModel.joblib    17 KB, baseline only, not shown in prediction output
+    XGBoostGBRModel.joblib        51 MB
+    ScikitLearnGBRModel.joblib    23 MB
+    LinearRegressionModel.joblib  17 KB, baseline only, not shown in prediction output
 ```
 
 ## All five models are trained
@@ -55,7 +57,7 @@ The model binaries are not stored in git, as the root `.gitignore` enforces.
 Fetch them with:
 
 ```bash
-python scripts/fetch_models.py
+.venv/bin/python scripts/fetch_models.py      # .venv\Scripts\python on Windows
 ```
 
 This needs no token and no account: the binaries live in the open Zenodo deposit recorded

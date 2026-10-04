@@ -95,7 +95,7 @@ def prepare_training_frame():
 # Model registry — exact hyperparameters
 #
 # These are the contract. The authoritative copy for citation purposes is
-# Models/<name>/params.json, and tests/test_params_parity.py fails CI if this
+# Models/<name>/params.json, and tests/test_params_parity.py fails if this
 # function's output ever diverges from those files or from a hyperparameter
 # reappearing hardcoded in a notebook.
 # ---------------------------------------------------------------------------
@@ -212,8 +212,8 @@ def train(
         # This does NOT make a rebuild byte-identical to the binaries published in
         # 2026-07. A rebuild here came out 32 bytes larger than the recorded size,
         # and resetting n_jobs did not account for the difference; the cause was not
-        # tracked down. What was checked instead is that the rebuilt models reproduce
-        # the published metrics, which is in RELEASE.md.
+        # tracked down. The deposited binaries remain the models of record, and
+        # RELEASE.md records that they reproduce the published metrics.
         if n_jobs is not None:
             if inner is not None and hasattr(inner, "n_jobs"):
                 inner.set_params(n_jobs=None)

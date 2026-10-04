@@ -29,7 +29,7 @@ scikit-learn draws each tree's seed from `random_state` before dispatch.
 Model keys: `rf1`=Lumped RF (the headline model, chosen on combined cross-validation
 and benchmark evidence rather than on any single metric), `rf2`=Independent RF,
 `gbr1`=Lumped GBR (XGBoost), `gbr2`=Independent GBR (HistGBR), `lin`=Linear
-Regression (full only; a baseline that the manuscript's tables report but prediction
+Regression (`--full` or `--models lin` only; a baseline that the manuscript's tables report but prediction
 output never shows). All five are trained and deposited on Zenodo.
 
 ## Procedure

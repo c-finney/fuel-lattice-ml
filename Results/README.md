@@ -35,7 +35,7 @@ Note that these metrics describe the hyperparameters and the training frame rath
 one fitted binary: `evaluate()` refits a fresh estimator per fold and never opens the files
 in `Models/binaries/`.
 
-## `metrics/cv_predictions/` : the values behind the figures
+## `metrics/cv_predictions/`: the values behind the figures
 
 One file per model, each holding the out-of-fold prediction for all 64,128 training entries.
 `DATA_DICTIONARY.md` describes the columns.

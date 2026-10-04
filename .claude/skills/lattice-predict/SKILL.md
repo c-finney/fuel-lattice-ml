@@ -22,6 +22,8 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
 
 ## Procedure
 
+Activate the repo's `.venv` first; every `python` below means its interpreter.
+
 1. **Parse the argument** into either a composition string or a CSV path. Pull optional
    `reference=` and `models=` tokens.
 
@@ -58,15 +60,22 @@ orchestrates the prereq check, the build/train confirmation, and output formatti
    ```
    python cli.py predict --composition "<comp>" [--reference <ref>] [--models <list>] --json
    ```
-   (Use `--csv <path>` instead of `--composition` for batch mode. Add `--out-dir` if
-   the user wants a saved copy of the result.)
+   (Use `--csv <path>` instead of `--composition` for batch mode; there the reference
+   comes from each row's `ref_mp-id` column and `--reference` is ignored. Add
+   `--out-dir` if the user wants a saved copy of the result.)
 
 5. **Handle the engine status field:**
    - `needs_reference` → the solid solution's host structure is ambiguous (e.g. >2 mixed
      components, or the dominant end-member isn't a stable host). Show the candidate
      end-members/mp-ids the engine returned and ask the user to pick one, then re-run with
      `--reference`.
-   - `needs_build` → return to step 3.
+   - `needs_build` → return to step 3. The payload's `fetch_hint` is the command that
+     fetches the missing binaries.
+   - `invalid_composition` → the formula could not be parsed (e.g. lowercase element
+     symbols, or a symbol that is not an element). Show the reason and ask for a
+     corrected formula; a reference will not fix it.
+   - `error` → an unknown model key, or `lin` requested without `--include-baseline`.
+     Show the reason.
    - `ok` → format the answer (step 6).
 
 6. **Report:**
