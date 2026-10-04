@@ -54,7 +54,7 @@ documented rather than resolved.
 > be reproduced from the same starting point without reissuing the original query and
 > without an MP API key; after restriction to lattice parameters not exceeding 10 Å
 > and de-duplication, 64,128 entries were used to train the models, described by 145
-> features generated with Matminer and Pymatgen. MP data are made available under a
+> features generated with Matminer and pymatgen. MP data are made available under a
 > Creative Commons Attribution 4.0 International (CC BY 4.0) license; the
 > redistributed dataset and the models trained from it are derived works and carry the
 > same attribution requirement.
